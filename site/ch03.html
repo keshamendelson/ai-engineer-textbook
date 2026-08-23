@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Глава 3. Нейросеть: от одного нейрона до глубокой сети · AI-инженер с нуля</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <button class="icon-btn" id="menu-toggle" aria-label="Меню">☰</button>
+  <a class="brand" href="index.html">AI-инженер <span>с нуля</span></a>
+  <div class="spacer"></div>
+  <div class="search-wrap">
+    <input id="search-input" type="search" placeholder="Поиск   ⌘K" autocomplete="off">
+    <div id="search-results"></div>
+  </div>
+  <button class="icon-btn" id="theme-toggle">Тёмная</button>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar"></nav>
+
+  <main>
+    <article>
+
+      <header class="chapter-head">
+        <div class="kicker">Часть I. Фундамент · глава 3</div>
+        <h1>Нейросеть: от одного нейрона до глубокой сети</h1>
+        <p class="standfirst">
+        <a class="term" href="app-a.html#t-neyron" data-term="нейрон">Нейрон</a> вычисляет взвешенную сумму и применяет к ней нелинейное преобразование. Из таких преобразований складывается любая кривая. Посмотрим, почему без нелинейности сеть бесполезна, что утверждает теорема об универсальной аппроксимации и зачем нужна глубина.
+      </p>
+        <div class="chapter-meta">
+          <span>19 минут чтения</span>
+          <span>1 ч с практикой</span>
+          <span>Нужны главы 1 и 2</span>
+          <span>Код: NumPy</span>
+        </div>
+      </header>
+
+      <h2 id="neuron">Один нейрон</h2>
+
+      <p>
+        Нейрон делает две операции подряд. Сначала считает взвешенную сумму входов и прибавляет
+        сдвиг: <code>z = w₁x₁ + w₂x₂ + … + b</code>. Это скалярное произведение из главы 1.
+        Затем пропускает результат через функцию активации, которая вносит нелинейность.
+      </p>
+
+      <figure>
+        <svg viewBox="0 0 734 220" role="img" aria-label="Устройство одного нейрона: входы, веса, сумма, активация">
+          <defs>
+            <marker id="n-ar" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+              <path d="M0,0 L8,4 L0,8 z" class="s-fill-3"/>
+            </marker>
+          </defs>
+
+          <circle cx="60" cy="55" r="18" class="s-box"/>
+          <text x="60" y="60" class="s-t" text-anchor="middle">x₁</text>
+          <circle cx="60" cy="110" r="18" class="s-box"/>
+          <text x="60" y="115" class="s-t" text-anchor="middle">x₂</text>
+          <circle cx="60" cy="165" r="18" class="s-box"/>
+          <text x="60" y="170" class="s-t" text-anchor="middle">x₃</text>
+
+          <line x1="78" y1="55" x2="200" y2="104" class="s-line" marker-end="url(#n-ar)"/>
+          <line x1="78" y1="110" x2="200" y2="110" class="s-line" marker-end="url(#n-ar)"/>
+          <line x1="78" y1="165" x2="200" y2="118" class="s-line" marker-end="url(#n-ar)"/>
+          <text x="130" y="70" class="s-t-a">w₁</text>
+          <text x="130" y="102" class="s-t-a">w₂</text>
+          <text x="130" y="156" class="s-t-a">w₃</text>
+
+          <circle cx="228" cy="110" r="28" class="s-box-a"/>
+          <text x="228" y="116" class="s-t-b" text-anchor="middle">Σ</text>
+          <text x="228" y="160" class="s-t-xs" text-anchor="middle">+ b</text>
+
+          <line x1="256" y1="110" x2="316" y2="110" class="s-line" marker-end="url(#n-ar)"/>
+          <text x="286" y="100" class="s-t-s" text-anchor="middle">z</text>
+
+          <rect x="320" y="82" width="80" height="56" rx="8" class="s-box-v"/>
+          <path d="M334,126 L358,126 L390,94" class="s-line-a" stroke-width="2.5" fill="none"/>
+          <text x="360" y="72" class="s-t-s" text-anchor="middle">активация</text>
+
+          <line x1="400" y1="110" x2="452" y2="110" class="s-line" marker-end="url(#n-ar)"/>
+          <circle cx="478" cy="110" r="22" class="s-box-g"/>
+          <text x="478" y="116" class="s-t-b" text-anchor="middle">a</text>
+          <text x="478" y="150" class="s-t-xs" text-anchor="middle">выход</text>
+
+          <line x1="530" y1="50" x2="530" y2="180" class="s-line-d"/>
+          <text x="550" y="70" class="s-t-b">Что тут настраивается</text>
+          <text x="550" y="94" class="s-t-s">w и b подбираются обучением</text>
+          <text x="550" y="112" class="s-t-s">Активация выбирается заранее</text>
+          <text x="550" y="130" class="s-t-s">и не меняется</text>
+          <text x="550" y="158" class="s-t-xs">Нейрон с 3 входами хранит</text>
+          <text x="550" y="172" class="s-t-xs">4 числа: три веса и сдвиг</text>
+        </svg>
+        <figcaption>
+        <b>Сдвиг b нужен не для красоты.</b> Без него нейрон обязан срабатывать при нулевом входе ровно так, как задано активацией, и не может подвинуть порог срабатывания. Это как прямая, которой запретили пересекать ось не в начале координат.
+      </figcaption>
+      </figure>
+
+      <h2 id="why-nonlinear">Зачем нужна нелинейность</h2>
+
+      <p>
+        Допустим, активации нет: нейрон просто считает взвешенную сумму. Поставим два таких
+        слоя подряд. Первый умножает вход на матрицу <code>W₁</code>, второй на <code>W₂</code>.
+        Результат это <code>W₂(W₁x) = (W₂W₁)x</code>. Но произведение двух матриц это тоже
+        матрица. Значит, двухслойная сеть без активаций эквивалентна однослойной, и сколько
+        слоёв ни ставь, мощность не растёт.
+      </p>
+
+      <p>
+        Классический пример того, что не может сделать линейная модель, функция XOR. Ответ «да», если ровно один из двух входов равен единице.
+      </p>
+
+      <figure>
+        <svg viewBox="0 0 700 260" role="img" aria-label="Задача XOR: прямой не разделить, двумя прямыми можно">
+          <g>
+            <text x="120" y="22" class="s-t-b" text-anchor="middle">Одной прямой не выйдет</text>
+            <line x1="45" y1="215" x2="215" y2="215" class="s-line"/>
+            <line x1="45" y1="215" x2="45" y2="55" class="s-line"/>
+            <text x="40" y="232" class="s-t-xs">0</text>
+            <text x="185" y="232" class="s-t-xs">1</text>
+            <text x="30" y="62" class="s-t-xs">1</text>
+
+            <circle cx="45" cy="215" r="7" class="s-box"/>
+            <circle cx="185" cy="75" r="7" class="s-box"/>
+            <circle cx="185" cy="215" r="7" class="s-box-a"/>
+            <circle cx="45" cy="75" r="7" class="s-box-a"/>
+            <text x="230" y="80" class="s-t-xs">синие: ответ 1</text>
+            <text x="230" y="98" class="s-t-xs">пустые: ответ 0</text>
+
+            <line x1="30" y1="185" x2="215" y2="105" class="s-line" stroke-dasharray="5 4"/>
+            <line x1="55" y1="240" x2="215" y2="60" class="s-line" stroke-dasharray="5 4"/>
+            <text x="120" y="252" class="s-t-s" text-anchor="middle">как ни поворачивай, не разделит</text>
+          </g>
+
+          <line x1="330" y1="30" x2="330" y2="240" class="s-line-d"/>
+
+          <g>
+            <text x="510" y="22" class="s-t-b" text-anchor="middle">Скрытый слой строит две границы</text>
+            <line x1="400" y1="215" x2="570" y2="215" class="s-line"/>
+            <line x1="400" y1="215" x2="400" y2="55" class="s-line"/>
+
+            <path d="M385,190 L585,100" class="s-line-a" stroke-width="2"/>
+            <path d="M385,140 L585,50" class="s-line-a" stroke-width="2"/>
+            <text x="592" y="104" class="s-t-a">h₁</text>
+            <text x="592" y="54" class="s-t-a">h₂</text>
+
+            <circle cx="400" cy="215" r="7" class="s-box"/>
+            <circle cx="540" cy="75" r="7" class="s-box"/>
+            <circle cx="540" cy="215" r="7" class="s-box-a"/>
+            <circle cx="400" cy="75" r="7" class="s-box-a"/>
+
+            <text x="510" y="252" class="s-t-s" text-anchor="middle">выходной нейрон берёт «между h₁ и h₂»</text>
+          </g>
+        </svg>
+        <figcaption>
+        <b>Скрытый слой это набор новых признаков.</b> Каждый нейрон скрытого слоя рисует свою границу и отвечает, по какую сторону от неё лежит точка. Выходной нейрон работает с этими ответами вместо исходных координат, и в новом пространстве задача становится линейно разделимой.
+      </figcaption>
+      </figure>
+
+      <details class="deeper">
+        <summary>Вывод: почему два линейных слоя подряд бессмысленны</summary>
+        <div class="deeper-body">
+<p>Рассмотрим два последовательных слоя нейронной сети без активации между ними. Первый слой принимает на вход вектор признаков <code>x</code>, вычисляет промежуточное представление <code>h = W₁·x + b₁</code>, где <code>W₁</code> это матрица весов первого слоя, а <code>b₁</code> вектор его смещения. Второй слой берёт этот выход <code>h</code> и считает итоговое значение <code>y = W₂·h + b₂</code>, где <code>W₂</code> и <code>b₂</code> соответствуют весам и смещению второго слоя. Никакой нелинейной функции между ними пока не применяется.</p>
+<p>Подставим выражение для <code>h</code> из первого слоя во второй. Получаем <code>y = W₂·(W₁·x + b₁) + b₂</code>. Это обычная подстановка, аналогичная той, что используется в линейной алгебре для выражений с матрицами и векторами.</p>
+<p>Раскроем скобки, используя правило умножения матрицы на сумму векторов: матрица распределяется по сумме, поэтому <code>y = (W₂·W₁)·x + (W₂·b₁ + b₂)</code>. Это свойство выполняется для любых матриц и векторов подходящих размеров, не зависит от конкретных значений параметров или входных данных.</p>
+<p>Введём обозначения для скомбинированных параметров: <code>W* = W₂·W₁</code> и <code>b* = W₂·b₁ + b₂</code>. Тогда выражение для выхода принимает вид <code>y = W*·x + b*</code>. Это ровно форма одного линейного слоя, просто с другими весами и смещением, полученными из параметров двух исходных слоёв.</p>
+<p>Отсюда следует общий вывод: сколько бы линейных слоёв вы ни поставили подряд без нелинейных активаций между ними, их всегда можно заменить одним эквивалентным слоем. Глубина в такой конструкции не добавляет модели никаких новых возможностей, только увеличивает расход памяти на хранение параметров и время вычислений при прямом проходе.</p>
+<p>Корректность этой замены сразу видна из проверки размерностей. Пусть <code>W₁</code> имеет размер <code>h × n</code>, где <code>n</code> это число входных признаков, а <code>h</code> число нейронов в первом слое. Пусть <code>W₂</code> имеет размер <code>m × h</code>, где <code>m</code> число нейронов во втором слое. Тогда их произведение <code>W₂·W₁</code> имеет размер <code>m × n</code>, что ровно соответствует формату матрицы весов слоя, который принимает <code>n</code> входов и выдаёт <code>m</code> выходов. Размерности сходятся, поэтому замена всегда возможна.</p>
+<p>Теперь добавим между слоями распространённую нелинейную активацию ReLU. Промежуточное представление теперь считается как <code>h = ReLU(W₁·x + b₁)</code>, где <code>ReLU(z) = max(0, z)</code>. Раскрыть скобки в этом выражении больше нельзя: <code>ReLU(a + b)</code> в общем случае не равно <code>ReLU(a) + ReLU(b)</code>, а <code>ReLU(c·a)</code> не равно <code>c·ReLU(a)</code> при отрицательном <code>c</code>. Например, при <code>a = 1</code>, <code>b = -2</code>, <code>c = -1</code> левая часть выражения <code>ReLU(a + b)</code> равна <code>0</code>, а правая <code>ReLU(a) + ReLU(b)</code> равна <code>1</code>, значения не совпадают.</p>
+<p>Именно это разрушение линейности делает глубину нейронных сетей осмысленной. Каждый слой с нелинейной активацией добавляет изломы в решающую границу модели, из которых при достаточной глубине собирается сложная зависимость между входами и выходами. Без нелинейности, сколько бы линейных слоёв вы ни ставили подряд, вся сеть остаётся линейной моделью, её решающая граница это всегда одна гиперплоскость, как у обычной логистической регрессии.</p>
+        </div>
+      </details>
+
+      <h2 id="activations">Функции активации</h2>
+
+      <p>
+        Активация вносит точку перегиба в линейную сумму. Разных функций придумано много, но в практике живут четыре.
+      </p>
+
+      <figure>
+        <svg viewBox="0 0 700 250" role="img" aria-label="Графики функций активации ReLU, сигмоида, tanh, GELU">
+          <g>
+            <text x="90" y="20" class="s-t-b" text-anchor="middle">ReLU</text>
+            <line x1="20" y1="130" x2="160" y2="130" class="s-line-d"/>
+            <line x1="90" y1="50" x2="90" y2="200" class="s-line-d"/>
+            <path d="M25,130 L90,130 L155,62" class="s-line-a" stroke-width="2.5" fill="none"/>
+            <text x="90" y="222" class="s-t-s" text-anchor="middle">max(0, z)</text>
+            <text x="90" y="240" class="s-t-xs" text-anchor="middle">быстрая, стандарт по умолчанию</text>
+          </g>
+
+          <g>
+            <text x="255" y="20" class="s-t-b" text-anchor="middle">Сигмоида</text>
+            <line x1="185" y1="130" x2="325" y2="130" class="s-line-d"/>
+            <line x1="255" y1="50" x2="255" y2="200" class="s-line-d"/>
+            <path d="M190,172 C225,172 235,90 255,90 C275,90 285,88 320,88" class="s-line-a" stroke-width="2.5" fill="none"/>
+            <path d="M190,172 C230,172 240,92 255,90" class="s-line-a" stroke-width="2.5" fill="none"/>
+            <text x="255" y="222" class="s-t-s" text-anchor="middle">1 / (1 + e⁻ᶻ)</text>
+            <text x="255" y="240" class="s-t-xs" text-anchor="middle">даёт число от 0 до 1</text>
+          </g>
+
+          <g>
+            <text x="420" y="20" class="s-t-b" text-anchor="middle">tanh</text>
+            <line x1="350" y1="130" x2="490" y2="130" class="s-line-d"/>
+            <line x1="420" y1="50" x2="420" y2="200" class="s-line-d"/>
+            <path d="M355,190 C395,190 405,70 420,70 C435,70 445,70 485,70" class="s-line-a" stroke-width="2.5" fill="none"/>
+            <text x="420" y="222" class="s-t-s" text-anchor="middle">от −1 до 1</text>
+            <text x="420" y="240" class="s-t-xs" text-anchor="middle">центрирована в нуле</text>
+          </g>
+
+          <g>
+            <text x="585" y="20" class="s-t-b" text-anchor="middle">GELU</text>
+            <line x1="515" y1="130" x2="655" y2="130" class="s-line-d"/>
+            <line x1="585" y1="50" x2="585" y2="200" class="s-line-d"/>
+            <path d="M520,130 C555,130 565,140 585,130 C605,118 620,90 650,62" class="s-line-a" stroke-width="2.5" fill="none"/>
+            <text x="585" y="222" class="s-t-s" text-anchor="middle">гладкий вариант ReLU</text>
+            <text x="585" y="240" class="s-t-xs" text-anchor="middle">внутри трансформеров</text>
+          </g>
+        </svg>
+        <figcaption>
+        <b>Почему ReLU победила.</b> Сигмоида и tanh на краях почти горизонтальны, их производная там близка к нулю, и градиент по цепочке умирает. У ReLU производная равна единице на всей правой половине, поэтому градиент проходит сквозь десятки слоёв без затухания. Плюс она считается одним сравнением. GELU и её родственники SiLU и SwiGLU сглаживают излом в нуле и дают небольшой прирост качества в трансформерах.
+      </figcaption>
+      </figure>
+
+      <div class="callout warn">
+        <span class="ct">Грабли · мёртвые нейроны</span>
+        <p>
+        У <a class="term" href="app-a.html#t-relu" data-term="relu">ReLU</a> есть побочный эффект. Если веса нейрона сдвинулись так, что он выдаёт ноль на всех примерах обучающей выборки, его производная тоже всюду ноль, и градиент до него больше не доходит. Нейрон умер навсегда. Лечится уменьшением шага обучения или заменой на Leaky ReLU, которая на отрицательной стороне даёт небольшой наклон вместо нуля.
+      </p>
+      </div>
+
+      <h2 id="uat">Что говорит теорема об аппроксимации</h2>
+
+      <p>
+        Утверждение звучит впечатляюще: сеть с одним скрытым слоем и достаточным числом нейронов может приблизить любую непрерывную функцию с любой точностью. Формально это правда. Практически это почти бесполезно, и понимать почему важно.
+      </p>
+
+      <p>
+        Теорема ничего не говорит о том, сколько нейронов понадобится. Для сложной функции это число может быть астрономическим. Она не гарантирует, что обучение найдёт нужные веса: существование решения не означает, что градиентный спуск до него дойдёт. И она молчит о обобщении: приблизить функцию на обучающих точках не то же самое, что вести себя разумно на новых.
+      </p>
+
+      <div class="callout analogy">
+        <span class="ct">Аналогия</span>
+        <p>
+        Теорема утверждает примерно то же, что «любое число можно записать суммой единиц». Правда, но записывать миллион таким способом никто не станет. Глубина помогает записать то же самое компактно, как позиционная система счисления.
+      </p>
+      </div>
+
+      <h3 id="piecewise">Как ReLU-сеть строит кривую</h3>
+
+      <p>
+        Наглядно это выглядит так. Каждый нейрон с ReLU даёт ломаную из двух отрезков с изломом в своём месте. Складывая такие ломаные с разными весами, сеть собирает произвольную кусочно-линейную функцию. Чем больше нейронов, тем больше изломов, тем ближе результат к гладкой кривой.
+      </p>
+
+      <div class="demo">
+        <span class="dt">Попробуйте · собрать функцию из трёх нейронов</span>
+        <p style="font-family:var(--font-ui);font-size:.85rem;color:var(--ink-2);margin-bottom:.8rem">
+        Три нейрона с ReLU, у каждого свой вес на выходе. Сумма даёт ломаную линию, показанную синим. Меняйте веса и смотрите, как двигаются изломы. Это буквально то, что делает первый слой любой сети с ReLU.
+      </p>
+        <div class="row">
+          <label>вес нейрона 1: <span class="val" id="w1v">1.0</span>
+            <input type="range" id="w1" min="-30" max="30" value="10"></label>
+          <label>вес нейрона 2: <span class="val" id="w2v">-1.5</span>
+            <input type="range" id="w2" min="-30" max="30" value="-15"></label>
+          <label>вес нейрона 3: <span class="val" id="w3v">2.0</span>
+            <input type="range" id="w3" min="-30" max="30" value="20"></label>
+        </div>
+        <svg id="relu-svg" viewBox="0 0 620 220" style="max-width:620px;margin:.5rem auto 0;display:block">
+          <line x1="30" y1="120" x2="600" y2="120" class="s-line-d"/>
+          <line x1="30" y1="15" x2="30" y2="205" class="s-line-d"/>
+          <path id="relu-1" class="s-line" stroke-dasharray="4 3" fill="none"/>
+          <path id="relu-2" class="s-line" stroke-dasharray="4 3" fill="none"/>
+          <path id="relu-3" class="s-line" stroke-dasharray="4 3" fill="none"/>
+          <path id="relu-sum" class="s-line-a" stroke-width="2.5" fill="none"/>
+          <text x="596" y="138" class="s-t-xs" text-anchor="end">вход x</text>
+        </svg>
+        <div class="out" id="relu-out" style="text-align:center"></div>
+      </div>
+
+      <h2 id="depth">Глубина против ширины</h2>
+
+      <p>
+        Зачем нужны десятки слоёв, если один теоретически может всё? Потому что глубина экономит параметры. Глубокая сеть переиспользует представления, созданные предыдущими слоями, и число изломов, которое она способна создать, растёт с числом слоёв быстрее, чем линейно.
+      </p>
+
+      <p>
+        Есть и содержательная причина. Слои учат представления разной степени абстракции. В сети распознавания изображений первые слои реагируют на края и градиенты, средние, на текстуры и части объектов, последние, на объекты целиком. В языковой модели ранние слои занимаются грамматикой и морфологией, поздние, смыслом и логикой. Никто не задаёт это руками. Такое разделение возникает при обучении само, и на этом наблюдении держится вся интерпретируемость.
+      </p>
+
+      <figure>
+        <svg viewBox="0 0 700 240" role="img" aria-label="Многослойная сеть с ростом абстракции от слоя к слою">
+          <defs>
+            <marker id="d-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 z" class="s-fill-3"/>
+            </marker>
+          </defs>
+
+          <g>
+            <circle cx="60" cy="60" r="13" class="s-box"/>
+            <circle cx="60" cy="110" r="13" class="s-box"/>
+            <circle cx="60" cy="160" r="13" class="s-box"/>
+            <text x="60" y="200" class="s-t-s" text-anchor="middle">вход</text>
+            <text x="60" y="216" class="s-t-xs" text-anchor="middle">пиксели, токены</text>
+          </g>
+
+          <g>
+            <circle cx="200" cy="45" r="13" class="s-box-a"/>
+            <circle cx="200" cy="90" r="13" class="s-box-a"/>
+            <circle cx="200" cy="135" r="13" class="s-box-a"/>
+            <circle cx="200" cy="180" r="13" class="s-box-a"/>
+            <text x="200" y="216" class="s-t-xs" text-anchor="middle">края, морфемы</text>
+          </g>
+
+          <g>
+            <circle cx="340" cy="45" r="13" class="s-box-a"/>
+            <circle cx="340" cy="90" r="13" class="s-box-a"/>
+            <circle cx="340" cy="135" r="13" class="s-box-a"/>
+            <circle cx="340" cy="180" r="13" class="s-box-a"/>
+            <text x="340" y="216" class="s-t-xs" text-anchor="middle">части, фразы</text>
+          </g>
+
+          <g>
+            <circle cx="480" cy="70" r="13" class="s-box-v"/>
+            <circle cx="480" cy="115" r="13" class="s-box-v"/>
+            <circle cx="480" cy="160" r="13" class="s-box-v"/>
+            <text x="480" y="216" class="s-t-xs" text-anchor="middle">объекты, смысл</text>
+          </g>
+
+          <g>
+            <circle cx="610" cy="115" r="16" class="s-box-g"/>
+            <text x="610" y="200" class="s-t-s" text-anchor="middle">выход</text>
+            <text x="610" y="216" class="s-t-xs" text-anchor="middle">ответ</text>
+          </g>
+
+          <g class="s-line" opacity="0.35">
+            <line x1="73" y1="60" x2="187" y2="45" marker-end="url(#d-arr)"/>
+            <line x1="73" y1="60" x2="187" y2="135" marker-end="url(#d-arr)"/>
+            <line x1="73" y1="110" x2="187" y2="90" marker-end="url(#d-arr)"/>
+            <line x1="73" y1="160" x2="187" y2="180" marker-end="url(#d-arr)"/>
+            <line x1="213" y1="45" x2="327" y2="90" marker-end="url(#d-arr)"/>
+            <line x1="213" y1="90" x2="327" y2="45" marker-end="url(#d-arr)"/>
+            <line x1="213" y1="135" x2="327" y2="135" marker-end="url(#d-arr)"/>
+            <line x1="213" y1="180" x2="327" y2="180" marker-end="url(#d-arr)"/>
+            <line x1="353" y1="45" x2="467" y2="70" marker-end="url(#d-arr)"/>
+            <line x1="353" y1="90" x2="467" y2="115" marker-end="url(#d-arr)"/>
+            <line x1="353" y1="180" x2="467" y2="160" marker-end="url(#d-arr)"/>
+            <line x1="493" y1="70" x2="594" y2="112" marker-end="url(#d-arr)"/>
+            <line x1="493" y1="115" x2="594" y2="115" marker-end="url(#d-arr)"/>
+            <line x1="493" y1="160" x2="594" y2="120" marker-end="url(#d-arr)"/>
+          </g>
+
+          <text x="350" y="20" class="s-t-b" text-anchor="middle">Абстракция растёт слева направо</text>
+        </svg>
+        <figcaption>
+          <b>Каждый слой это матрица весов и активация.</b> Сеть на картинке хранит примерно
+          сотню чисел. GPT-класса модель хранит их десятки миллиардов, но принцип
+          не отличается ничем, кроме одной детали из главы 8: там слои сначала решают,
+          на какие части входа смотреть, и только потом их складывают.
+        </figcaption>
+      </figure>
+
+      <div class="callout math">
+        <span class="ct">Слой целиком, одной строкой</span>
+        <div class="formula">
+          <span class="fx">h = φ(W·x + b)</span>
+          <span class="fnote">
+            W это матрица весов размера (выходов × входов), b вектор сдвигов, φ активация,
+            применяемая поэлементно. Сеть из трёх слоёв это
+            <code>y = W₃·φ(W₂·φ(W₁·x + b₁) + b₂) + b₃</code>. На последнем слое активацию
+            обычно не ставят: там либо сырое число для регрессии, либо логиты под softmax
+            для классификации.
+          </span>
+        </div>
+      </div>
+
+      <div class="callout practice">
+        <span class="ct">Сделайте руками · 50 минут · нужен Python</span>
+        <p>
+        Соберите прямой проход сети на чистом NumPy и убедитесь, что без активации глубина ничего не даёт.
+      </p>
+        <div class="code-label">python</div>
+        <pre><code>import numpy as np
+rng = np.random.default_rng(0)
+
+def relu(z):
+    return np.maximum(0.0, z)
+
+# XOR: четыре примера, два признака
+X = np.array([[0., 0.], [0., 1.], [1., 0.], [1., 1.]])
+y = np.array([0., 1., 1., 0.])
+
+# веса, подобранные вручную: два нейрона строят две границы
+W1 = np.array([[1., 1.],
+               [1., 1.]])
+b1 = np.array([0., -1.])
+W2 = np.array([[1., -2.]])
+b2 = np.array([0.])
+
+h = relu(X @ W1.T + b1)          # (4, 2)
+out = h @ W2.T + b2              # (4, 1)
+print(out.ravel())               # [0. 1. 1. 0.] = ровно XOR
+
+# а теперь то же самое без активации
+h_lin = X @ W1.T + b1
+print((h_lin @ W2.T + b2).ravel())   # линейно, XOR не получается</code></pre>
+        <p>
+          Задание. Разберитесь, что именно считает каждый из двух скрытых нейронов
+          на четырёх входах (напечатайте <code>h</code>). Затем поменяйте <code>b1</code>
+          на <code>[0., 0.]</code> и объясните, почему сеть сломалась. Потом соберите сеть
+          с тремя скрытыми нейронами со случайными весами и посмотрите, какую ломаную
+          она рисует на входе от −3 до 3.
+        </p>
+      </div>
+
+      <div class="sources">
+        <span class="ct">Где про это написано подробнее</span>
+        <ul>
+          <li><a href="http://neuralnetworksanddeeplearning.com/" target="_blank" rel="noopener">Michael Nielsen. Neural Networks and Deep Learning</a>. самое понятное введение в нейросети, бесплатно и с интерактивом</li>
+          <li><a href="https://udlbook.github.io/udlbook/" target="_blank" rel="noopener">Understanding Deep Learning, главы 3 и 4</a>. неглубокие и глубокие сети, что даёт глубина</li>
+          <li><a href="https://www.deeplearningbook.org/" target="_blank" rel="noopener">Goodfellow, Bengio, Courville. Deep Learning</a>. полная теория, читать выборочно</li>
+        </ul>
+      </div>
+
+      <div class="recap">
+        <h3>Коротко</h3>
+        <ol>
+          <li>Нейрон это взвешенная сумма плюс функция активации. Без активации любое число слоёв схлопывается в один, потому что произведение матриц это матрица.</li>
+          <li><a class="term" href="app-a.html#t-skrytyy-sloy" data-term="скрытый слой">Скрытый слой</a> строит новые признаки. В пространстве этих признаков задача, неразделимая прямой, становится разделимой.</li>
+          <li>
+        ReLU победила потому, что её производная равна единице на всей правой половине, и градиент не затухает при проходе сквозь слои.
+      </li>
+          <li><a class="term" href="app-a.html#t-teorema-ob-universalnoy-approksimacii" data-term="теорема об универсальной аппроксимации">Теорема об универсальной аппроксимации</a> говорит о существовании решения, но не о его размере, не о достижимости обучением и не об обобщении.</li>
+          <li>Глубина выгоднее ширины: слои переиспользуют представления предыдущих слоёв, и абстракция растёт от слоя к слою сама, без указаний.</li>
+        </ol>
+      </div>
+
+      <div class="quiz">
+        <h3>Проверьте себя</h3>
+        <p class="quiz-sub">Четыре вопроса.</p>
+
+        <div class="q">
+          <p class="qt">
+        Что произойдёт, если из десятислойной сети убрать все функции активации?
+      </p>
+          <label class="opt"><input type="radio" name="q1">Сеть станет учиться медленнее, но результат будет тот же</label>
+          <label class="opt" data-correct="1"><input type="radio" name="q1">Она станет эквивалентна однослойной линейной модели</label>
+          <label class="opt"><input type="radio" name="q1"><a class="term" href="app-a.html#t-gradient" data-term="градиент">Градиент</a> перестанет считаться</label>
+          <label class="opt"><input type="radio" name="q1">Сеть переобучится сильнее</label>
+          <div class="why">
+            Произведение матриц это матрица: W₁₀·…·W₁ схлопывается в одну эквивалентную
+            матрицу. Никакая глубина не добавит выразительности, если между слоями нет изгиба.
+          </div>
+        </div>
+
+        <div class="q">
+          <p class="qt">
+        Почему сигмоида плохо работает в глубоких сетях?
+      </p>
+          <label class="opt"><input type="radio" name="q2">Она слишком медленно вычисляется</label>
+          <label class="opt"><input type="radio" name="q2">Она даёт значения только от 0 до 1</label>
+          <label class="opt" data-correct="1"><input type="radio" name="q2">На краях её производная близка к нулю, и перемноженные вдоль цепочки градиенты затухают</label>
+          <label class="opt"><input type="radio" name="q2">Она не дифференцируема в нуле</label>
+          <div class="why">
+            Максимум производной сигмоиды равен 0.25. Даже в лучшем случае градиент за десять
+            слоёв уменьшится в миллион раз. Скорость вычисления тоже играет роль, но она вторична.
+          </div>
+        </div>
+
+        <div class="q">
+          <p class="qt">
+        Теорема об универсальной аппроксимации доказана. Значит ли это, что достаточно одного скрытого слоя?
+      </p>
+          <label class="opt"><input type="radio" name="q3">Да, глубина нужна только для скорости</label>
+          <label class="opt" data-correct="1"><input type="radio" name="q3">Нет: теорема не ограничивает нужное число нейронов и ничего не говорит о том, найдёт ли обучение эти веса</label>
+          <label class="opt"><input type="radio" name="q3">Да, но только для непрерывных функций</label>
+          <label class="opt"><input type="radio" name="q3">Нет, потому что теорема неверна для ReLU</label>
+          <div class="why">
+            Теорема утверждает существование, а не достижимость и не компактность.
+            Глубокая сеть выражает те же функции экспоненциально меньшим числом параметров
+            и, что важнее, обучается до них градиентным спуском.
+          </div>
+        </div>
+
+        <div class="q">
+          <p class="qt">
+        4. Нейрон с функцией активации ReLU перестал обучаться и выдает только нули. Разберем возможные причины.
+      </p>
+          <label class="opt"><input type="radio" name="q4">Переполнение при вычислении экспоненты</label>
+          <label class="opt" data-correct="1"><input type="radio" name="q4">Нейрон «умер»: на всех примерах его сумма отрицательна, значит производная всюду ноль и градиент до него не доходит</label>
+          <label class="opt"><input type="radio" name="q4">У него слишком маленькая скорость обучения</label>
+          <label class="opt"><input type="radio" name="q4">Так и должно быть, это регуляризация</label>
+          <div class="why">
+            Слишком большой шаг обучения может утащить веса в область, где нейрон выключен
+            на всей выборке. Оттуда он не вернётся, потому что градиент ReLU слева равен нулю.
+            Лечится меньшим шагом или Leaky ReLU с ненулевым наклоном слева.
+          </div>
+        </div>
+
+        <div class="quiz-actions">
+          <button class="btn ghost quiz-reset">Пройти заново</button>
+          <span class="quiz-score"></span>
+        </div>
+      </div>
+
+      <button class="mark-read" id="mark-read">Отметить главу как пройденную</button>
+      <nav class="chapter-nav" id="chapter-nav"></nav>
+
+    </article>
+  </main>
+
+  <aside class="on-page" id="on-page"></aside>
+</div>
+
+<div id="tooltip"></div>
+
+<script src="assets/toc.js"></script>
+<script src="assets/glossary.js"></script>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+<script>
+/* демо: сумма трёх ReLU */
+(function () {
+  var ids = ["w1", "w2", "w3"];
+  var els = ids.map(function (i) { return document.getElementById(i); });
+  if (!els[0]) return;
+  // три нейрона: наклон и точка излома
+  var neurons = [
+    { k: 1.0, shift: -2.0 },
+    { k: 1.0, shift: 0.2 },
+    { k: 1.0, shift: 1.6 },
+  ];
+  var X0 = 30, X1 = 600, Y0 = 120, SX = (X1 - X0) / 8, SY = 26;
+
+  function path(fn) {
+    var d = "";
+    for (var i = 0; i <= 160; i++) {
+      var x = -4 + (i / 160) * 8;
+      var y = fn(x);
+      var px = X0 + (x + 4) * SX;
+      var py = Math.max(12, Math.min(208, Y0 - y * SY));
+      d += (i ? "L" : "M") + px.toFixed(1) + "," + py.toFixed(1) + " ";
+    }
+    return d;
+  }
+
+  function draw() {
+    var w = els.map(function (e) { return +e.value / 10; });
+    w.forEach(function (v, i) {
+      document.getElementById("w" + (i + 1) + "v").textContent = v.toFixed(1);
+    });
+    neurons.forEach(function (n, i) {
+      document.getElementById("relu-" + (i + 1)).setAttribute(
+        "d", path(function (x) { return w[i] * Math.max(0, n.k * (x - n.shift)); })
+      );
+    });
+    document.getElementById("relu-sum").setAttribute(
+      "d",
+      path(function (x) {
+        return neurons.reduce(function (acc, n, i) {
+          return acc + w[i] * Math.max(0, n.k * (x - n.shift));
+        }, 0);
+      })
+    );
+    document.getElementById("relu-out").innerHTML =
+      "изломы в точках x = −2.0, 0.2, 1.6 &nbsp;·&nbsp; отрезков в ломаной: 4" +
+      "<br><span style='color:var(--ink-3)'>n нейронов дают до n+1 отрезков; " +
+      "чтобы получить гладкую кривую, нужны сотни</span>";
+  }
+  els.forEach(function (e) { e.addEventListener("input", draw); });
+  draw();
+})();
+</script>
+</body>
+</html>

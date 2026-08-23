@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>проба демо свёртки</title>
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<main style="padding:2rem;max-width:44rem;margin:0 auto">
+
+<div class="demo">
+  <span class="dt">Попробуйте · свёртка вручную</span>
+  <p style="font-family:var(--font-ui);font-size:.85rem;color:var(--ink-2);margin-bottom:.8rem">
+    Слева картинка 12 на 12, справа карта откликов. Кликните по любой клетке слева, чтобы поставить туда окно ядра и увидеть, из чего складывается одно число справа.
+  </p>
+  <div class="row">
+    <label>Ядро
+      <select id="cv-k">
+        <option value="edge-x">вертикальные границы, Собель по x</option>
+        <option value="edge-y">горизонтальные границы, Собель по y</option>
+        <option value="blur">размытие</option>
+        <option value="sharp">резкость</option>
+      </select>
+    </label>
+    <label>Шаг <span class="val" id="cv-s-v">1</span>
+      <input type="range" id="cv-s" min="1" max="3" step="1" value="1">
+    </label>
+  </div>
+  <label style="margin-top:.4rem">Дополнение нулями по краю <span class="val" id="cv-p-v">0</span>
+    <input type="range" id="cv-p" min="0" max="2" step="1" value="0">
+  </label>
+  <div style="display:flex;gap:1rem;flex-wrap:wrap;margin:.9rem 0">
+    <div><div style="font-family:var(--font-ui);font-size:.72rem;color:var(--ink-3);margin-bottom:.3rem">вход</div><div id="cv-in"></div></div>
+    <div><div style="font-family:var(--font-ui);font-size:.72rem;color:var(--ink-3);margin-bottom:.3rem">ядро</div><div id="cv-ker"></div></div>
+    <div><div style="font-family:var(--font-ui);font-size:.72rem;color:var(--ink-3);margin-bottom:.3rem">карта откликов</div><div id="cv-out-grid"></div></div>
+  </div>
+  <div class="out" id="cv-out"></div>
+</div>
+
+</main>
+<script>
+/* демо: свёртка, шаг, дополнение и размер выхода */
+(function () {
+  var inHost = document.getElementById("cv-in");
+  if (!inHost) return;
+  var kerHost = document.getElementById("cv-ker"), outHost = document.getElementById("cv-out-grid");
+  var out = document.getElementById("cv-out");
+  var elK = document.getElementById("cv-k"), elS = document.getElementById("cv-s"), elP = document.getElementById("cv-p");
+  var N = 12, K = 3, pos = { y: 4, x: 3 };
+
+  var kernels = {
+    "edge-x": { m: [[1, 0, -1], [2, 0, -2], [1, 0, -1]], name: "Собель по x" },
+    "edge-y": { m: [[1, 2, 1], [0, 0, 0], [-1, -2, -1]], name: "Собель по y" },
+    "blur": { m: [[1 / 9, 1 / 9, 1 / 9], [1 / 9, 1 / 9, 1 / 9], [1 / 9, 1 / 9, 1 / 9]], name: "размытие" },
+    "sharp": { m: [[0, -1, 0], [-1, 5, -1], [0, -1, 0]], name: "резкость" },
+  };
+
+  // картинка: светлый прямоугольник на тёмном фоне, есть и вертикальные, и горизонтальные границы
+  var img = [];
+  for (var y = 0; y < N; y++) {
+    img.push([]);
+    for (var x = 0; x < N; x++) {
+      var inside = x >= 3 && x <= 8 && y >= 2 && y <= 7;
+      var stripe = x === 10;
+      img[y].push(inside ? 1 : stripe ? 0.7 : 0.05);
+    }
+  }
+
+  function padded(p) {
+    var M = N + 2 * p, g = [];
+    for (var y = 0; y < M; y++) {
+      g.push([]);
+      for (var x = 0; x < M; x++) {
+        var yy = y - p, xx = x - p;
+        g[y].push(yy >= 0 && yy < N && xx >= 0 && xx < N ? img[yy][xx] : 0);
+      }
+    }
+    return g;
+  }
+
+  function grid(vals, cell, klass, lo, hi) {
+    var html = '<table style="border-collapse:separate;border-spacing:1px">';
+    for (var y = 0; y < vals.length; y++) {
+      html += "<tr>";
+      for (var x = 0; x < vals[y].length; x++) {
+        html += cell(y, x, vals[y][x], lo, hi);
+      }
+      html += "</tr>";
+    }
+    return html + "</table>";
+  }
+
+  function shade(v, lo, hi) {
+    var t = Math.max(0, Math.min(1, (v - lo) / (hi - lo)));
+    var g = Math.round(255 - t * 205);
+    return "rgb(" + g + "," + g + "," + g + ")";
+  }
+
+  function draw() {
+    var p = +elP.value, s = +elS.value;
+    var g = padded(p), M = g.length;
+    var outN = Math.floor((M - K) / s) + 1;
+    var ker = kernels[elK.value].m;
+
+    var res = [];
+    for (var oy = 0; oy < outN; oy++) {
+      res.push([]);
+      for (var ox = 0; ox < outN; ox++) {
+        var acc = 0;
+        for (var ky = 0; ky < K; ky++) for (var kx = 0; kx < K; kx++) acc += g[oy * s + ky][ox * s + kx] * ker[ky][kx];
+        res[oy].push(acc);
+      }
+    }
+    var flat = res.flat(), lo = Math.min.apply(null, flat), hi = Math.max.apply(null, flat);
+
+    pos.y = Math.min(pos.y, outN - 1); pos.x = Math.min(pos.x, outN - 1);
+
+    inHost.innerHTML = grid(g, function (y, x, v) {
+      var inWin = y >= pos.y * s && y < pos.y * s + K && x >= pos.x * s && x < pos.x * s + K;
+      return '<td data-y="' + y + '" data-x="' + x + '" style="width:15px;height:15px;cursor:pointer;background:' +
+        shade(v, 0, 1) + ";outline:" + (inWin ? "1.5px solid var(--accent)" : "none") + '"></td>';
+    });
+    kerHost.innerHTML = grid(ker, function (y, x, v) {
+      return '<td style="width:30px;height:22px;text-align:center;font-family:var(--font-mono);font-size:.68rem;' +
+        'border:1px solid var(--line);color:var(--ink-2)">' + (Math.abs(v - 1 / 9) < 1e-9 ? "1/9" : v) + "</td>";
+    });
+    outHost.innerHTML = grid(res, function (y, x, v, l, h) {
+      var here = y === pos.y && x === pos.x;
+      return '<td style="width:15px;height:15px;background:' + shade(v, l, h) +
+        ";outline:" + (here ? "1.5px solid var(--accent)" : "none") + '"></td>';
+    }, lo, hi);
+
+    var terms = [];
+    for (var ky2 = 0; ky2 < K; ky2++) for (var kx2 = 0; kx2 < K; kx2++) {
+      var a = g[pos.y * s + ky2][pos.x * s + kx2], b = ker[ky2][kx2];
+      if (Math.abs(b) > 1e-9 && Math.abs(a) > 1e-9) terms.push(a.toFixed(2) + "·" + (Math.abs(b - 1 / 9) < 1e-9 ? "0.11" : b));
+    }
+    out.innerHTML =
+      "Окно стоит в позиции (" + pos.y + ", " + pos.x + "). Одно число справа это сумма произведений:<br><code>" +
+      (terms.join(" + ") || "все слагаемые нулевые") + " = " + res[pos.y][pos.x].toFixed(2) + "</code><br>" +
+      '<div style="margin-top:.5rem">Размер выхода считается по формуле <code>(n + 2p - k)/s + 1 = (' + N +
+      " + 2·" + p + " - " + K + ")/" + s + " + 1 = " + outN + "</code>." +
+      (p === 0 ? " Без дополнения картинка на выходе меньше входа, и края теряются." : " Дополнение нулями возвращает краям право быть центром окна.") +
+      (s > 1 ? " Шаг больше единицы прореживает выход и уменьшает его в " + s + " раза." : "") + "</div>" +
+      '<div style="margin-top:.4rem;color:var(--ink-3)">Ядро «' + kernels[elK.value].name +
+      '» одно и то же для всех позиций. В этом и состоит разделение весов: девять чисел обслуживают всю картинку, тогда как полносвязный слой держал бы своё число на каждый пиксель.</div>';
+  }
+
+  inHost.addEventListener("click", function (e) {
+    var td = e.target.closest("[data-y]");
+    if (!td) return;
+    var s = +elS.value, p = +elP.value, M = N + 2 * p;
+    var outN = Math.floor((M - K) / s) + 1;
+    pos.y = Math.max(0, Math.min(outN - 1, Math.floor(+td.getAttribute("data-y") / s)));
+    pos.x = Math.max(0, Math.min(outN - 1, Math.floor(+td.getAttribute("data-x") / s)));
+    draw();
+  });
+  [elK, elS, elP].forEach(function (el) {
+    el.addEventListener("input", function () {
+      document.getElementById("cv-s-v").textContent = elS.value;
+      document.getElementById("cv-p-v").textContent = elP.value;
+      draw();
+    });
+  });
+  draw();
+})();
+</script>
+</body>
+</html>

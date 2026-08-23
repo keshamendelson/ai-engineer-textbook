@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>проба демо MoE</title>
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<main style="padding:2rem;max-width:44rem;margin:0 auto">
+
+<div class="demo">
+  <span class="dt">Попробуйте · маршрутизация токенов по экспертам</span>
+  <p style="font-family:var(--font-ui);font-size:.85rem;color:var(--ink-2);margin-bottom:.8rem">
+    Слой из восьми экспертов и партия из 32 токенов. Маршрутизатор выбирает каждому токену несколько экспертов. Смотрите, что происходит с загрузкой, когда балансировки нет и когда ёмкость эксперта ограничена.
+  </p>
+  <div class="row">
+    <label>Экспертов на токен <span class="val" id="moe-k-v">2</span>
+      <input type="range" id="moe-k" min="1" max="4" step="1" value="2">
+    </label>
+    <label>Ёмкость эксперта <span class="val" id="moe-c-v">1.25</span>
+      <input type="range" id="moe-c" min="100" max="250" step="5" value="125">
+    </label>
+  </div>
+  <label style="margin-top:.4rem">Вспомогательная потеря на балансировку
+    <select id="moe-bal">
+      <option value="on">включена, маршрутизатор старается делить поровну</option>
+      <option value="off">выключена, маршрутизатор выбирает любимых экспертов</option>
+    </select>
+  </label>
+  <div id="moe-bars" style="margin:.9rem 0"></div>
+  <div class="out" id="moe-out"></div>
+</div>
+
+</main>
+<script>
+/* демо: маршрутизация в смеси экспертов, перекос нагрузки и ограничение ёмкости */
+(function () {
+  var host = document.getElementById("moe-bars");
+  if (!host) return;
+  var out = document.getElementById("moe-out");
+  var elK = document.getElementById("moe-k"), elC = document.getElementById("moe-c");
+  var elBal = document.getElementById("moe-bal");
+  var E = 8, T = 32;
+
+  function rnd(seed) {
+    return function () { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
+  }
+
+  // оценки маршрутизатора: при выключенной балансировке два эксперта получают
+  // систематический перевес, как это и происходит без вспомогательной потери
+  function scores(balanced) {
+    var r = rnd(11), rows = [];
+    for (var t = 0; t < T; t++) {
+      var row = [];
+      for (var e = 0; e < E; e++) {
+        var s = r();
+        if (!balanced) s += (e === 2 ? 0.55 : e === 5 ? 0.4 : 0);
+        row.push(s);
+      }
+      rows.push(row);
+    }
+    return rows;
+  }
+
+  function draw() {
+    var k = +elK.value, capFactor = +elC.value / 100;
+    var balanced = elBal.value === "on";
+    document.getElementById("moe-k-v").textContent = k;
+    document.getElementById("moe-c-v").textContent = capFactor.toFixed(2);
+
+    var cap = Math.floor(capFactor * T * k / E);
+    var rows = scores(balanced);
+    var load = new Array(E).fill(0), dropped = 0;
+
+    for (var t = 0; t < T; t++) {
+      var order = rows[t].map(function (s, e) { return { s: s, e: e }; })
+        .sort(function (a, b) { return b.s - a.s; }).slice(0, k);
+      for (var i = 0; i < order.length; i++) {
+        var e = order[i].e;
+        if (load[e] < cap) load[e]++;
+        else dropped++;
+      }
+    }
+
+    var max = Math.max.apply(null, load) || 1;
+    host.innerHTML = load.map(function (n, e) {
+      var over = n >= cap;
+      return '<div class="bar-row"><span class="bl" style="flex:0 0 6rem;text-align:left">эксперт ' +
+        (e + 1) + '</span><span class="bb"><i style="width:' + (n / max * 100).toFixed(0) +
+        "%;background:var(" + (over ? "--warn" : "--accent") + ')"></i></span><span class="bv">' +
+        n + "</span></div>";
+    }).join("");
+
+    var total = load.reduce(function (a, b) { return a + b; }, 0);
+    var mean = total / E;
+    var imbalance = max / (mean || 1);
+    var active = (k / E * 100).toFixed(0);
+
+    out.innerHTML =
+      "На каждый токен работает " + k + " эксперта из " + E + ", то есть активны около <b>" +
+      active + " процентов</b> параметров экспертов. Общее число параметров при этом остаётся прежним, " +
+      "память под них нужна вся.<br>" +
+      "Ёмкость одного эксперта " + cap + " токенов, обработано " + total + " назначений из " +
+      (T * k) + ", отброшено " + dropped + ".<br>" +
+      '<div style="margin-top:.5rem;color:var(--ink-3)">Перекос нагрузки, отношение максимума к среднему, равен ' +
+      imbalance.toFixed(2) + ". " +
+      (balanced
+        ? "Со вспомогательной потерей маршрутизатор держит загрузку ровной, и отбрасывать почти нечего."
+        : "Без вспомогательной потери маршрутизатор облюбовал пару экспертов. Их ёмкость кончается, лишние токены проходят слой без обработки, и качество падает именно на них.") +
+      (dropped > 0 && capFactor < 1.5
+        ? " Поднимите ёмкость, и отброшенных станет меньше, но память под буферы вырастет."
+        : "") + "</div>";
+  }
+
+  [elK, elC].forEach(function (e) { e.addEventListener("input", draw); });
+  elBal.addEventListener("change", draw);
+  draw();
+})();
+</script>
+</body>
+</html>

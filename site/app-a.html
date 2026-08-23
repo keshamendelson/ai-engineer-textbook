@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Приложение A. Глоссарий · AI-инженер с нуля</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <button class="icon-btn" id="menu-toggle" aria-label="Меню">☰</button>
+  <a class="brand" href="index.html">AI-инженер <span>с нуля</span></a>
+  <div class="spacer"></div>
+  <div class="search-wrap">
+    <input id="search-input" type="search" placeholder="Поиск   ⌘K" autocomplete="off">
+    <div id="search-results"></div>
+  </div>
+  <button class="icon-btn" id="theme-toggle">Тёмная</button>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar"></nav>
+
+  <main>
+    <article>
+
+      <header class="chapter-head">
+        <div class="kicker">Приложения · A</div>
+        <h1>Глоссарий</h1>
+        <p class="standfirst">
+          288 терминов с русским и английским названием. Английское написание пригодится,
+          когда придётся читать документацию и статьи, а они почти всегда на английском.
+          Рядом с каждым термином указана глава, где он вводится.
+        </p>
+        <div class="chapter-meta">
+          <span>Справочник</span>
+          <span>Наведите на подчёркнутый термин в любой главе, увидите определение</span>
+        </div>
+      </header>
+
+      <p style="font-family:var(--font-ui);font-size:.9rem;line-height:2"><a href="#l-A">A</a> · <a href="#l-B">B</a> · <a href="#l-C">C</a> · <a href="#l-D">D</a> · <a href="#l-F">F</a> · <a href="#l-G">G</a> · <a href="#l-H">H</a> · <a href="#l-K">K</a> · <a href="#l-L">L</a> · <a href="#l-M">M</a> · <a href="#l-N">N</a> · <a href="#l-P">P</a> · <a href="#l-Q">Q</a> · <a href="#l-R">R</a> · <a href="#l-S">S</a> · <a href="#l-T">T</a> · <a href="#l-U">U</a> · <a href="#l-V">V</a> · <a href="#l-W">W</a> · <a href="#l-Z">Z</a> · <a href="#l-Ё">Ё</a> · <a href="#l-А">А</a> · <a href="#l-Б">Б</a> · <a href="#l-В">В</a> · <a href="#l-Г">Г</a> · <a href="#l-Д">Д</a> · <a href="#l-З">З</a> · <a href="#l-И">И</a> · <a href="#l-К">К</a> · <a href="#l-Л">Л</a> · <a href="#l-М">М</a> · <a href="#l-Н">Н</a> · <a href="#l-О">О</a> · <a href="#l-П">П</a> · <a href="#l-Р">Р</a> · <a href="#l-С">С</a> · <a href="#l-Т">Т</a> · <a href="#l-У">У</a> · <a href="#l-Ф">Ф</a> · <a href="#l-Ц">Ц</a> · <a href="#l-Ч">Ч</a> · <a href="#l-Ш">Ш</a> · <a href="#l-Э">Э</a> · <a href="#l-Я">Я</a></p>
+
+<h2 id="l-A">A</h2>
+<dl>
+<div class="gloss-item" id="t-adam"><dt>Adam <span class="en">Adam</span></dt><dd>Оптимизатор с импульсом и своим размером шага для каждого параметра. Хранит два числа на параметр.<span class="where">Вводится в главе <a href="ch04.html">4</a></span></dd></div>
+<div class="gloss-item" id="t-adamw"><dt>AdamW <span class="en">AdamW</span></dt><dd>Adam с корректно реализованным затуханием весов. Стандарт для трансформеров.<span class="where">Вводится в главе <a href="ch04.html">4</a></span></dd></div>
+</dl>
+<h2 id="l-B">B</h2>
+<dl>
+<div class="gloss-item" id="t-bio-shema"><dt>BIO-схема <span class="en">BIO tagging</span></dt><dd>Способ закодировать сущности из нескольких слов метками по токенам: B начало сущности, I продолжение, O вне сущности.<span class="where">Вводится в главе <a href="ch20.html">20</a></span></dd></div>
+<div class="gloss-item" id="t-bm25"><dt>BM25 <span class="en">BM25</span></dt><dd>Функция ранжирования по словам с учётом частоты, редкости слова и длины документа.<span class="where">Вводится в главе <a href="ch12.html">12</a></span></dd></div>
+<div class="gloss-item" id="t-bpe"><dt>BPE <span class="en">byte pair encoding</span></dt><dd>Алгоритм построения словаря: многократное склеивание самой частой пары соседних элементов.<span class="where">Вводится в главе <a href="ch06.html">6</a></span></dd></div>
+</dl>
+<h2 id="l-C">C</h2>
+<dl>
+<div class="gloss-item" id="t-clip"><dt>CLIP <span class="en">CLIP</span></dt><dd>Модель из двух башен, картиночной и текстовой, обученная контрастно на парах картинка и подпись. Даёт общее пространство эмбеддингов.<span class="where">Вводится в главе <a href="ch30.html">30</a></span></dd></div>
+<div class="gloss-item" id="t-ctc"><dt>CTC <span class="en">connectionist temporal classification</span></dt><dd>Способ учить модель без разметки границ: сеть выдаёт метку на каждый кадр, повторы схлопываются, пустые знаки удаляются.<span class="where">Вводится в главе <a href="ch25.html">25</a></span></dd></div>
+</dl>
+<h2 id="l-D">D</h2>
+<dl>
+<div class="gloss-item" id="t-dpo"><dt>DPO <span class="en">direct preference optimization</span></dt><dd>Выравнивание одной функцией потерь без модели награды и без обучения с подкреплением.<span class="where">Вводится в главе <a href="ch10.html">10</a></span></dd></div>
+<div class="gloss-item" id="t-dropout"><dt>Dropout <span class="en">dropout</span></dt><dd>Случайное отключение части нейронов при обучении. Мешает модели полагаться на отдельный нейрон.<span class="where">Вводится в главе <a href="ch05.html">5</a></span></dd></div>
+</dl>
+<h2 id="l-F">F</h2>
+<dl>
+<div class="gloss-item" id="t-flashattention"><dt>FlashAttention <span class="en">FlashAttention</span></dt><dd>Реализация внимания, не хранящая матрицу целиком и считающая её кусками в быстрой памяти видеокарты.<span class="where">Вводится в главе <a href="ch08.html">8</a></span></dd></div>
+</dl>
+<h2 id="l-G">G</h2>
+<dl>
+<div class="gloss-item" id="t-gqa"><dt>GQA <span class="en">grouped-query attention</span></dt><dd>Общие ключи и значения для группы голов. Сокращает KV-кеш в несколько раз почти без потери качества.<span class="where">Вводится в главе <a href="ch08.html">8</a></span></dd></div>
+<div class="gloss-item" id="t-gradient-checkpointing"><dt>Gradient checkpointing <span class="en">gradient checkpointing</span></dt><dd>Отказ от хранения части активаций ради экономии памяти ценой их пересчёта на обратном проходе.<span class="where">Вводится в главе <a href="ch04.html">4</a></span></dd></div>
+<div class="gloss-item" id="t-grpo"><dt>GRPO <span class="en">GRPO</span></dt><dd>Вариант обучения на группах ответов без отдельного критика. Применяется при дообучении языковых моделей.<span class="where">Вводится в главе <a href="ch37.html">37</a></span></dd></div>
+</dl>
+<h2 id="l-H">H</h2>
+<dl>
+<div class="gloss-item" id="t-hnsw"><dt>HNSW <span class="en">hierarchical navigable small world</span></dt><dd>Многоуровневый граф для приближённого поиска: спуск от редких длинных связей к плотным коротким.<span class="where">Вводится в главе <a href="ch12.html">12</a></span></dd></div>
+</dl>
+<h2 id="l-K">K</h2>
+<dl>
+<div class="gloss-item" id="t-kv-kesh"><dt>KV-кеш <span class="en">KV cache</span></dt><dd>Сохранённые ключи и значения прошлых токенов. Делает шаг генерации линейным вместо квадратичного ценой памяти.<span class="where">Вводится в главе <a href="ch08.html">8</a></span></dd></div>
+</dl>
+<h2 id="l-L">L</h2>
+<dl>
+<div class="gloss-item" id="t-las"><dt>LAS <span class="en">labeled attachment score</span></dt><dd>Доля слов, у которых правильно найдены и голова, и тип связи. Строже UAS.<span class="where">Вводится в главе <a href="ch21.html">21</a></span></dd></div>
+<div class="gloss-item" id="t-lora"><dt>LoRA <span class="en">low-rank adaptation</span></dt><dd>Обучение двух маленьких матриц, добавляемых к замороженной матрице весов. Сокращает память в сотни раз.<span class="where">Вводится в главе <a href="ch10.html">10</a></span></dd></div>
+</dl>
+<h2 id="l-M">M</h2>
+<dl>
+<div class="gloss-item" id="t-matryoshka"><dt>Matryoshka <span class="en">Matryoshka embeddings</span></dt><dd>Свойство модели, позволяющее обрезать вектор до первых N чисел с малой потерей качества.<span class="where">Вводится в главе <a href="ch07.html">7</a></span></dd></div>
+<div class="gloss-item" id="t-mcp"><dt>MCP <span class="en">model context protocol</span></dt><dd>Протокол подключения инструментов и источников данных к моделям единым способом.<span class="where">Вводится в главе <a href="ch14.html">14</a></span></dd></div>
+<div class="gloss-item" id="t-mfcc"><dt>MFCC <span class="en">MFCC</span></dt><dd>Мел-частотные кепстральные коэффициенты. Сжатое представление спектра, стандарт до нейросетевой эпохи.<span class="where">Вводится в главе <a href="ch24.html">24</a></span></dd></div>
+<div class="gloss-item" id="t-mos"><dt>MOS <span class="en">mean opinion score</span></dt><dd>Средняя оценка естественности синтеза по мнению слушателей, обычно по шкале от 1 до 5.<span class="where">Вводится в главе <a href="ch26.html">26</a></span></dd></div>
+<div class="gloss-item" id="t-mrr"><dt>MRR <span class="en">mean reciprocal rank</span></dt><dd>Средняя обратная позиция первого правильного результата.<span class="where">Вводится в главе <a href="ch12.html">12</a></span></dd></div>
+</dl>
+<h2 id="l-N">N</h2>
+<dl>
+<div class="gloss-item" id="t-n-grammnaya-model"><dt>N-граммная модель <span class="en">n-gram model</span></dt><dd>Оценка вероятности следующего слова по частотам в корпусе. Предшественник нейронных языковых моделей.<span class="where">Вводится в главе <a href="ch06.html">6</a></span></dd></div>
+<div class="gloss-item" id="t-ndcg-2"><dt>nDCG <span class="en">nDCG</span></dt><dd>Метрика ранжирования, учитывающая и степень релевантности, и позицию.<span class="where">Вводится в главе <a href="ch12.html">12</a></span></dd></div>
+<div class="gloss-item" id="t-ndcg-2"><dt>NDCG <span class="en">NDCG</span></dt><dd>Метрика ранжирования, которая учитывает и релевантность документа, и его позицию в выдаче.<span class="where">Вводится в главе <a href="ch40.html">40</a></span></dd></div>
+</dl>
+<h2 id="l-P">P</h2>
+<dl>
+<div class="gloss-item" id="t-pagedattention"><dt>PagedAttention <span class="en">PagedAttention</span></dt><dd>Страничная организация KV-кеша по образцу виртуальной памяти. Убирает фрагментацию.<span class="where">Вводится в главе <a href="ch42.html">42</a></span></dd></div>
+<div class="gloss-item" id="t-ppo"><dt>PPO <span class="en">PPO</span></dt><dd>Метод стратегии с обрезкой отношения вероятностей, чтобы шаг не уводил модель далеко.<span class="where">Вводится в главе <a href="ch37.html">37</a></span></dd></div>
+</dl>
+<h2 id="l-Q">Q</h2>
+<dl>
+<div class="gloss-item" id="t-q-obuchenie"><dt>Q-обучение <span class="en">Q-learning</span></dt><dd>Обновление оценки ценности пары состояние-действие по разности во времени, без модели среды.<span class="where">Вводится в главе <a href="ch36.html">36</a></span></dd></div>
+<div class="gloss-item" id="t-qlora"><dt>QLoRA <span class="en">QLoRA</span></dt><dd>LoRA поверх модели, хранимой в 4 битах. Позволяет дообучать 7 миллиардов параметров на одной потребительской видеокарте.<span class="where">Вводится в главе <a href="ch10.html">10</a></span></dd></div>
+</dl>
+<h2 id="l-R">R</h2>
+<dl>
+<div class="gloss-item" id="t-rag"><dt>RAG <span class="en">retrieval-augmented generation</span></dt><dd>Подстановка найденных фрагментов документов в контекст перед генерацией ответа.<span class="where">Вводится в главе <a href="ch13.html">13</a></span></dd></div>
+<div class="gloss-item" id="t-react"><dt>ReAct <span class="en">ReAct</span></dt><dd>Цикл чередования мысли, действия и наблюдения.<span class="where">Вводится в главе <a href="ch14.html">14</a></span></dd></div>
+<div class="gloss-item" id="t-recall-k"><dt>recall@k <span class="en">recall@k</span></dt><dd>Доля запросов, для которых нужный документ попал в первые k результатов.<span class="where">Вводится в главе <a href="ch12.html">12</a></span></dd></div>
+<div class="gloss-item" id="t-relu"><dt>ReLU <span class="en">ReLU</span></dt><dd>Функция max(0, z). Производная равна единице на положительной половине, поэтому градиент не затухает.<span class="where">Вводится в главе <a href="ch03.html">3</a></span></dd></div>
+<div class="gloss-item" id="t-rlhf"><dt>RLHF <span class="en">reinforcement learning from human feedback</span></dt><dd>Выравнивание через модель награды и обучение с подкреплением на человеческих предпочтениях.<span class="where">Вводится в главе <a href="ch10.html">10</a></span></dd></div>
+<div class="gloss-item" id="t-rope"><dt>RoPE <span class="en">rotary position embedding</span></dt><dd>Позиционная кодировка через поворот векторов запроса и ключа. Даёт зависимость только от разности позиций.<span class="where">Вводится в главе <a href="ch08.html">8</a></span></dd></div>
+<div class="gloss-item" id="t-rrf"><dt>RRF <span class="en">reciprocal rank fusion</span></dt><dd>Объединение списков по позициям, без приведения разнородных оценок к общей шкале.<span class="where">Вводится в главе <a href="ch12.html">12</a></span></dd></div>
+</dl>
+<h2 id="l-S">S</h2>
+<dl>
+<div class="gloss-item" id="t-softmax"><dt>Softmax <span class="en">softmax</span></dt><dd>Превращает произвольные числа в распределение вероятностей: экспонента каждого числа, делённая на сумму экспонент.<span class="where">Вводится в главе <a href="ch01.html">1</a></span></dd></div>
+<div class="gloss-item" id="t-span-f1"><dt>span-F1 <span class="en">span-F1</span></dt><dd>F1 по целым сущностям: засчитывается только полное совпадение типа и обеих границ. Строже точности по токенам.<span class="where">Вводится в главе <a href="ch20.html">20</a></span></dd></div>
+</dl>
+<h2 id="l-T">T</h2>
+<dl>
+<div class="gloss-item" id="t-top-k"><dt>top-k <span class="en">top-k sampling</span></dt><dd>Отбор k самых вероятных токенов. Число кандидатов фиксировано независимо от ситуации.<span class="where">Вводится в главе <a href="ch09.html">9</a></span></dd></div>
+<div class="gloss-item" id="t-top-p"><dt>top-p <span class="en">nucleus sampling</span></dt><dd>Отбор минимального набора токенов с накопленной вероятностью p. Подстраивается под уверенность модели.<span class="where">Вводится в главе <a href="ch09.html">9</a></span></dd></div>
+</dl>
+<h2 id="l-U">U</h2>
+<dl>
+<div class="gloss-item" id="t-uas"><dt>UAS <span class="en">unlabeled attachment score</span></dt><dd>Доля слов, у которых правильно найдена голова, без учёта типа связи.<span class="where">Вводится в главе <a href="ch21.html">21</a></span></dd></div>
+<div class="gloss-item" id="t-universal-dependencies"><dt>Universal Dependencies <span class="en">Universal Dependencies</span></dt><dd>Единый набор частей речи и типов зависимостей для сотни языков, включая русский.<span class="where">Вводится в главе <a href="ch21.html">21</a></span></dd></div>
+</dl>
+<h2 id="l-V">V</h2>
+<dl>
+<div class="gloss-item" id="t-vision-transformer"><dt>Vision Transformer <span class="en">Vision Transformer</span></dt><dd>Трансформер, который работает с картинкой как с последовательностью патчей.<span class="where">Вводится в главе <a href="ch30.html">30</a></span></dd></div>
+</dl>
+<h2 id="l-W">W</h2>
+<dl>
+<div class="gloss-item" id="t-wer"><dt>WER <span class="en">word error rate</span></dt><dd>Доля ошибочных слов: вставки, удаления и замены, делённые на число слов эталона. Может превышать единицу.<span class="where">Вводится в главе <a href="ch25.html">25</a></span></dd></div>
+<div class="gloss-item" id="t-word2vec"><dt>word2vec <span class="en">word2vec</span></dt><dd>Метод получения векторов слов через обучение сети предсказывать соседей.<span class="where">Вводится в главе <a href="ch07.html">7</a></span></dd></div>
+</dl>
+<h2 id="l-Z">Z</h2>
+<dl>
+<div class="gloss-item" id="t-zero"><dt>ZeRO <span class="en">ZeRO</span></dt><dd>Разделение состояний оптимизатора, градиентов и весов между картами вместо их дублирования.<span class="where">Вводится в главе <a href="ch43.html">43</a></span></dd></div>
+</dl>
+<h2 id="l-Ё">Ё</h2>
+<dl>
+<div class="gloss-item" id="t-emkost-eksperta"><dt>Ёмкость эксперта <span class="en">expert capacity</span></dt><dd>Предел числа токенов на эксперта за проход. Лишние токены проходят слой без обработки.<span class="where">Вводится в главе <a href="ch44.html">44</a></span></dd></div>
+</dl>
+<h2 id="l-А">А</h2>
+<dl>
+<div class="gloss-item" id="t-avtokodirovschik"><dt>Автокодировщик <span class="en">autoencoder</span></dt><dd>Сеть, которая сжимает вход в короткий код и восстанавливает обратно. Учится без разметки.<span class="where">Вводится в главе <a href="ch32.html">32</a></span></dd></div>
+<div class="gloss-item" id="t-agent"><dt>Агент <span class="en">agent</span></dt><dd>Система, где модель сама решает, какие действия и в каком порядке выполнять.<span class="where">Вводится в главе <a href="ch14.html">14</a></span></dd></div>
+<div class="gloss-item" id="t-aktor-kritik"><dt>Актор-критик <span class="en">actor-critic</span></dt><dd>Схема из двух сетей: одна выбирает действия, другая оценивает их ценность.<span class="where">Вводится в главе <a href="ch37.html">37</a></span></dd></div>
+<div class="gloss-item" id="t-algoritm-cky"><dt>Алгоритм CKY <span class="en">CKY algorithm</span></dt><dd>Разбор по грамматике в нормальной форме Хомского перебором всех отрезков предложения. Стоит куб по длине предложения.<span class="where">Вводится в главе <a href="ch21.html">21</a></span></dd></div>
+<div class="gloss-item" id="t-algoritm-viterbi"><dt>Алгоритм Витерби <span class="en">Viterbi algorithm</span></dt><dd>Динамическое программирование, которое находит самую вероятную последовательность скрытых состояний за время, квадратичное по числу состояний.<span class="where">Вводится в главе <a href="ch20.html">20</a></span></dd></div>
+<div class="gloss-item" id="t-antecedent"><dt>Антецедент <span class="en">antecedent</span></dt><dd>Более раннее упоминание, к которому отсылает текущее.<span class="where">Вводится в главе <a href="ch23.html">23</a></span></dd></div>
+<div class="gloss-item" id="t-audiotoken"><dt>Аудиотокен <span class="en">audio token</span></dt><dd>Дискретный код куска звука, выданный нейросетевым кодеком. С ним звук можно порождать как текст.<span class="where">Вводится в главе <a href="ch26.html">26</a></span></dd></div>
+</dl>
+<h2 id="l-Б">Б</h2>
+<dl>
+<div class="gloss-item" id="t-bazovaya-model"><dt>Базовая модель <span class="en">base model</span></dt><dd>Модель после предобучения. Умеет продолжать текст, но не отвечать на вопросы.<span class="where">Вводится в главе <a href="ch10.html">10</a></span></dd></div>
+<div class="gloss-item" id="t-butstrap"><dt>Бутстрап <span class="en">bootstrap</span></dt><dd>Оценка разброса метрики через многократное перевыбирание примеров с возвращением.<span class="where">Вводится в главе <a href="ch15.html">15</a></span></dd></div>
+<div class="gloss-item" id="t-byudzhet-zaderzhki"><dt>Бюджет задержки <span class="en">latency budget</span></dt><dd>Разбиение допустимого времени ответа по этапам конвейера, чтобы видеть, какой этап его съедает.<span class="where">Вводится в главе <a href="ch27.html">27</a></span></dd></div>
+<div class="gloss-item" id="t-byudzhet-shagov"><dt>Бюджет шагов <span class="en">step budget</span></dt><dd>Жёсткий предел числа шагов и стоимости прогона. Страховка от бесконечного цикла.<span class="where">Вводится в главе <a href="ch49.html">49</a></span></dd></div>
+</dl>
+<h2 id="l-В">В</h2>
+<dl>
+<div class="gloss-item" id="t-validacionnaya-vyborka"><dt>Валидационная выборка <span class="en">validation set</span></dt><dd>Данные для подбора гиперпараметров. Не участвуют в обучении.<span class="where">Вводится в главе <a href="ch02.html">2</a></span></dd></div>
+<div class="gloss-item" id="t-variacionnaya-nizhnyaya-granica"><dt>Вариационная нижняя граница <span class="en">ELBO</span></dt><dd>Нижняя оценка логарифма правдоподобия. Максимизируют её, когда само правдоподобие посчитать нельзя.<span class="where">Вводится в главе <a href="ch31.html">31</a></span></dd></div>
+<div class="gloss-item" id="t-variacionnyy-avtokodirovschik"><dt>Вариационный автокодировщик <span class="en">variational autoencoder</span></dt><dd>Автокодировщик, у которого код это распределение. Позволяет порождать новые объекты выборкой из латентного пространства.<span class="where">Вводится в главе <a href="ch32.html">32</a></span></dd></div>
+<div class="gloss-item" id="t-vektor"><dt>Вектор <span class="en">vector</span></dt><dd>Упорядоченный список чисел. Геометрически точка или стрелка в пространстве с таким числом осей, сколько чисел в списке.<span class="where">Вводится в главе <a href="ch01.html">1</a></span></dd></div>
+<div class="gloss-item" id="t-vzaimnaya-informaciya"><dt>Взаимная информация <span class="en">mutual information</span></dt><dd>Сколько знание одной величины сообщает о другой. Ноль при независимости.<span class="where">Вводится в главе <a href="ch31.html">31</a></span></dd></div>
+<div class="gloss-item" id="t-vzlom-nagrady"><dt>Взлом награды <span class="en">reward hacking</span></dt><dd>Ситуация, когда модель находит способ получать высокую оценку модели награды, выдавая бессмысленный результат.<span class="where">Вводится в главе <a href="ch10.html">10</a></span></dd></div>
+<div class="gloss-item" id="t-vnimanie"><dt>Внимание <span class="en">attention</span></dt><dd>Механизм, позволяющий каждой позиции собрать информацию со всех остальных с разными весами.<span class="where">Вводится в главе <a href="ch08.html">8</a></span></dd></div>
+<div class="gloss-item" id="t-vokoder"><dt>Вокодер <span class="en">vocoder</span></dt><dd>Модель, которая превращает промежуточное представление звука, чаще мел-спектрограмму, обратно в звуковую волну.<span class="where">Вводится в главе <a href="ch26.html">26</a></span></dd></div>
+<div class="gloss-item" id="t-vorkflou"><dt>Воркфлоу <span class="en">workflow</span></dt><dd>Заранее заданный граф шагов. Предсказуем и дёшев в отладке, в отличие от свободного цикла агента.<span class="where">Вводится в главе <a href="ch46.html">46</a></span></dd></div>
+<div class="gloss-item" id="t-vremya-do-pervogo-tokena"><dt>Время до первого токена <span class="en">time to first token</span></dt><dd>Задержка фазы заполнения кеша. Растёт квадратично по длине промпта.<span class="where">Вводится в главе <a href="ch16.html">16</a></span></dd></div>
+<div class="gloss-item" id="t-vybrosy-aktivaciy"><dt>Выбросы активаций <span class="en">activation outliers</span></dt><dd>Редкие большие значения, из-за которых наивное квантование в int8 ломает качество.<span class="where">Вводится в главе <a href="ch41.html">41</a></span></dd></div>
+<div class="gloss-item" id="t-vyzov-instrumentov"><dt>Вызов инструментов <span class="en">tool calling, function calling</span></dt><dd>Возврат моделью структурированной просьбы выполнить функцию. Выполняет её ваш код.<span class="where">Вводится в главе <a href="ch14.html">14</a></span></dd></div>
+</dl>
+<h2 id="l-Г">Г</h2>
+<dl>
+<div class="gloss-item" id="t-generator"><dt>Генератор <span class="en">generator</span></dt><dd>Сеть, которая превращает шум в объект, похожий на настоящий.<span class="where">Вводится в главе <a href="ch33.html">33</a></span></dd></div>
+<div class="gloss-item" id="t-gibridnyy-poisk"><dt>Гибридный поиск <span class="en">hybrid search</span></dt><dd>Объединение результатов поиска по словам и по векторам.<span class="where">Вводится в главе <a href="ch12.html">12</a></span></dd></div>
+<div class="gloss-item" id="t-gipoteticheskiy-otvet"><dt>Гипотетический ответ <span class="en">HyDE</span></dt><dd>Поиск по придуманному моделью ответу вместо вопроса, потому что ответ ближе к тексту документа.<span class="where">Вводится в главе <a href="ch13.html">13</a></span></dd></div>
+<div class="gloss-item" id="t-golova-indukcii"><dt>Голова индукции <span class="en">induction head</span></dt><dd>Пара голов внимания, которая находит повтор и продолжает его. Механизм обучения в контексте.<span class="where">Вводится в главе <a href="ch39.html">39</a></span></dd></div>
+<div class="gloss-item" id="t-gradient"><dt>Градиент <span class="en">gradient</span></dt><dd>Вектор из частных производных по всем переменным. Указывает направление наискорейшего роста функции.<span class="where">Вводится в главе <a href="ch01.html">1</a></span></dd></div>
+<div class="gloss-item" id="t-gradient-po-strategii"><dt>Градиент по стратегии <span class="en">policy gradient</span></dt><dd>Обновление параметров стратегии прямо по градиенту ожидаемой отдачи.<span class="where">Вводится в главе <a href="ch37.html">37</a></span></dd></div>
+<div class="gloss-item" id="t-gradientnyy-busting"><dt>Градиентный бустинг <span class="en">gradient boosting</span></dt><dd>Последовательное добавление деревьев, каждое из которых исправляет ошибки предыдущих.<span class="where">Вводится в главе <a href="ch40.html">40</a></span></dd></div>
+<div class="gloss-item" id="t-gradientnyy-spusk"><dt>Градиентный спуск <span class="en">gradient descent</span></dt><dd>Пошаговое изменение параметров против градиента функции потерь.<span class="where">Вводится в главе <a href="ch04.html">4</a></span></dd></div>
+</dl>
+<h2 id="l-Д">Д</h2>
+<dl>
+<div class="gloss-item" id="t-dvoynoy-spusk"><dt>Двойной спуск <span class="en">double descent</span></dt><dd>После пика при равенстве числа параметров и примеров ошибка на тесте снова падает. Объясняет работоспособность огромных моделей.<span class="where">Вводится в главе <a href="ch05.html">5</a></span></dd></div>
+<div class="gloss-item" id="t-degradaciya"><dt>Деградация <span class="en">graceful degradation</span></dt><dd>Осознанное снижение возможностей при сбое вместо полного отказа или тихой подмены источника.<span class="where">Вводится в главе <a href="ch16.html">16</a></span></dd></div>
+<div class="gloss-item" id="t-deduplikaciya"><dt>Дедупликация <span class="en">deduplication</span></dt><dd>Удаление повторов из обучающего корпуса. Дубликаты заставляют модель запоминать вместо обобщения.<span class="where">Вводится в главе <a href="ch09.html">9</a></span></dd></div>
+<div class="gloss-item" id="t-dekodirovanie"><dt>Декодирование <span class="en">decoding</span></dt><dd>Алгоритм выбора токена из распределения, выданного моделью.<span class="where">Вводится в главе <a href="ch09.html">9</a></span></dd></div>
+<div class="gloss-item" id="t-derevo-zavisimostey"><dt>Дерево зависимостей <span class="en">dependency tree</span></dt><dd>Разбор, где связи идут напрямую между словами: у каждого слова одна голова и подписанный тип отношения.<span class="where">Вводится в главе <a href="ch21.html">21</a></span></dd></div>
+<div class="gloss-item" id="t-detektor-rechevoy-aktivnosti"><dt>Детектор речевой активности <span class="en">voice activity detection</span></dt><dd>Определение, звучит ли сейчас речь. Первый фильтр в голосовом конвейере.<span class="where">Вводится в главе <a href="ch27.html">27</a></span></dd></div>
+<div class="gloss-item" id="t-diarizaciya"><dt>Диаризация <span class="en">diarization</span></dt><dd>Разделение записи на реплики говорящих: кто говорил и когда.<span class="where">Вводится в главе <a href="ch25.html">25</a></span></dd></div>
+<div class="gloss-item" id="t-diskriminator"><dt>Дискриминатор <span class="en">discriminator</span></dt><dd>Сеть, которая отличает настоящие объекты от порождённых. Обучается вместе с генератором.<span class="where">Вводится в главе <a href="ch33.html">33</a></span></dd></div>
+<div class="gloss-item" id="t-distancionnoe-obuchenie"><dt>Дистанционное обучение <span class="en">distant supervision</span></dt><dd>Разметка обучающих примеров по готовой базе знаний вместо разметчиков. Дёшево и шумно.<span class="where">Вводится в главе <a href="ch22.html">22</a></span></dd></div>
+<div class="gloss-item" id="t-distillyaciya"><dt>Дистилляция <span class="en">distillation</span></dt><dd>Обучение маленькой модели воспроизводить поведение большой на узкой задаче.<span class="where">Вводится в главе <a href="ch10.html">10</a></span></dd></div>
+<div class="gloss-item" id="t-distributivnaya-gipoteza"><dt>Дистрибутивная гипотеза <span class="en">distributional hypothesis</span></dt><dd>Слово узнаётся по своему окружению: близкие по контексту слова близки по смыслу.<span class="where">Вводится в главе <a href="ch07.html">7</a></span></dd></div>
+<div class="gloss-item" id="t-dolgovremennaya-pamyat"><dt>Долговременная память <span class="en">long-term memory</span></dt><dd>Факты о пользователе, сохраняемые между сессиями. Лучше хранить структурно, а не свободным текстом.<span class="where">Вводится в главе <a href="ch14.html">14</a></span></dd></div>
+<div class="gloss-item" id="t-dreyf"><dt>Дрейф <span class="en">drift</span></dt><dd>Расхождение между условиями, для которых система строилась, и текущими.<span class="where">Вводится в главе <a href="ch18.html">18</a></span></dd></div>
+</dl>
+<h2 id="l-З">З</h2>
+<dl>
+<div class="gloss-item" id="t-zagryaznenie-benchmarka"><dt>Загрязнение бенчмарка <span class="en">benchmark contamination</span></dt><dd>Попадание тестовых задач в обучающий корпус. Завышает результат и обесценивает рейтинги.<span class="where">Вводится в главе <a href="ch09.html">9</a></span></dd></div>
+<div class="gloss-item" id="t-zakony-masshtabirovaniya"><dt>Законы масштабирования <span class="en">scaling laws</span></dt><dd>Степенная зависимость потерь от числа параметров, объёма данных и вычислений. Позволяет предсказать качество до запуска.<span class="where">Вводится в главе <a href="ch09.html">9</a></span></dd></div>
+<div class="gloss-item" id="t-zakreplenie-versii"><dt>Закрепление версии <span class="en">version pinning</span></dt><dd>Фиксация конкретной версии модели, чтобы обновление у поставщика не меняло поведение незаметно.<span class="where">Вводится в главе <a href="ch18.html">18</a></span></dd></div>
+<div class="gloss-item" id="t-zapros-klyuch-znachenie"><dt>Запрос, ключ, значение <span class="en">query, key, value</span></dt><dd>Три проекции вектора позиции. Похожесть запроса на ключи решает, сколько значений войдёт в результат.<span class="where">Вводится в главе <a href="ch08.html">8</a></span></dd></div>
+<div class="gloss-item" id="t-zatuhayuschiy-gradient"><dt>Затухающий градиент <span class="en">vanishing gradient</span></dt><dd>Градиент, уменьшающийся до нуля при проходе через много слоёв.<span class="where">Вводится в главе <a href="ch04.html">4</a></span></dd></div>
+<div class="gloss-item" id="t-zaschitnye-filtry"><dt>Защитные фильтры <span class="en">guardrails</span></dt><dd>Проверки входа и выхода модели на запрещённое содержимое. Дополняют, но не заменяют ограничение прав.<span class="where">Вводится в главе <a href="ch17.html">17</a></span></dd></div>
+</dl>
+<h2 id="l-И">И</h2>
+<dl>
+<div class="gloss-item" id="t-idempotentnost-2"><dt>Идемпотентность <span class="en">idempotency</span></dt><dd>Свойство, при котором повтор запроса не приводит к повторному действию.<span class="where">Вводится в главе <a href="ch16.html">16</a></span></dd></div>
+<div class="gloss-item" id="t-idempotentnost-2"><dt>Идемпотентность <span class="en">idempotency</span></dt><dd>Свойство операции давать один и тот же результат при повторе. Без него повтор шага после сбоя портит данные.<span class="where">Вводится в главе <a href="ch45.html">45</a></span></dd></div>
+<div class="gloss-item" id="t-izvlechenie-otnosheniy"><dt>Извлечение отношений <span class="en">relation extraction</span></dt><dd>Поиск в тексте фактов вида «сущность A связана с сущностью B отношением R».<span class="where">Вводится в главе <a href="ch22.html">22</a></span></dd></div>
+<div class="gloss-item" id="t-izvlechenie-sobytiy"><dt>Извлечение событий <span class="en">event extraction</span></dt><dd>Поиск в тексте событий с их участниками, временем и местом.<span class="where">Вводится в главе <a href="ch22.html">22</a></span></dd></div>
+<div class="gloss-item" id="t-imenovannaya-suschnost"><dt>Именованная сущность <span class="en">named entity</span></dt><dd>Кусок текста, который называет конкретный объект: человека, организацию, место, дату, сумму.<span class="where">Вводится в главе <a href="ch20.html">20</a></span></dd></div>
+<div class="gloss-item" id="t-impuls"><dt>Импульс <span class="en">momentum</span></dt><dd>Шаг по скользящему среднему градиентов. Гасит колебания поперёк оврага.<span class="where">Вводится в главе <a href="ch04.html">4</a></span></dd></div>
+<div class="gloss-item" id="t-invariantnost-k-sdvigu"><dt>Инвариантность к сдвигу <span class="en">translation invariance</span></dt><dd>Свойство отвечать одинаково, если объект сместился по картинке.<span class="where">Вводится в главе <a href="ch28.html">28</a></span></dd></div>
+<div class="gloss-item" id="t-invertirovannyy-indeks"><dt>Инвертированный индекс <span class="en">inverted index</span></dt><dd>Отображение слова в список документов, где оно встречается. Основа поиска по словам.<span class="where">Вводится в главе <a href="ch12.html">12</a></span></dd></div>
+<div class="gloss-item" id="t-indukcionnaya-golova"><dt>Индукционная голова <span class="en">induction head</span></dt><dd>Голова внимания, замечающая повтор шаблона и продолжающая его. Считается основой обучения по примерам в промпте.<span class="where">Вводится в главе <a href="ch08.html">8</a></span></dd></div>
+<div class="gloss-item" id="t-inicializaciya-he"><dt>Инициализация Хе <span class="en">He initialization</span></dt><dd>Случайные начальные веса с дисперсией 2 делить на число входов. Для сетей с ReLU.<span class="where">Вводится в главе <a href="ch04.html">4</a></span></dd></div>
+<div class="gloss-item" id="t-instrukcionnaya-nastroyka"><dt>Инструкционная настройка <span class="en">supervised fine-tuning, SFT</span></dt><dd>Дообучение на парах вопрос-ответ. Потери считаются только по токенам ответа.<span class="where">Вводится в главе <a href="ch10.html">10</a></span></dd></div>
+<div class="gloss-item" id="t-inekciya-prompta"><dt>Инъекция промпта <span class="en">prompt injection</span></dt><dd>Внедрение инструкции в данные, которые модель читает как часть промпта.<span class="where">Вводится в главе <a href="ch17.html">17</a></span></dd></div>
+</dl>
+<h2 id="l-К">К</h2>
+<dl>
+<div class="gloss-item" id="t-kadr"><dt>Кадр <span class="en">frame</span></dt><dd>Короткий кусок звука, обычно 20 или 25 мс, для которого считается один спектр.<span class="where">Вводится в главе <a href="ch24.html">24</a></span></dd></div>
+<div class="gloss-item" id="t-kalibrovka-veroyatnostey"><dt>Калибровка вероятностей <span class="en">calibration</span></dt><dd>Согласование уверенности модели с реальной частотой. Точная модель может быть плохо калиброванной.<span class="where">Вводится в главе <a href="ch40.html">40</a></span></dd></div>
+<div class="gloss-item" id="t-kaskad-modeley"><dt>Каскад моделей <span class="en">model cascade</span></dt><dd>Схема, где дешёвая модель обрабатывает всё, а дорогая подключается только на сложных случаях.<span class="where">Вводится в главе <a href="ch46.html">46</a></span></dd></div>
+<div class="gloss-item" id="t-katastroficheskoe-zabyvanie"><dt>Катастрофическое забывание <span class="en">catastrophic forgetting</span></dt><dd>Потеря способностей вне узкой задачи при долгом дообучении на ней.<span class="where">Вводится в главе <a href="ch10.html">10</a></span></dd></div>
+<div class="gloss-item" id="t-kvantovanie"><dt>Квантование <span class="en">quantization</span></dt><dd>Хранение весов и активаций числами меньшей разрядности ради памяти и скорости.<span class="where">Вводится в главе <a href="ch41.html">41</a></span></dd></div>
+<div class="gloss-item" id="t-kesh-prefiksa"><dt>Кеш префикса <span class="en">prompt caching</span></dt><dd>Переиспользование вычислений по неизменному началу запроса. Требует держать постоянную часть первой.<span class="where">Вводится в главе <a href="ch11.html">11</a></span></dd></div>
+<div class="gloss-item" id="t-kesh-prompta"><dt>Кеш промпта <span class="en">prompt caching</span></dt><dd>Повторное использование обработанной неизменной части запроса. Запись дороже обычного входа, попадание дешевле.<span class="where">Вводится в главе <a href="ch48.html">48</a></span></dd></div>
+<div class="gloss-item" id="t-kollaps-mod"><dt>Коллапс мод <span class="en">mode collapse</span></dt><dd>Сбой обучения GAN, при котором генератор выдаёт лишь несколько вариантов вместо всего разнообразия данных.<span class="where">Вводится в главе <a href="ch33.html">33</a></span></dd></div>
+<div class="gloss-item" id="t-konec-repliki"><dt>Конец реплики <span class="en">end of turn</span></dt><dd>Момент, когда система решает, что собеседник договорил и пора отвечать. Порог паузы определяет, поспешит она или опоздает.<span class="where">Вводится в главе <a href="ch27.html">27</a></span></dd></div>
+<div class="gloss-item" id="t-kontekstno-svobodnaya-grammatika"><dt>Контекстно-свободная грамматика <span class="en">context-free grammar</span></dt><dd>Набор правил вида «символ раскрывается в последовательность символов». Задаёт, какие деревья разбора допустимы для предложения.<span class="where">Вводится в главе <a href="ch21.html">21</a></span></dd></div>
+<div class="gloss-item" id="t-kontekstnyy-embedding"><dt>Контекстный эмбеддинг <span class="en">contextual embedding</span></dt><dd>Вектор слова, зависящий от предложения, в котором слово стоит.<span class="where">Вводится в главе <a href="ch07.html">7</a></span></dd></div>
+<div class="gloss-item" id="t-kontrastnoe-obuchenie-2"><dt>Контрастное обучение <span class="en">contrastive learning</span></dt><dd>Обучение сближать правильные пары и разводить неправильные. Так учат модели эмбеддингов.<span class="where">Вводится в главе <a href="ch07.html">7</a></span></dd></div>
+<div class="gloss-item" id="t-kontrastnoe-obuchenie-2"><dt>Контрастное обучение <span class="en">contrastive learning</span></dt><dd>Обучение сближать пары, которые принадлежат друг другу, и разводить остальные внутри батча.<span class="where">Вводится в главе <a href="ch30.html">30</a></span></dd></div>
+<div class="gloss-item" id="t-koreferenciya"><dt>Кореференция <span class="en">coreference</span></dt><dd>Отношение между упоминаниями, которые указывают на один и тот же объект внешнего мира.<span class="where">Вводится в главе <a href="ch23.html">23</a></span></dd></div>
+<div class="gloss-item" id="t-kosinusnaya-blizost"><dt>Косинусная близость <span class="en">cosine similarity</span></dt><dd>Скалярное произведение, делённое на длины обоих векторов. Лежит от минус единицы до единицы и не зависит от длины текста.<span class="where">Вводится в главе <a href="ch01.html">1</a></span></dd></div>
+<div class="gloss-item" id="t-kross-enkoder"><dt>Кросс-энкодер <span class="en">cross-encoder</span></dt><dd>Модель, читающая запрос и документ вместе. Точнее эмбеддингов, но требует прогона на каждую пару.<span class="where">Вводится в главе <a href="ch12.html">12</a></span></dd></div>
+</dl>
+<h2 id="l-Л">Л</h2>
+<dl>
+<div class="gloss-item" id="t-landshaft-poter"><dt>Ландшафт потерь <span class="en">loss landscape</span></dt><dd>Поверхность функции потерь над пространством параметров. Её форма объясняет поведение обучения.<span class="where">Вводится в главе <a href="ch38.html">38</a></span></dd></div>
+<div class="gloss-item" id="t-latentnaya-diffuziya"><dt>Латентная диффузия <span class="en">latent diffusion</span></dt><dd>Диффузия в сжатом пространстве автокодировщика вместо пикселей. Дешевле по вычислениям.<span class="where">Вводится в главе <a href="ch35.html">35</a></span></dd></div>
+<div class="gloss-item" id="t-latentnoe-prostranstvo"><dt>Латентное пространство <span class="en">latent space</span></dt><dd>Пространство сжатых представлений, в котором живут коды объектов.<span class="where">Вводится в главе <a href="ch32.html">32</a></span></dd></div>
+<div class="gloss-item" id="t-logit-linza"><dt>Логит-линза <span class="en">logit lens</span></dt><dd>Чтение промежуточных слоёв через выходную матрицу, чтобы увидеть предсказание модели на полпути.<span class="where">Вводится в главе <a href="ch39.html">39</a></span></dd></div>
+<div class="gloss-item" id="t-logity"><dt>Логиты <span class="en">logits</span></dt><dd>Сырые числа на выходе сети до превращения в вероятности.<span class="where">Вводится в главе <a href="ch01.html">1</a></span></dd></div>
+<div class="gloss-item" id="t-lotereynyy-bilet"><dt>Лотерейный билет <span class="en">lottery ticket</span></dt><dd>Разреженная подсеть, которая при исходной инициализации обучается не хуже полной сети.<span class="where">Вводится в главе <a href="ch38.html">38</a></span></dd></div>
+<div class="gloss-item" id="t-luchevoy-poisk"><dt>Лучевой поиск <span class="en">beam search</span></dt><dd>Удержание нескольких вариантов продолжения одновременно. Хорош в переводе, плох в свободной генерации.<span class="where">Вводится в главе <a href="ch09.html">9</a></span></dd></div>
+</dl>
+<h2 id="l-М">М</h2>
+<dl>
+<div class="gloss-item" id="t-markovskiy-process-prinyatiya-resheniy"><dt>Марковский процесс принятия решений <span class="en">Markov decision process</span></dt><dd>Формальная запись задачи: состояния, действия, вероятности переходов и награды.<span class="where">Вводится в главе <a href="ch36.html">36</a></span></dd></div>
+<div class="gloss-item" id="t-marshrutizator"><dt>Маршрутизатор <span class="en">router</span></dt><dd>Небольшая сеть, которая решает, каким экспертам отдать токен.<span class="where">Вводится в главе <a href="ch44.html">44</a></span></dd></div>
+<div class="gloss-item" id="t-marshrutizaciya"><dt>Маршрутизация <span class="en">model routing</span></dt><dd>Направление простых запросов на дешёвую модель, сложных на дорогую.<span class="where">Вводится в главе <a href="ch16.html">16</a></span></dd></div>
+<div class="gloss-item" id="t-marshrutizaciya-po-slozhnosti"><dt>Маршрутизация по сложности <span class="en">query routing</span></dt><dd>Выбор модели под конкретный запрос. Экономит деньги ценой ошибок маршрутизации.<span class="where">Вводится в главе <a href="ch48.html">48</a></span></dd></div>
+<div class="gloss-item" id="t-masshtab-i-nulevaya-tochka"><dt>Масштаб и нулевая точка <span class="en">scale and zero point</span></dt><dd>Два числа, которые переводят диапазон вещественных значений в целочисленную сетку и обратно.<span class="where">Вводится в главе <a href="ch41.html">41</a></span></dd></div>
+<div class="gloss-item" id="t-matrica"><dt>Матрица <span class="en">matrix</span></dt><dd>Прямоугольная таблица чисел. При умножении на вектор превращает его в вектор другой длины.<span class="where">Вводится в главе <a href="ch01.html">1</a></span></dd></div>
+<div class="gloss-item" id="t-matrica-oshibok"><dt>Матрица ошибок <span class="en">confusion matrix</span></dt><dd>Таблица из четырёх чисел: верные срабатывания, ложные тревоги, пропуски, верные пропуски.<span class="where">Вводится в главе <a href="ch02.html">2</a></span></dd></div>
+<div class="gloss-item" id="t-mel-shkala"><dt>Мел-шкала <span class="en">mel scale</span></dt><dd>Шкала частот, растянутая внизу и сжатая вверху, ближе к человеческому слуху. Перевод по формуле 2595·log10(1 + f/700).<span class="where">Вводится в главе <a href="ch24.html">24</a></span></dd></div>
+<div class="gloss-item" id="t-metka"><dt>Метка <span class="en">label</span></dt><dd>Правильный ответ для обучающего примера.<span class="where">Вводится в главе <a href="ch02.html">2</a></span></dd></div>
+<div class="gloss-item" id="t-metrika-b-cubed"><dt>Метрика B-cubed <span class="en">B-cubed metric</span></dt><dd>Оценка кореференции по каждому упоминанию отдельно с усреднением. Замечает и одиночные упоминания.<span class="where">Вводится в главе <a href="ch23.html">23</a></span></dd></div>
+<div class="gloss-item" id="t-metrika-muc"><dt>Метрика MUC <span class="en">MUC metric</span></dt><dd>Оценка кореференции по числу общих связей между упоминаниями. Не замечает ошибок на одиночных упоминаниях.<span class="where">Вводится в главе <a href="ch23.html">23</a></span></dd></div>
+<div class="gloss-item" id="t-mnogogolovoe-vnimanie"><dt>Многоголовое внимание <span class="en">multi-head attention</span></dt><dd>Несколько параллельных механизмов внимания со своими матрицами, ловящих разные типы связей.<span class="where">Вводится в главе <a href="ch08.html">8</a></span></dd></div>
+<div class="gloss-item" id="t-mnozhestvennye-sravneniya"><dt>Множественные сравнения <span class="en">multiple comparisons</span></dt><dd>Рост шанса случайного улучшения при переборе многих вариантов. Победителя надо перепроверять на новых данных.<span class="where">Вводится в главе <a href="ch15.html">15</a></span></dd></div>
+<div class="gloss-item" id="t-model-nagrady"><dt>Модель награды <span class="en">reward model</span></dt><dd>Модель, предсказывающая оценку человека. Используется как сигнал при выравнивании.<span class="where">Вводится в главе <a href="ch10.html">10</a></span></dd></div>
+<div class="gloss-item" id="t-model-sudya"><dt>Модель-судья <span class="en">LLM-as-a-judge</span></dt><dd>Отдельная модель, оценивающая ответы по критериям. Требует калибровки по человеческой разметке.<span class="where">Вводится в главе <a href="ch15.html">15</a></span></dd></div>
+<div class="gloss-item" id="t-multiagentnaya-sistema"><dt>Мультиагентная система <span class="en">multi-agent system</span></dt><dd>Несколько агентов с ролями, которые решают задачу совместно. Дороже одного агента и сложнее в отладке.<span class="where">Вводится в главе <a href="ch47.html">47</a></span></dd></div>
+<div class="gloss-item" id="t-mertvyy-neyron"><dt>Мёртвый нейрон <span class="en">dead neuron</span></dt><dd>Нейрон с ReLU, выдающий ноль на всех примерах. Градиент до него не доходит, и он больше не обучается.<span class="where">Вводится в главе <a href="ch03.html">3</a></span></dd></div>
+</dl>
+<h2 id="l-Н">Н</h2>
+<dl>
+<div class="gloss-item" id="t-nabor-primerov"><dt>Набор примеров <span class="en">eval set</span></dt><dd>Собранные пары запрос и критерий приемлемого ответа, на которых меряется качество.<span class="where">Вводится в главе <a href="ch15.html">15</a></span></dd></div>
+<div class="gloss-item" id="t-narezka"><dt>Нарезка <span class="en">chunking</span></dt><dd>Разбиение документов на куски для индексации. Определяет качество RAG сильнее выбора модели эмбеддингов.<span class="where">Вводится в главе <a href="ch13.html">13</a></span></dd></div>
+<div class="gloss-item" id="t-nedoobuchenie"><dt>Недообучение <span class="en">underfitting</span></dt><dd>Модель слишком проста и плохо работает и на обучении, и на тесте.<span class="where">Вводится в главе <a href="ch05.html">5</a></span></dd></div>
+<div class="gloss-item" id="t-neyron"><dt>Нейрон <span class="en">neuron</span></dt><dd>Взвешенная сумма входов плюс сдвиг, пропущенная через функцию активации.<span class="where">Вводится в главе <a href="ch03.html">3</a></span></dd></div>
+<div class="gloss-item" id="t-nepreryvnaya-paketnaya-obrabotka"><dt>Непрерывная пакетная обработка <span class="en">continuous batching</span></dt><dd>Режим, при котором новые запросы входят в батч, а закончившиеся выходят, не дожидаясь остальных.<span class="where">Вводится в главе <a href="ch42.html">42</a></span></dd></div>
+<div class="gloss-item" id="t-nepryamaya-inekciya"><dt>Непрямая инъекция <span class="en">indirect prompt injection</span></dt><dd>Инструкция, спрятанная в документе или на странице, которую система читает сама.<span class="where">Вводится в главе <a href="ch17.html">17</a></span></dd></div>
+<div class="gloss-item" id="t-neyavnaya-regulyarizaciya"><dt>Неявная регуляризация <span class="en">implicit regularization</span></dt><dd>Свойство самого метода оптимизации выбирать решения, которые лучше обобщают.<span class="where">Вводится в главе <a href="ch38.html">38</a></span></dd></div>
+<div class="gloss-item" id="t-norma-vektora"><dt>Норма вектора <span class="en">norm</span></dt><dd>Длина вектора, корень из суммы квадратов координат.<span class="where">Вводится в главе <a href="ch01.html">1</a></span></dd></div>
+<div class="gloss-item" id="t-normalizaciya-vektora"><dt>Нормализация вектора <span class="en">normalization</span></dt><dd>Деление вектора на его длину. После неё косинусная близость сводится к скалярному произведению.<span class="where">Вводится в главе <a href="ch01.html">1</a></span></dd></div>
+<div class="gloss-item" id="t-normalizaciya-znacheniy"><dt>Нормализация значений <span class="en">value normalization</span></dt><dd>Приведение дат, сумм и единиц измерения к машинному виду, пригодному для сравнения и хранения.<span class="where">Вводится в главе <a href="ch22.html">22</a></span></dd></div>
+<div class="gloss-item" id="t-normalizaciya-sloya"><dt>Нормализация слоя <span class="en">layer normalization</span></dt><dd>Приведение активаций к стабильному масштабу. В современных моделях стоит до подблоков и часто заменена на RMSNorm.<span class="where">Вводится в главе <a href="ch08.html">8</a></span></dd></div>
+<div class="gloss-item" id="t-normalizuyuschiy-potok"><dt>Нормализующий поток <span class="en">normalizing flow</span></dt><dd>Цепочка обратимых преобразований простого распределения в сложное. Даёт точное правдоподобие.<span class="where">Вводится в главе <a href="ch34.html">34</a></span></dd></div>
+</dl>
+<h2 id="l-О">О</h2>
+<dl>
+<div class="gloss-item" id="t-obobschenie"><dt>Обобщение <span class="en">generalization</span></dt><dd>Способность модели работать на данных, которых она не видела при обучении.<span class="where">Вводится в главе <a href="ch02.html">2</a></span></dd></div>
+<div class="gloss-item" id="t-obratnoe-davlenie"><dt>Обратное давление <span class="en">backpressure</span></dt><dd>Сигнал источнику, что принимающая сторона не справляется. Защищает конвейер от лавины.<span class="where">Вводится в главе <a href="ch45.html">45</a></span></dd></div>
+<div class="gloss-item" id="t-obratnoe-rasprostranenie"><dt>Обратное распространение <span class="en">backpropagation</span></dt><dd>Вычисление всех частных производных за один проход назад по цепному правилу.<span class="where">Вводится в главе <a href="ch04.html">4</a></span></dd></div>
+<div class="gloss-item" id="t-obratnyy-process"><dt>Обратный процесс <span class="en">reverse process</span></dt><dd>Пошаговое расшумление, которое и порождает объект. Обучается предсказывать добавленный шум.<span class="where">Вводится в главе <a href="ch35.html">35</a></span></dd></div>
+<div class="gloss-item" id="t-obrezka-gradienta"><dt>Обрезка градиента <span class="en">gradient clipping</span></dt><dd>Ограничение нормы градиента сверху. Защита от взрывов.<span class="where">Вводится в главе <a href="ch04.html">4</a></span></dd></div>
+<div class="gloss-item" id="t-obuchayuschaya-vyborka"><dt>Обучающая выборка <span class="en">training set</span></dt><dd>Данные, на которых подбираются параметры модели.<span class="where">Вводится в главе <a href="ch02.html">2</a></span></dd></div>
+<div class="gloss-item" id="t-obuchenie-po-primeram-v-prompte"><dt>Обучение по примерам в промпте <span class="en">few-shot prompting</span></dt><dd>Добавление нескольких образцов желаемого вывода прямо в запрос.<span class="where">Вводится в главе <a href="ch11.html">11</a></span></dd></div>
+<div class="gloss-item" id="t-obhod-ogranicheniy"><dt>Обход ограничений <span class="en">jailbreak</span></dt><dd>Приёмы, заставляющие модель нарушить заданные правила поведения.<span class="where">Вводится в главе <a href="ch17.html">17</a></span></dd></div>
+<div class="gloss-item" id="t-ogranichennoe-dekodirovanie"><dt>Ограниченное декодирование <span class="en">constrained decoding</span></dt><dd>Механизм, реализующий структурированный вывод: на каждом шаге запрещаются токены, ломающие схему.<span class="where">Вводится в главе <a href="ch11.html">11</a></span></dd></div>
+<div class="gloss-item" id="t-okno-konteksta"><dt>Окно контекста <span class="en">context window</span></dt><dd>Максимальное число токенов, которое модель принимает за один запрос.<span class="where">Вводится в главе <a href="ch11.html">11</a></span></dd></div>
+<div class="gloss-item" id="t-okonnaya-funkciya"><dt>Оконная функция <span class="en">window function</span></dt><dd>Плавное затухание кадра к краям. Убирает ложные частоты, которые возникают при резком обрезании куска.<span class="where">Вводится в главе <a href="ch24.html">24</a></span></dd></div>
+<div class="gloss-item" id="t-orkestrator"><dt>Оркестратор <span class="en">orchestrator</span></dt><dd>Агент или код, который решает, какой шаг делать следующим и кому его поручить.<span class="where">Вводится в главе <a href="ch47.html">47</a></span></dd></div>
+<div class="gloss-item" id="t-ostatochnaya-vektornaya-kvantizaciya"><dt>Остаточная векторная квантизация <span class="en">residual vector quantization</span></dt><dd>Кодирование звука несколькими уровнями кодовых книг: каждый следующий уровень уточняет остаток предыдущего.<span class="where">Вводится в главе <a href="ch26.html">26</a></span></dd></div>
+<div class="gloss-item" id="t-ostatochnaya-svyaz-2"><dt>Остаточная связь <span class="en">residual connection</span></dt><dd>Прибавление входа блока к его выходу. Даёт градиенту короткий путь и позволяет обучать десятки слоёв.<span class="where">Вводится в главе <a href="ch08.html">8</a></span></dd></div>
+<div class="gloss-item" id="t-ostatochnaya-svyaz-2"><dt>Остаточная связь <span class="en">residual connection</span></dt><dd>Прибавление входа блока к его выходу. Даёт градиенту прямой путь и позволяет учить глубокие сети.<span class="where">Вводится в главе <a href="ch29.html">29</a></span></dd></div>
+<div class="gloss-item" id="t-otdacha"><dt>Отдача <span class="en">return</span></dt><dd>Сумма будущих наград с дисконтом. То, что агент максимизирует.<span class="where">Вводится в главе <a href="ch36.html">36</a></span></dd></div>
+<div class="gloss-item" id="t-otravlennoe-soobschenie"><dt>Отравленное сообщение <span class="en">poison message</span></dt><dd>Задача, которая роняет обработчик при каждой попытке. Уводится в отдельную очередь, чтобы не блокировать остальные.<span class="where">Вводится в главе <a href="ch45.html">45</a></span></dd></div>
+</dl>
+<h2 id="l-П">П</h2>
+<dl>
+<div class="gloss-item" id="t-paket"><dt>Пакет <span class="en">batch</span></dt><dd>Порция примеров, по которой считается один шаг обновления параметров.<span class="where">Вводится в главе <a href="ch04.html">4</a></span></dd></div>
+<div class="gloss-item" id="t-paketnaya-normalizaciya"><dt>Пакетная нормализация <span class="en">batch normalization</span></dt><dd>Нормировка активаций по статистикам пакета с обучаемыми масштабом и сдвигом. При выводе использует накопленные средние.<span class="where">Вводится в главе <a href="ch29.html">29</a></span></dd></div>
+<div class="gloss-item" id="t-parallelizm-po-dannym"><dt>Параллелизм по данным <span class="en">data parallelism</span></dt><dd>Копия модели на каждой карте, разные части батча, синхронизация градиентов.<span class="where">Вводится в главе <a href="ch43.html">43</a></span></dd></div>
+<div class="gloss-item" id="t-parallelizm-po-tenzoram"><dt>Параллелизм по тензорам <span class="en">tensor parallelism</span></dt><dd>Разрезание матриц одного слоя между картами. Требует быстрого обмена.<span class="where">Вводится в главе <a href="ch43.html">43</a></span></dd></div>
+<div class="gloss-item" id="t-patch"><dt>Патч <span class="en">patch</span></dt><dd>Квадратный кусок картинки, который превращается в один токен для трансформера.<span class="where">Вводится в главе <a href="ch30.html">30</a></span></dd></div>
+<div class="gloss-item" id="t-perekos-po-dline"><dt>Перекос по длине <span class="en">length bias</span></dt><dd>Склонность судьи предпочитать более длинные ответы независимо от их качества.<span class="where">Вводится в главе <a href="ch15.html">15</a></span></dd></div>
+<div class="gloss-item" id="t-perekos-po-pozicii"><dt>Перекос по позиции <span class="en">position bias</span></dt><dd>Склонность судьи предпочитать первый из двух предъявленных вариантов.<span class="where">Вводится в главе <a href="ch15.html">15</a></span></dd></div>
+<div class="gloss-item" id="t-perekrytie"><dt>Перекрытие <span class="en">overlap</span></dt><dd>Общая часть соседних кусков, чтобы мысль на границе не терялась.<span class="where">Вводится в главе <a href="ch13.html">13</a></span></dd></div>
+<div class="gloss-item" id="t-perekrestnaya-proverka"><dt>Перекрёстная проверка <span class="en">cross-validation</span></dt><dd>Обучение k раз с разными валидационными частями и усреднение оценки.<span class="where">Вводится в главе <a href="ch05.html">5</a></span></dd></div>
+<div class="gloss-item" id="t-perekrestnaya-entropiya"><dt>Перекрёстная энтропия <span class="en">cross-entropy</span></dt><dd>Функция потерь для классификации. Наказывает уверенную ошибку намного сильнее неуверенной.<span class="where">Вводится в главе <a href="ch02.html">2</a></span></dd></div>
+<div class="gloss-item" id="t-pereobuchenie"><dt>Переобучение <span class="en">overfitting</span></dt><dd>Модель выучила шум обучающих данных и потому плохо работает на новых.<span class="where">Вводится в главе <a href="ch05.html">5</a></span></dd></div>
+<div class="gloss-item" id="t-perepisyvanie-zaprosa"><dt>Переписывание запроса <span class="en">query rewriting</span></dt><dd>Превращение реплики диалога в самостоятельный поисковый запрос.<span class="where">Вводится в главе <a href="ch13.html">13</a></span></dd></div>
+<div class="gloss-item" id="t-perpleksiya"><dt>Перплексия <span class="en">perplexity</span></dt><dd>Экспонента средней потери. Грубо: между сколькими вариантами модель колеблется на каждом шаге.<span class="where">Вводится в главе <a href="ch06.html">6</a></span></dd></div>
+<div class="gloss-item" id="t-ploskiy-minimum"><dt>Плоский минимум <span class="en">flat minimum</span></dt><dd>Минимум, вокруг которого потери меняются медленно. Обычно связан с лучшим обобщением.<span class="where">Вводится в главе <a href="ch38.html">38</a></span></dd></div>
+<div class="gloss-item" id="t-plotnyy-poisk"><dt>Плотный поиск <span class="en">dense retrieval</span></dt><dd>Поиск по векторам эмбеддингов вместо совпадения слов.<span class="where">Вводится в главе <a href="ch12.html">12</a></span></dd></div>
+<div class="gloss-item" id="t-pozicionnaya-kodirovka"><dt>Позиционная кодировка <span class="en">positional encoding</span></dt><dd>Способ внести информацию о порядке слов, к которому внимание само по себе слепо.<span class="where">Вводится в главе <a href="ch08.html">8</a></span></dd></div>
+<div class="gloss-item" id="t-polnota"><dt>Полнота <span class="en">recall</span></dt><dd>Доля пойманных случаев среди всех, которые надо было поймать.<span class="where">Вводится в главе <a href="ch02.html">2</a></span></dd></div>
+<div class="gloss-item" id="t-poterya-serediny"><dt>Потеря середины <span class="en">lost in the middle</span></dt><dd>Ухудшение нахождения информации, расположенной в середине длинного контекста.<span class="where">Вводится в главе <a href="ch11.html">11</a></span></dd></div>
+<div class="gloss-item" id="t-potokovoe-raspoznavanie"><dt>Потоковое распознавание <span class="en">streaming ASR</span></dt><dd>Распознавание по мере поступления звука, с частичными гипотезами и их перезаписью.<span class="where">Вводится в главе <a href="ch25.html">25</a></span></dd></div>
+<div class="gloss-item" id="t-pravilo-bayesa"><dt>Правило Байеса <span class="en">Bayes rule</span></dt><dd>Связывает две условные вероятности в разные стороны. Объясняет, почему точный тест на редкое событие даёт много ложных срабатываний.<span class="where">Вводится в главе <a href="ch01.html">1</a></span></dd></div>
+<div class="gloss-item" id="t-pravilo-shinshilly"><dt>Правило Шиншиллы <span class="en">Chinchilla scaling</span></dt><dd>Примерно 20 обучающих токенов на параметр минимизируют стоимость обучения при фиксированном бюджете.<span class="where">Вводится в главе <a href="ch09.html">9</a></span></dd></div>
+<div class="gloss-item" id="t-predobuchenie"><dt>Предобучение <span class="en">pretraining</span></dt><dd>Обучение предсказанию следующего токена на больших объёмах текста без ручной разметки.<span class="where">Вводится в главе <a href="ch09.html">9</a></span></dd></div>
+<div class="gloss-item" id="t-preimuschestvo"><dt>Преимущество <span class="en">advantage</span></dt><dd>Насколько действие лучше среднего по состоянию. Уменьшает дисперсию оценки градиента.<span class="where">Вводится в главе <a href="ch37.html">37</a></span></dd></div>
+<div class="gloss-item" id="t-prefill"><dt>Префилл <span class="en">prefill</span></dt><dd>Первая фаза генерации: обработка всего промпта разом и заполнение KV-кеша.<span class="where">Вводится в главе <a href="ch42.html">42</a></span></dd></div>
+<div class="gloss-item" id="t-priblizhennyy-poisk-sosedey"><dt>Приближённый поиск соседей <span class="en">approximate nearest neighbors, ANN</span></dt><dd>Поиск похожих векторов без полного перебора, ценой небольшой потери полноты.<span class="where">Вводится в главе <a href="ch12.html">12</a></span></dd></div>
+<div class="gloss-item" id="t-priznak"><dt>Признак <span class="en">feature</span></dt><dd>Одна из входных величин, по которым модель делает предсказание.<span class="where">Вводится в главе <a href="ch02.html">2</a></span></dd></div>
+<div class="gloss-item" id="t-princip-naimenshih-privilegiy"><dt>Принцип наименьших привилегий <span class="en">least privilege</span></dt><dd>Инструменту доступно ровно то, что нужно для его задачи, и ничего больше.<span class="where">Вводится в главе <a href="ch17.html">17</a></span></dd></div>
+<div class="gloss-item" id="t-prichinnaya-maska"><dt>Причинная маска <span class="en">causal mask</span></dt><dd>Запрет смотреть вперёд. Без неё обучение предсказанию следующего токена вырождается в подглядывание.<span class="where">Вводится в главе <a href="ch08.html">8</a></span></dd></div>
+<div class="gloss-item" id="t-probing"><dt>Пробинг <span class="en">probing</span></dt><dd>Обучение простого классификатора на скрытых состояниях, чтобы проверить, закодирован ли в них признак.<span class="where">Вводится в главе <a href="ch39.html">39</a></span></dd></div>
+<div class="gloss-item" id="t-proverka-svoimi-atakami"><dt>Проверка своими атаками <span class="en">red teaming</span></dt><dd>Намеренные попытки сломать систему, оформленные как регулярный набор тестов.<span class="where">Вводится в главе <a href="ch17.html">17</a></span></dd></div>
+<div class="gloss-item" id="t-proizvodnaya"><dt>Производная <span class="en">derivative</span></dt><dd>Скорость изменения функции в точке, наклон касательной.<span class="where">Вводится в главе <a href="ch01.html">1</a></span></dd></div>
+<div class="gloss-item" id="t-prompt"><dt>Промпт <span class="en">prompt</span></dt><dd>Текст, подаваемый модели. Включает системную инструкцию, примеры и данные пользователя.<span class="where">Вводится в главе <a href="ch11.html">11</a></span></dd></div>
+<div class="gloss-item" id="t-pryamoy-process"><dt>Прямой процесс <span class="en">forward process</span></dt><dd>Постепенное зашумление данных по расписанию. Задан формулой и не обучается.<span class="where">Вводится в главе <a href="ch35.html">35</a></span></dd></div>
+<div class="gloss-item" id="t-puzyr-konveyera"><dt>Пузырь конвейера <span class="en">pipeline bubble</span></dt><dd>Простой карт при параллелизме по слоям. Лечится дроблением батча на микробатчи.<span class="where">Вводится в главе <a href="ch43.html">43</a></span></dd></div>
+<div class="gloss-item" id="t-puling"><dt>Пулинг <span class="en">pooling</span></dt><dd>Уменьшение карты откликов усреднением или взятием максимума по окну.<span class="where">Вводится в главе <a href="ch28.html">28</a></span></dd></div>
+<div class="gloss-item" id="t-pustoy-simvol"><dt>Пустой символ <span class="en">blank</span></dt><dd>Служебная метка CTC, которая отделяет повторяющиеся буквы и обозначает молчание.<span class="where">Вводится в главе <a href="ch25.html">25</a></span></dd></div>
+</dl>
+<h2 id="l-Р">Р</h2>
+<dl>
+<div class="gloss-item" id="t-razbor-perehodami"><dt>Разбор переходами <span class="en">transition-based parsing</span></dt><dd>Построение дерева зависимостей за один проход через стек, буфер и последовательность действий.<span class="where">Вводится в главе <a href="ch21.html">21</a></span></dd></div>
+<div class="gloss-item" id="t-razbros"><dt>Разброс <span class="en">variance</span></dt><dd>Ошибка от чрезмерной чувствительности модели к конкретной обучающей выборке.<span class="where">Вводится в главе <a href="ch05.html">5</a></span></dd></div>
+<div class="gloss-item" id="t-razvedka-i-ispolzovanie"><dt>Разведка и использование <span class="en">exploration and exploitation</span></dt><dd>Размен между пробой нового и повтором того, что уже приносит награду.<span class="where">Вводится в главе <a href="ch36.html">36</a></span></dd></div>
+<div class="gloss-item" id="t-razmetka-dialoga"><dt>Разметка диалога <span class="en">chat template</span></dt><dd>Формат склейки сообщений в одну строку с обозначением ролей. Роли это обычные слова в тексте.<span class="where">Вводится в главе <a href="ch06.html">6</a></span></dd></div>
+<div class="gloss-item" id="t-razmetka-posledovatelnostey"><dt>Разметка последовательностей <span class="en">sequence labeling</span></dt><dd>Задача, где на вход идёт последовательность токенов, а на выход последовательность меток той же длины.<span class="where">Вводится в главе <a href="ch20.html">20</a></span></dd></div>
+<div class="gloss-item" id="t-razogrev"><dt>Разогрев <span class="en">warmup</span></dt><dd>Плавный рост скорости обучения в начале. Защищает от расхождения, пока оценки Adam не устоялись.<span class="where">Вводится в главе <a href="ch04.html">4</a></span></dd></div>
+<div class="gloss-item" id="t-razrezhennyy-avtokodirovschik"><dt>Разреженный автокодировщик <span class="en">sparse autoencoder</span></dt><dd>Инструмент интерпретируемости: раскладывает активации на много редко срабатывающих признаков.<span class="where">Вводится в главе <a href="ch39.html">39</a></span></dd></div>
+<div class="gloss-item" id="t-rang-adaptera"><dt>Ранг адаптера <span class="en">rank</span></dt><dd>Ширина матриц LoRA. Значения от 8 до 64 покрывают почти все задачи.<span class="where">Вводится в главе <a href="ch10.html">10</a></span></dd></div>
+<div class="gloss-item" id="t-rannyaya-ostanovka"><dt>Ранняя остановка <span class="en">early stopping</span></dt><dd>Прекращение обучения, когда валидационные потери перестали падать.<span class="where">Вводится в главе <a href="ch05.html">5</a></span></dd></div>
+<div class="gloss-item" id="t-raspredelenie-veroyatnostey"><dt>Распределение вероятностей <span class="en">probability distribution</span></dt><dd>Набор вариантов с приписанными вероятностями, которые в сумме дают единицу.<span class="where">Вводится в главе <a href="ch01.html">1</a></span></dd></div>
+<div class="gloss-item" id="t-rassuzhdenie-po-shagam"><dt>Рассуждение по шагам <span class="en">chain of thought</span></dt><dd>Просьба написать промежуточные выкладки. Даёт модели больше вычислений на задачу.<span class="where">Вводится в главе <a href="ch11.html">11</a></span></dd></div>
+<div class="gloss-item" id="t-rashozhdenie-kulbaka-i-leyblera"><dt>Расхождение Кульбака и Лейблера <span class="en">KL divergence</span></dt><dd>Плата за кодирование по неверной модели. Неотрицательно, несимметрично, обращается в ноль только при совпадении распределений.<span class="where">Вводится в главе <a href="ch31.html">31</a></span></dd></div>
+<div class="gloss-item" id="t-rashozhdenie-obucheniya-i-proda"><dt>Расхождение обучения и прода <span class="en">training-serving skew</span></dt><dd>Разная подготовка данных при разработке и в эксплуатации. Система работает, но хуже.<span class="where">Вводится в главе <a href="ch18.html">18</a></span></dd></div>
+<div class="gloss-item" id="t-regressionnyy-nabor-traektoriy"><dt>Регрессионный набор траекторий <span class="en">regression suite</span></dt><dd>Сохранённые реальные прогоны с известным исходом. По ним проверяют, что новая версия ничего не сломала.<span class="where">Вводится в главе <a href="ch49.html">49</a></span></dd></div>
+<div class="gloss-item" id="t-regressionnyy-test"><dt>Регрессионный тест <span class="en">regression test</span></dt><dd>Автоматическая проверка, что изменение не сломало ранее работавшие сценарии.<span class="where">Вводится в главе <a href="ch15.html">15</a></span></dd></div>
+<div class="gloss-item" id="t-regulyarizaciya"><dt>Регуляризация <span class="en">regularization</span></dt><dd>Любой приём, ухудшающий результат на обучении ради улучшения на новых данных.<span class="where">Вводится в главе <a href="ch05.html">5</a></span></dd></div>
+<div class="gloss-item" id="t-reparametrizaciya"><dt>Репараметризация <span class="en">reparameterization trick</span></dt><dd>Приём, который выносит случайность из графа вычислений наружу, чтобы через выборку проходил градиент.<span class="where">Вводится в главе <a href="ch32.html">32</a></span></dd></div>
+<div class="gloss-item" id="t-reranker"><dt>Реранкер <span class="en">reranker</span></dt><dd>Модель, переоценивающая небольшой список кандидатов точнее, чем это делает быстрый поиск.<span class="where">Вводится в главе <a href="ch12.html">12</a></span></dd></div>
+<div class="gloss-item" id="t-receptivnoe-pole"><dt>Рецептивное поле <span class="en">receptive field</span></dt><dd>Область входа, которая влияет на одно значение в глубине сети. С каждым слоем растёт.<span class="where">Вводится в главе <a href="ch28.html">28</a></span></dd></div>
+</dl>
+<h2 id="l-С">С</h2>
+<dl>
+<div class="gloss-item" id="t-samoobuchenie-s-uchitelem"><dt>Самообучение с учителем <span class="en">self-supervised learning</span></dt><dd>Обучение, где метка берётся из самих данных. Предобучение языковых моделей устроено так.<span class="where">Вводится в главе <a href="ch02.html">2</a></span></dd></div>
+<div class="gloss-item" id="t-samosoglasovannost"><dt>Самосогласованность <span class="en">self-consistency</span></dt><dd>Несколько независимых рассуждений и выбор ответа по большинству. Повышает точность ценой кратной стоимости.<span class="where">Вводится в главе <a href="ch11.html">11</a></span></dd></div>
+<div class="gloss-item" id="t-svyazyvanie-suschnostey"><dt>Связывание сущностей <span class="en">entity linking</span></dt><dd>Сопоставление кластера упоминаний с конкретной записью в базе знаний.<span class="where">Вводится в главе <a href="ch23.html">23</a></span></dd></div>
+<div class="gloss-item" id="t-svyazyvayuschiy-sloy"><dt>Связывающий слой <span class="en">coupling layer</span></dt><dd>Обратимый слой, где одна половина координат управляет преобразованием другой. Даёт треугольный якобиан.<span class="where">Вводится в главе <a href="ch34.html">34</a></span></dd></div>
+<div class="gloss-item" id="t-svertka"><dt>Свёртка <span class="en">convolution</span></dt><dd>Скользящее окно из общих весов, которое считает взвешенную сумму соседних значений. Одно ядро обслуживает всю картинку.<span class="where">Вводится в главе <a href="ch28.html">28</a></span></dd></div>
+<div class="gloss-item" id="t-semanticheskie-roli"><dt>Семантические роли <span class="en">semantic role labeling</span></dt><dd>Разметка участников действия: кто сделал, над чем, чем и когда, независимо от порядка слов.<span class="where">Вводится в главе <a href="ch22.html">22</a></span></dd></div>
+<div class="gloss-item" id="t-szhatie-konteksta"><dt>Сжатие контекста <span class="en">context compression</span></dt><dd>Сокращение промпта до сути перед отправкой. Экономит токены и рискует выбросить нужное.<span class="where">Вводится в главе <a href="ch48.html">48</a></span></dd></div>
+<div class="gloss-item" id="t-sistemnoe-soobschenie"><dt>Системное сообщение <span class="en">system prompt</span></dt><dd>Часть промпта с постоянными правилами. Идёт первой и потому кешируется.<span class="where">Вводится в главе <a href="ch11.html">11</a></span></dd></div>
+<div class="gloss-item" id="t-skalyarnoe-proizvedenie"><dt>Скалярное произведение <span class="en">dot product</span></dt><dd>Сумма попарных произведений координат двух векторов. Измеряет, насколько векторы сонаправлены: положительно при совпадении направления, ноль при перпендикулярности.<span class="where">Вводится в главе <a href="ch01.html">1</a></span></dd></div>
+<div class="gloss-item" id="t-skorost-obucheniya"><dt>Скорость обучения <span class="en">learning rate</span></dt><dd>Множитель при градиенте. Слишком мала, обучение ползёт; слишком велика, процесс расходится.<span class="where">Вводится в главе <a href="ch04.html">4</a></span></dd></div>
+<div class="gloss-item" id="t-skrytaya-markovskaya-model"><dt>Скрытая марковская модель <span class="en">hidden Markov model</span></dt><dd>Порождающая модель последовательности: скрытые состояния переходят друг в друга и порождают наблюдаемые слова.<span class="where">Вводится в главе <a href="ch20.html">20</a></span></dd></div>
+<div class="gloss-item" id="t-skrytyy-sloy"><dt>Скрытый слой <span class="en">hidden layer</span></dt><dd>Слой между входом и выходом. Строит новые признаки, в пространстве которых задача становится проще.<span class="where">Вводится в главе <a href="ch03.html">3</a></span></dd></div>
+<div class="gloss-item" id="t-slovar"><dt>Словарь <span class="en">vocabulary</span></dt><dd>Полный набор токенов модели, обычно от 32 до 200 тысяч.<span class="where">Вводится в главе <a href="ch06.html">6</a></span></dd></div>
+<div class="gloss-item" id="t-sluzhebnyy-token"><dt>Служебный токен <span class="en">special token</span></dt><dd>Токен разметки: начало текста, конец сообщения, границы ролей в диалоге.<span class="where">Вводится в главе <a href="ch06.html">6</a></span></dd></div>
+<div class="gloss-item" id="t-smes-ekspertov"><dt>Смесь экспертов <span class="en">mixture of experts</span></dt><dd>Слой из многих экспертов, где каждый токен обрабатывают лишь несколько. Общих параметров много, активных мало.<span class="where">Вводится в главе <a href="ch44.html">44</a></span></dd></div>
+<div class="gloss-item" id="t-smeschenie"><dt>Смещение <span class="en">bias</span></dt><dd>Ошибка от того, что модель слишком проста для закономерности в данных.<span class="where">Вводится в главе <a href="ch05.html">5</a></span></dd></div>
+<div class="gloss-item" id="t-sostavlyayuschaya"><dt>Составляющая <span class="en">constituent</span></dt><dd>Группа слов, которая ведёт себя в предложении как единое целое и может быть заменена одним словом.<span class="where">Вводится в главе <a href="ch21.html">21</a></span></dd></div>
+<div class="gloss-item" id="t-spektrogramma"><dt>Спектрограмма <span class="en">spectrogram</span></dt><dd>Картинка из спектров подряд идущих кадров: время по горизонтали, частота по вертикали, яркость это энергия.<span class="where">Вводится в главе <a href="ch24.html">24</a></span></dd></div>
+<div class="gloss-item" id="t-spekulyativnoe-dekodirovanie"><dt>Спекулятивное декодирование <span class="en">speculative decoding</span></dt><dd>Черновая модель предлагает несколько токенов, основная проверяет их одним проходом.<span class="where">Вводится в главе <a href="ch42.html">42</a></span></dd></div>
+<div class="gloss-item" id="t-srednekvadratichnaya-oshibka"><dt>Среднеквадратичная ошибка <span class="en">MSE</span></dt><dd>Средний квадрат разности предсказания и правильного значения. Для предсказания чисел.<span class="where">Вводится в главе <a href="ch02.html">2</a></span></dd></div>
+<div class="gloss-item" id="t-stoimost-vladeniya"><dt>Стоимость владения <span class="en">total cost of ownership</span></dt><dd>Полные расходы на систему, включая время людей на разбор ошибок и разметку.<span class="where">Вводится в главе <a href="ch18.html">18</a></span></dd></div>
+<div class="gloss-item" id="t-strategiya"><dt>Стратегия <span class="en">policy</span></dt><dd>Правило выбора действия по состоянию. Бывает детерминированной и вероятностной.<span class="where">Вводится в главе <a href="ch36.html">36</a></span></dd></div>
+<div class="gloss-item" id="t-striming"><dt>Стриминг <span class="en">streaming</span></dt><dd>Отдача токенов по мере генерации. Не ускоряет ответ, но убирает ожидание.<span class="where">Вводится в главе <a href="ch16.html">16</a></span></dd></div>
+<div class="gloss-item" id="t-strukturirovannyy-vyvod"><dt>Структурированный вывод <span class="en">structured output</span></dt><dd>Гарантия формата за счёт запрета невалидных токенов при генерации.<span class="where">Вводится в главе <a href="ch11.html">11</a></span></dd></div>
+</dl>
+<h2 id="l-Т">Т</h2>
+<dl>
+<div class="gloss-item" id="t-temperatura"><dt>Температура <span class="en">temperature</span></dt><dd>Делитель логитов перед softmax. Ниже единицы заостряет распределение, выше расплющивает.<span class="where">Вводится в главе <a href="ch09.html">9</a></span></dd></div>
+<div class="gloss-item" id="t-teorema-ob-universalnoy-approksimacii"><dt>Теорема об универсальной аппроксимации <span class="en">universal approximation theorem</span></dt><dd>Сеть с одним скрытым слоем приближает любую непрерывную функцию. Ничего не говорит о числе нейронов и о достижимости обучением.<span class="where">Вводится в главе <a href="ch03.html">3</a></span></dd></div>
+<div class="gloss-item" id="t-testovaya-vyborka"><dt>Тестовая выборка <span class="en">test set</span></dt><dd>Данные для финальной честной оценки. Открываются один раз в конце.<span class="where">Вводится в главе <a href="ch02.html">2</a></span></dd></div>
+<div class="gloss-item" id="t-token"><dt>Токен <span class="en">token</span></dt><dd>Кусок текста, которым оперирует модель. Обычно часть слова.<span class="where">Вводится в главе <a href="ch06.html">6</a></span></dd></div>
+<div class="gloss-item" id="t-tokenizaciya"><dt>Токенизация <span class="en">tokenization</span></dt><dd>Разбиение текста на токены и превращение их в номера.<span class="where">Вводится в главе <a href="ch06.html">6</a></span></dd></div>
+<div class="gloss-item" id="t-tokenov-v-sekundu"><dt>Токенов в секунду <span class="en">tokens per second</span></dt><dd>Скорость фазы пошаговой генерации. Упирается в скорость памяти.<span class="where">Вводится в главе <a href="ch16.html">16</a></span></dd></div>
+<div class="gloss-item" id="t-tochka-vozvrata"><dt>Точка возврата <span class="en">human in the loop</span></dt><dd>Место в конвейере, где решение уходит человеку. Ставится там, где цена ошибки выше цены задержки.<span class="where">Вводится в главе <a href="ch46.html">46</a></span></dd></div>
+<div class="gloss-item" id="t-tochnost"><dt>Точность <span class="en">precision</span></dt><dd>Доля верных срабатываний среди всех срабатываний.<span class="where">Вводится в главе <a href="ch02.html">2</a></span></dd></div>
+<div class="gloss-item" id="t-trassa-vypolneniya"><dt>Трасса выполнения <span class="en">execution trace</span></dt><dd>Запись всех шагов агента с входами, выходами, временем и стоимостью. Основа разбора инцидента.<span class="where">Вводится в главе <a href="ch49.html">49</a></span></dd></div>
+<div class="gloss-item" id="t-trassirovka"><dt>Трассировка <span class="en">tracing</span></dt><dd>Сквозная запись всех шагов обработки запроса с общим идентификатором.<span class="where">Вводится в главе <a href="ch16.html">16</a></span></dd></div>
+</dl>
+<h2 id="l-У">У</h2>
+<dl>
+<div class="gloss-item" id="t-upominanie"><dt>Упоминание <span class="en">mention</span></dt><dd>Кусок текста, который отсылает к объекту: имя, именная группа или местоимение.<span class="where">Вводится в главе <a href="ch23.html">23</a></span></dd></div>
+<div class="gloss-item" id="t-upravlenie-bez-klassifikatora"><dt>Управление без классификатора <span class="en">classifier-free guidance</span></dt><dd>Приём усиления влияния условия при генерации через разницу условного и безусловного предсказания.<span class="where">Вводится в главе <a href="ch35.html">35</a></span></dd></div>
+<div class="gloss-item" id="t-uravnenie-bellmana"><dt>Уравнение Беллмана <span class="en">Bellman equation</span></dt><dd>Связь ценности состояния с ценностями следующих состояний. Основа почти всех методов RL.<span class="where">Вводится в главе <a href="ch36.html">36</a></span></dd></div>
+<div class="gloss-item" id="t-uslovnaya-veroyatnost"><dt>Условная вероятность <span class="en">conditional probability</span></dt><dd>Вероятность события при условии, что произошло другое. Языковая модель вычисляет вероятность токена при условии предыдущих.<span class="where">Вводится в главе <a href="ch01.html">1</a></span></dd></div>
+<div class="gloss-item" id="t-uslovnoe-sluchaynoe-pole"><dt>Условное случайное поле <span class="en">conditional random field</span></dt><dd>Условная модель разметки: считает вероятность всей последовательности меток при данном тексте, признаки задаёт инженер или энкодер.<span class="where">Вводится в главе <a href="ch20.html">20</a></span></dd></div>
+<div class="gloss-item" id="t-utechka-dannyh"><dt>Утечка данных <span class="en">data leakage</span></dt><dd>Попадание в обучающие признаки информации, которой не будет в момент предсказания. Маскируется под высокое качество.<span class="where">Вводится в главе <a href="ch02.html">2</a></span></dd></div>
+</dl>
+<h2 id="l-Ф">Ф</h2>
+<dl>
+<div class="gloss-item" id="t-funkciya-aktivacii"><dt>Функция активации <span class="en">activation function</span></dt><dd>Нелинейное преобразование после взвешенной суммы. Без неё любая глубина схлопывается в один слой.<span class="where">Вводится в главе <a href="ch03.html">3</a></span></dd></div>
+<div class="gloss-item" id="t-funkciya-poter"><dt>Функция потерь <span class="en">loss function</span></dt><dd>Число, показывающее, насколько предсказания далеки от правильных ответов. Обучение это её минимизация.<span class="where">Вводится в главе <a href="ch02.html">2</a></span></dd></div>
+</dl>
+<h2 id="l-Ц">Ц</h2>
+<dl>
+<div class="gloss-item" id="t-cepnoe-pravilo"><dt>Цепное правило <span class="en">chain rule</span></dt><dd>Производная вложенной функции равна произведению производных вдоль цепочки. Основа обратного распространения.<span class="where">Вводится в главе <a href="ch01.html">1</a></span></dd></div>
+<div class="gloss-item" id="t-cikl-refleksii"><dt>Цикл рефлексии <span class="en">reflection loop</span></dt><dd>Схема, где агент критикует и переписывает собственный ответ. Без внешнего критерия останова расходится.<span class="where">Вводится в главе <a href="ch47.html">47</a></span></dd></div>
+<div class="gloss-item" id="t-citirovanie"><dt>Цитирование <span class="en">grounding, citations</span></dt><dd>Требование ссылаться на номер фрагмента. Позволяет автоматически проверять опору ответа на источник.<span class="where">Вводится в главе <a href="ch13.html">13</a></span></dd></div>
+</dl>
+<h2 id="l-Ч">Ч</h2>
+<dl>
+<div class="gloss-item" id="t-chasterechnaya-razmetka"><dt>Частеречная разметка <span class="en">part-of-speech tagging</span></dt><dd>Приписывание каждому слову его части речи с учётом контекста. Одно и то же слово в разных предложениях получает разные теги.<span class="where">Вводится в главе <a href="ch20.html">20</a></span></dd></div>
+<div class="gloss-item" id="t-chastnaya-proizvodnaya"><dt>Частная производная <span class="en">partial derivative</span></dt><dd>Производная по одной переменной при остальных зафиксированных.<span class="where">Вводится в главе <a href="ch01.html">1</a></span></dd></div>
+<div class="gloss-item" id="t-chastota-diskretizacii"><dt>Частота дискретизации <span class="en">sampling rate</span></dt><dd>Сколько раз в секунду измеряется звуковое давление. Для речи обычно 16 кГц, в телефонии 8 кГц.<span class="where">Вводится в главе <a href="ch24.html">24</a></span></dd></div>
+</dl>
+<h2 id="l-Ш">Ш</h2>
+<dl>
+<div class="gloss-item" id="t-shtraf-za-povtor"><dt>Штраф за повтор <span class="en">frequency penalty</span></dt><dd>Снижение вероятности уже встречавшихся токенов. Средство против зацикливания.<span class="where">Вводится в главе <a href="ch09.html">9</a></span></dd></div>
+</dl>
+<h2 id="l-Э">Э</h2>
+<dl>
+<div class="gloss-item" id="t-eksponencialnaya-vyderzhka"><dt>Экспоненциальная выдержка <span class="en">exponential backoff</span></dt><dd>Повтор с растущей паузой и случайным разбросом. Без разброса повторы сходятся в один пик.<span class="where">Вводится в главе <a href="ch45.html">45</a></span></dd></div>
+<div class="gloss-item" id="t-embedding"><dt>Эмбеддинг <span class="en">embedding</span></dt><dd>Вектор чисел, представляющий слово, предложение или документ.<span class="where">Вводится в главе <a href="ch07.html">7</a></span></dd></div>
+<div class="gloss-item" id="t-entropiya"><dt>Энтропия <span class="en">entropy</span></dt><dd>Среднее число бит на символ при наилучшем кодировании. Мера неопределённости распределения.<span class="where">Вводится в главе <a href="ch31.html">31</a></span></dd></div>
+<div class="gloss-item" id="t-epoha"><dt>Эпоха <span class="en">epoch</span></dt><dd>Один полный проход по всей обучающей выборке.<span class="where">Вводится в главе <a href="ch04.html">4</a></span></dd></div>
+</dl>
+<h2 id="l-Я">Я</h2>
+<dl>
+<div class="gloss-item" id="t-yadro-svertki"><dt>Ядро свёртки <span class="en">kernel</span></dt><dd>Маленькая матрица весов, которую двигают по входу. Обычно 3 на 3 или 5 на 5.<span class="where">Вводится в главе <a href="ch28.html">28</a></span></dd></div>
+<div class="gloss-item" id="t-yakobian"><dt>Якобиан <span class="en">Jacobian</span></dt><dd>Матрица частных производных преобразования. Её определитель показывает, как меняется объём.<span class="where">Вводится в главе <a href="ch34.html">34</a></span></dd></div>
+</dl>
+
+      <nav class="chapter-nav" id="chapter-nav"></nav>
+
+    </article>
+  </main>
+
+  <aside class="on-page" id="on-page"></aside>
+</div>
+
+<div id="tooltip"></div>
+
+<script src="assets/toc.js"></script>
+<script src="assets/glossary.js"></script>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

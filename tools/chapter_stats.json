@@ -1,0 +1,298 @@
+{
+  "ch00": {
+    "id": "ch00",
+    "words": 1255,
+    "all_words": 1693,
+    "figures": 2,
+    "demos": 0,
+    "quiz": 4,
+    "code_lines": 0,
+    "read_min": 14,
+    "practice_min": 50,
+    "practice_labels": [
+      "Сделайте руками (взято по умолчанию): 30 мин",
+      "Сделайте руками · 20 минут: 20 мин"
+    ],
+    "total_min": 64
+  },
+  "ch01": {
+    "id": "ch01",
+    "words": 1615,
+    "all_words": 2408,
+    "figures": 5,
+    "demos": 2,
+    "quiz": 5,
+    "code_lines": 24,
+    "read_min": 24,
+    "practice_min": 40,
+    "practice_labels": [
+      "Сделайте руками · 40 минут: 40 мин"
+    ],
+    "total_min": 64
+  },
+  "ch02": {
+    "id": "ch02",
+    "words": 1006,
+    "all_words": 1743,
+    "figures": 3,
+    "demos": 1,
+    "quiz": 5,
+    "code_lines": 22,
+    "read_min": 16,
+    "practice_min": 60,
+    "practice_labels": [
+      "Сделайте руками · 60 минут: 60 мин"
+    ],
+    "total_min": 76
+  },
+  "ch03": {
+    "id": "ch03",
+    "words": 901,
+    "all_words": 1493,
+    "figures": 4,
+    "demos": 1,
+    "quiz": 4,
+    "code_lines": 23,
+    "read_min": 16,
+    "practice_min": 50,
+    "practice_labels": [
+      "Сделайте руками · 50 минут: 50 мин"
+    ],
+    "total_min": 66
+  },
+  "ch04": {
+    "id": "ch04",
+    "words": 1263,
+    "all_words": 2104,
+    "figures": 4,
+    "demos": 1,
+    "quiz": 5,
+    "code_lines": 39,
+    "read_min": 19,
+    "practice_min": 70,
+    "practice_labels": [
+      "Сделайте руками · 70 минут: 70 мин"
+    ],
+    "total_min": 89
+  },
+  "ch05": {
+    "id": "ch05",
+    "words": 1072,
+    "all_words": 1737,
+    "figures": 5,
+    "demos": 0,
+    "quiz": 5,
+    "code_lines": 23,
+    "read_min": 17,
+    "practice_min": 45,
+    "practice_labels": [
+      "Сделайте руками · 45 минут: 45 мин"
+    ],
+    "total_min": 62
+  },
+  "ch06": {
+    "id": "ch06",
+    "words": 1009,
+    "all_words": 1724,
+    "figures": 3,
+    "demos": 1,
+    "quiz": 4,
+    "code_lines": 22,
+    "read_min": 15,
+    "practice_min": 40,
+    "practice_labels": [
+      "Сделайте руками · 40 минут: 40 мин"
+    ],
+    "total_min": 55
+  },
+  "ch07": {
+    "id": "ch07",
+    "words": 1095,
+    "all_words": 1781,
+    "figures": 3,
+    "demos": 1,
+    "quiz": 5,
+    "code_lines": 21,
+    "read_min": 17,
+    "practice_min": 60,
+    "practice_labels": [
+      "Сделайте руками · 60 минут: 60 мин"
+    ],
+    "total_min": 77
+  },
+  "ch08": {
+    "id": "ch08",
+    "words": 1358,
+    "all_words": 2300,
+    "figures": 4,
+    "demos": 1,
+    "quiz": 6,
+    "code_lines": 24,
+    "read_min": 20,
+    "practice_min": 90,
+    "practice_labels": [
+      "Сделайте руками · 90 минут: 90 мин"
+    ],
+    "total_min": 110
+  },
+  "ch09": {
+    "id": "ch09",
+    "words": 1810,
+    "all_words": 2825,
+    "figures": 3,
+    "demos": 1,
+    "quiz": 6,
+    "code_lines": 30,
+    "read_min": 22,
+    "practice_min": 50,
+    "practice_labels": [
+      "Сделайте руками · 50 минут: 50 мин"
+    ],
+    "total_min": 72
+  },
+  "ch10": {
+    "id": "ch10",
+    "words": 1678,
+    "all_words": 2594,
+    "figures": 3,
+    "demos": 0,
+    "quiz": 6,
+    "code_lines": 35,
+    "read_min": 19,
+    "practice_min": 90,
+    "practice_labels": [
+      "Сделайте руками · 90 минут: 90 мин"
+    ],
+    "total_min": 109
+  },
+  "ch11": {
+    "id": "ch11",
+    "words": 1559,
+    "all_words": 2488,
+    "figures": 2,
+    "demos": 0,
+    "quiz": 6,
+    "code_lines": 45,
+    "read_min": 18,
+    "practice_min": 90,
+    "practice_labels": [
+      "Приём, который стоит выучить наизусть (взято по умолчанию): 30 мин",
+      "Сделайте руками · 60 минут: 60 мин"
+    ],
+    "total_min": 108
+  },
+  "ch12": {
+    "id": "ch12",
+    "words": 1554,
+    "all_words": 2565,
+    "figures": 3,
+    "demos": 0,
+    "quiz": 6,
+    "code_lines": 33,
+    "read_min": 19,
+    "practice_min": 80,
+    "practice_labels": [
+      "Сделайте руками · 80 минут: 80 мин"
+    ],
+    "total_min": 99
+  },
+  "ch13": {
+    "id": "ch13",
+    "words": 1860,
+    "all_words": 2694,
+    "figures": 1,
+    "demos": 0,
+    "quiz": 6,
+    "code_lines": 15,
+    "read_min": 19,
+    "practice_min": 180,
+    "practice_labels": [
+      "Сделайте руками · проект на вечер: 180 мин"
+    ],
+    "total_min": 199
+  },
+  "ch14": {
+    "id": "ch14",
+    "words": 1310,
+    "all_words": 2066,
+    "figures": 1,
+    "demos": 0,
+    "quiz": 6,
+    "code_lines": 11,
+    "read_min": 15,
+    "practice_min": 0,
+    "practice_labels": [],
+    "total_min": 15
+  },
+  "ch15": {
+    "id": "ch15",
+    "words": 1314,
+    "all_words": 2266,
+    "figures": 1,
+    "demos": 0,
+    "quiz": 6,
+    "code_lines": 44,
+    "read_min": 15,
+    "practice_min": 360,
+    "practice_labels": [
+      "С чего начать за один день: 360 мин"
+    ],
+    "total_min": 375
+  },
+  "ch16": {
+    "id": "ch16",
+    "words": 1233,
+    "all_words": 1893,
+    "figures": 1,
+    "demos": 0,
+    "quiz": 6,
+    "code_lines": 0,
+    "read_min": 15,
+    "practice_min": 0,
+    "practice_labels": [],
+    "total_min": 15
+  },
+  "ch17": {
+    "id": "ch17",
+    "words": 895,
+    "all_words": 1798,
+    "figures": 1,
+    "demos": 0,
+    "quiz": 6,
+    "code_lines": 16,
+    "read_min": 13,
+    "practice_min": 30,
+    "practice_labels": [
+      "Проверка своими атаками (взято по умолчанию): 30 мин"
+    ],
+    "total_min": 43
+  },
+  "ch18": {
+    "id": "ch18",
+    "words": 1089,
+    "all_words": 1788,
+    "figures": 1,
+    "demos": 0,
+    "quiz": 6,
+    "code_lines": 0,
+    "read_min": 14,
+    "practice_min": 0,
+    "practice_labels": [],
+    "total_min": 14
+  },
+  "ch19": {
+    "id": "ch19",
+    "words": 1150,
+    "all_words": 1641,
+    "figures": 0,
+    "demos": 0,
+    "quiz": 5,
+    "code_lines": 0,
+    "read_min": 12,
+    "practice_min": 30,
+    "practice_labels": [
+      "Что писать в описании проекта (взято по умолчанию): 30 мин"
+    ],
+    "total_min": 42
+  }
+}

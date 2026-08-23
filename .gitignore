@@ -1,0 +1,10 @@
+# Исходные PDF книг: чужие права, в публичный репозиторий не кладутся
+sources/*.pdf
+
+# Собранный корпус для RAG: пересобирается из PDF командой rag/build_corpus.py
+rag/corpus/
+
+__pycache__/
+*.pyc
+.DS_Store
+.env

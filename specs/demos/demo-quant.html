@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>проба демо квантования</title>
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<main style="padding:2rem;max-width:44rem;margin:0 auto">
+
+<div class="demo">
+  <span class="dt">Попробуйте · сколько памяти занимает модель и что теряется при сжатии</span>
+  <p style="font-family:var(--font-ui);font-size:.85rem;color:var(--ink-2);margin-bottom:.8rem">
+    Память под веса считается точно: число параметров умножить на число байт на параметр. Память под KV-кеш зависит от длины контекста и числа одновременных запросов. Потеря качества дана как обычный диапазон из опубликованных замеров, у конкретной модели она своя.
+  </p>
+  <div class="row">
+    <label>Параметров, млрд <span class="val" id="q-n-v">8</span>
+      <input type="range" id="q-n" min="1" max="70" step="1" value="8">
+    </label>
+    <label>Длина контекста, токенов <span class="val" id="q-c-v">8192</span>
+      <input type="range" id="q-c" min="1" max="8" step="1" value="4">
+    </label>
+  </div>
+  <label style="margin-top:.4rem">Одновременных запросов <span class="val" id="q-b-v">4</span>
+    <input type="range" id="q-b" min="1" max="32" step="1" value="4">
+  </label>
+  <div id="q-rows" style="margin:.9rem 0"></div>
+  <div class="out" id="q-out"></div>
+</div>
+
+</main>
+<script>
+/* демо: память под веса и KV-кеш при разной разрядности */
+(function () {
+  var host = document.getElementById("q-rows");
+  if (!host) return;
+  var out = document.getElementById("q-out");
+  var elN = document.getElementById("q-n"), elC = document.getElementById("q-c"), elB = document.getElementById("q-b");
+
+  // разрядности: имя, байт на параметр весов, байт на число в KV-кеше, типичная потеря качества
+  var modes = [
+    { name: "fp32", w: 4, kv: 4, loss: "эталон, потерь нет" },
+    { name: "bf16", w: 2, kv: 2, loss: "потери в пределах шума" },
+    { name: "int8", w: 1, kv: 1, loss: "перплексия обычно хуже на доли процента" },
+    { name: "int4", w: 0.5, kv: 1, loss: "перплексия обычно хуже на единицы процентов, у моделей до 3 млрд заметно сильнее" },
+  ];
+
+  function gb(bytes) { return bytes / 1024 / 1024 / 1024; }
+
+  function draw() {
+    var N = +elN.value * 1e9;
+    var ctx = Math.pow(2, +elC.value) * 512;   // от 1024 до 65536 токенов
+    var batch = +elB.value;
+    document.getElementById("q-n-v").textContent = elN.value;
+    document.getElementById("q-c-v").textContent = ctx;
+    document.getElementById("q-b-v").textContent = batch;
+
+    // грубая, но честная оценка формы модели: число слоёв и размерность растут вместе с N
+    var layers = Math.max(16, Math.round(6 * Math.cbrt(N / 1e9) + 20));
+    // у трансформера число параметров примерно 12·слоёв·размерность², отсюда и оценка
+    var dim = Math.max(512, Math.round(Math.sqrt(N / (12 * layers)) / 8) * 8);
+
+    var rows = modes.map(function (m) {
+      var w = N * m.w;
+      // KV-кеш: два тензора на слой, ключи и значения, на каждый токен и запрос
+      var kv = 2 * layers * dim * ctx * batch * m.kv;
+      return { m: m, w: w, kv: kv, total: w + kv };
+    });
+    var max = Math.max.apply(null, rows.map(function (r) { return r.total; }));
+
+    host.innerHTML = rows.map(function (r) {
+      var wPct = (r.w / max * 100).toFixed(1), kvPct = (r.kv / max * 100).toFixed(1);
+      return '<div style="margin-bottom:.45rem">' +
+        '<div style="display:flex;justify-content:space-between;font-family:var(--font-ui);font-size:.78rem">' +
+        "<span>" + r.m.name + "</span><span>" + gb(r.total).toFixed(1) + " ГБ</span></div>" +
+        '<div style="display:flex;height:15px;border-radius:4px;overflow:hidden;background:var(--paper-3)">' +
+        '<div style="width:' + wPct + '%;background:var(--accent)"></div>' +
+        '<div style="width:' + kvPct + '%;background:var(--analogy)"></div></div>' +
+        '<div style="font-family:var(--font-ui);font-size:.68rem;color:var(--ink-3)">веса ' +
+        gb(r.w).toFixed(1) + " ГБ · KV-кеш " + gb(r.kv).toFixed(1) + " ГБ · " + r.m.loss + "</div></div>";
+    }).join("");
+
+    var fp16 = rows[1], int4 = rows[3];
+    var fits = function (r, memGb) { return gb(r.total) <= memGb; };
+    var cards = [
+      { name: "видеокарта на 24 ГБ", mem: 24 },
+      { name: "видеокарта на 80 ГБ", mem: 80 },
+    ];
+    var verdict = cards.map(function (c) {
+      var ok = modes.map(function (m, i) { return fits(rows[i], c.mem) ? m.name : null; }).filter(Boolean);
+      return c.name + ": " + (ok.length ? "влезает в " + ok.join(", ") : "не влезает ни в одной разрядности");
+    }).join("; ");
+
+    out.innerHTML =
+      "Синим показаны веса, фиолетовым KV-кеш. При " + elN.value + " млрд параметров, контексте " +
+      ctx + " токенов и " + batch + " одновременных запросах переход с bf16 на int4 уменьшает общий объём с " +
+      gb(fp16.total).toFixed(1) + " до " + gb(int4.total).toFixed(1) + " ГБ.<br>" +
+      '<div style="margin-top:.5rem">' + verdict + ".</div>" +
+      '<div style="margin-top:.5rem;color:var(--ink-3)">' +
+      (int4.kv > int4.w
+        ? "Обратите внимание: при таком контексте и таком числе запросов KV-кеш уже больше самих весов. Сжимать в этом случае надо кеш, а не только веса."
+        : "Пока веса тяжелее кеша, выигрыш даёт квантование весов. Увеличьте контекст или число запросов и посмотрите, где точка перелома.") +
+      " Кеш посчитан без группового внимания. Если модель использует GQA из главы 8, поделите его на число, во сколько раз голов запроса больше голов ключа, обычно от четырёх до восьми. Оценка формы модели приближённая: " + layers + " слоёв, размерность " + dim +
+      ". У конкретной модели эти числа свои, порядок величины сохраняется.</div>";
+  }
+
+  [elN, elC, elB].forEach(function (e) { e.addEventListener("input", draw); });
+  draw();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Приложение C. Библиотека ресурсов · AI-инженер с нуля</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <button class="icon-btn" id="menu-toggle" aria-label="Меню">☰</button>
+  <a class="brand" href="index.html">AI-инженер <span>с нуля</span></a>
+  <div class="spacer"></div>
+  <div class="search-wrap">
+    <input id="search-input" type="search" placeholder="Поиск   ⌘K" autocomplete="off">
+    <div id="search-results"></div>
+  </div>
+  <button class="icon-btn" id="theme-toggle">Тёмная</button>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar"></nav>
+
+  <main>
+    <article>
+
+      <header class="chapter-head">
+        <div class="kicker">Приложения · C</div>
+        <h1>Библиотека ресурсов</h1>
+        <p class="standfirst">
+          Источники, на которых стоит этот учебник, плюс то, что стоит читать дальше.
+          У каждого пункта написано, кому он подходит и кому нет, потому что «полезная книга»
+          без указания читателя ничего не значит. Адаптацию на русский язык сделал
+          Евгений Миронов, права на оригиналы остаются за их авторами.
+        </p>
+        <div class="chapter-meta">
+          <span>Справочник</span>
+          <span>Бесплатное помечено отдельно</span>
+        </div>
+      </header>
+
+      <h2 id="base">Две книги, которые лежат в основе</h2>
+
+      <p>
+        Обе выложены авторами бесплатно и обе переживут смену поколений моделей,
+        потому что объясняют механику, а не инструменты.
+      </p>
+
+      <div class="callout info">
+        <span class="ct">Understanding Deep Learning · Simon J.D. Prince</span>
+        <p>
+          Лучшее объяснение глубокого обучения из существующих, с огромным количеством
+          иллюстраций. Главы 1-9 этого учебника опираются на неё. Читать стоит, когда
+          захочется понять, почему всё работает, а не как это запустить.
+          Математика есть, но подаётся терпеливо.
+        </p>
+        <p>
+          <a href="https://udlbook.github.io/udlbook/">Сайт книги</a> ·
+          <a href="https://github.com/udlbook/udlbook/releases/download/v5.0.3/UnderstandingDeepLearning_02_09_26_C.pdf">PDF целиком</a> ·
+          <a href="https://github.com/udlbook/udlbook/raw/main/UDL_Answer_Booklet_Students.pdf">Ответы к упражнениям</a>
+        </p>
+        <p><b>Кому не подойдёт:</b> тем, кому нужен работающий RAG к пятнице. Это учебник, а не руководство.</p>
+      </div>
+
+      <div class="callout info">
+        <span class="ct">Speech and Language Processing · Jurafsky &amp; Martin</span>
+        <p>
+          Классический учебник обработки языка, третье издание которого авторы держат открытым
+          и регулярно обновляют. Главы 6-9 и 12-13 опираются на неё. Особенно ценны разделы
+          про токенизацию, эмбеддинги, поиск и оценку: они написаны людьми, которые занимались
+          этим до того, как появились языковые модели, и потому не путают моду с сутью.
+        </p>
+        <p>
+          <a href="https://web.stanford.edu/~jurafsky/slp3/">Сайт книги</a> ·
+          <a href="https://web.stanford.edu/~jurafsky/slp3/ed3book_aug26.pdf">PDF целиком</a>
+        </p>
+        <p><b>Кому не подойдёт:</b> книга огромная. Читать подряд не нужно, берите главы под задачу.</p>
+      </div>
+
+      <h2 id="practice">Практика</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Ресурс</th><th>О чём</th><th>Кому</th><th>Цена</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://github.com/rasbt/LLMs-from-scratch">LLMs from scratch</a><br><span style="color:var(--ink-3)">Sebastian Raschka</span></td>
+              <td>Сборка GPT-подобной модели с нуля построчно: токенизатор, внимание, обучение, дообучение</td>
+              <td>После главы 8, если хочется собрать всё руками</td>
+              <td>код бесплатно, книга платная</td>
+            </tr>
+            <tr>
+              <td><a href="https://github.com/HandsOnLLM/Hands-On-Large-Language-Models">Hands-On LLM</a><br><span style="color:var(--ink-3)">Alammar &amp; Grootendorst</span></td>
+              <td>Почти 300 авторских иллюстраций, прикладной уклон: эмбеддинги, поиск, кластеризация, дообучение</td>
+              <td>Визуалам и тем, кому главы 7-8 дались тяжело</td>
+              <td>код бесплатно, книга платная</td>
+            </tr>
+            <tr>
+              <td><a href="https://github.com/chiphuyen/dmls-book">Designing ML Systems</a><br><span style="color:var(--ink-3)">Chip Huyen</span></td>
+              <td>Проектирование систем машинного обучения: данные, дрейф, деплой, мониторинг</td>
+              <td>Прямое продолжение главы 18. Есть русский перевод</td>
+              <td>книга платная</td>
+            </tr>
+            <tr>
+              <td><a href="https://huggingface.co/learn/llm-course">HF LLM Course</a></td>
+              <td>Практический курс по библиотеке transformers</td>
+              <td>Когда нужно перейти от понимания к коду</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://huggingface.co/learn/agents-course">HF Agents Course</a></td>
+              <td>Агенты, инструменты, протоколы</td>
+              <td>После главы 14</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://huggingface.co/learn/smol-course">HF Smol Course</a></td>
+              <td>Дообучение и выравнивание маленьких моделей на доступном железе</td>
+              <td>После главы 10, если хочется потрогать LoRA и DPO</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://huggingface.co/learn/deep-rl-course">HF Deep RL Course</a></td>
+              <td>Обучение с подкреплением от основ</td>
+              <td>Если после главы 10 захотелось разобраться в RLHF всерьёз</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.deeplearning.ai/courses">DeepLearning.AI</a></td>
+              <td>Короткие курсы по узким темам, часто с партнёрами</td>
+              <td>Точечно, под конкретную задачу. Качество разное</td>
+              <td>короткие бесплатны</td>
+            </tr>
+            <tr>
+              <td><a href="https://roadmap.sh/ai-engineer">roadmap.sh AI Engineer</a></td>
+              <td>Карта тем со ссылками</td>
+              <td>Для проверки, не пропущено ли что-то. Как учебный план не годится</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://ch-balaji.github.io/ai-engineer-roadmap/">AI Engineer Roadmap 2026</a></td>
+              <td>План на 26 недель от практикующего инженера</td>
+              <td>Для сверки своего плана с чужим, после части IV</td>
+              <td>бесплатно</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="compress">Сжатие моделей и локальный запуск</h2>
+
+      <p>
+        Теорию квантования разбирает <a href="ch41.html">глава 41</a>, устройство движков
+        инференса <a href="ch42.html">глава 42</a>. Здесь собрано то, что нужно, чтобы
+        перейти от понимания к запуску своей модели на своём железе: прореживание,
+        дистилляция, форматы весов, локальные серверы.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Ресурс</th><th>О чём</th><th>Кому</th><th>Цена</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://hanlab.mit.edu/courses/2024-fall-65940">MIT 6.5940 EfficientML</a><br><span style="color:var(--ink-3)">Song Han, MIT</span></td>
+              <td>Единственный полноценный университетский курс целиком про эффективность: прореживание, квантование, дистилляция, поиск архитектур, инференс больших моделей, обучение на устройстве. Лабораторные заканчиваются запуском модели на ноутбуке</td>
+              <td>Главный источник по теме. Слайды и записи лекций выложены, вход после главы 41</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://ai.google.dev/edge">Google AI Edge и LiteRT</a></td>
+              <td>Официальная документация Google по запуску моделей на телефоне и ноутбуке: конвертация весов, посттренировочное квантование, среда LiteRT, замер задержки на устройстве</td>
+              <td>Если цель мобильное приложение или работа без сети</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://ai.google.dev/gemma/docs">Документация Gemma</a> и <a href="https://blog.google/innovation-and-ai/technology/developers-tools/quantization-aware-training-gemma-4/">разбор QAT</a><br><span style="color:var(--ink-3)">Google</span></td>
+              <td>Разбор на живой открытой модели: обучение с учётом квантования, готовые сжатые веса, выбор размера под доступную видеопамять</td>
+              <td>Лучший практический пример к разделу главы 41 про QAT</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://huggingface.co/docs/transformers/quantization/selecting">Выбор способа квантования</a><br><span style="color:var(--ink-3)">Hugging Face</span></td>
+              <td>Таблица сравнения bitsandbytes, GPTQ, AWQ, torchao и других: что требует калибровочной выборки, что подходит для дообучения, что для инференса</td>
+              <td>Когда надо выбрать способ под свою задачу, а не читать про все</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://github.com/ggml-org/llama.cpp">llama.cpp</a> и <a href="https://github.com/ggml-org/ggml/blob/master/docs/gguf.md">формат GGUF</a></td>
+              <td>Запуск модели на процессоре и потребительской видеокарте. Конвертация в GGUF, уровни сжатия от 2 до 8 бит, свой сервер с совместимым с OpenAI интерфейсом</td>
+              <td>Стандарт де-факто для локального запуска. Начинать отсюда</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://docs.ollama.com/">Ollama</a></td>
+              <td>Обёртка над тем же движком с управлением моделями в одну команду</td>
+              <td>Когда нужно поднять локальную модель за пять минут и не разбираться в флагах сборки</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://docs.vllm.ai/en/latest/">vLLM</a></td>
+              <td>Серверный инференс на видеокартах: непрерывная пакетная обработка, PagedAttention, сжатые форматы весов</td>
+              <td>Когда локальный запуск перерастает в сервис на несколько пользователей. Продолжение главы 42</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://github.com/unslothai/unsloth">Unsloth</a></td>
+              <td>Дообучение и сжатие моделей на одной видеокарте, готовые тетради под каждую модель</td>
+              <td>После главы 10, если LoRA хочется потрогать на своём железе</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://arxiv.org/abs/2103.13630">A Survey of Quantization Methods</a><br><span style="color:var(--ink-3)">Gholami и другие</span></td>
+              <td>Обзорная статья, которая раскладывает всё поле квантования по полкам и связывает способы между собой</td>
+              <td>Если после главы 41 хочется системной картины, а не рецептов</td>
+              <td>бесплатно</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="reading">Что читать регулярно</h2>
+
+      <p>
+        Час в неделю на одну вещь, с записью короткого вывода о применимости.
+        Источники, которые окупают это время.
+      </p>
+
+      <ul>
+        <li><b>Карточки моделей</b> у поставщиков. Там пишут размер контекста, поддерживаемые
+        режимы, ограничения и цены. Это первоисточник, а не пересказ.</li>
+        <li><b>Документация API</b>, которым вы пользуетесь, целиком, один раз. Половина
+        приёмов из главы 11 и главы 16 просто описана там, и люди годами не знают о них.</li>
+        <li><b>Исходный код библиотек</b>, которые вы применяете. Когда поведение непонятно,
+        чтение исходника занимает двадцать минут, а поиск ответа в интернете полдня.</li>
+        <li><b>Сообщество DeepLearning.AI</b> и форумы Hugging Face: там разбирают конкретные
+        поломки, а не анонсы. <a href="https://community.deeplearning.ai/">Ссылка</a>.</li>
+      </ul>
+
+      <div class="callout warn">
+        <span class="ct">К чему относиться осторожно</span>
+        <p>
+          Публичные рейтинги моделей: результаты на них завышены загрязнением обучающих
+          корпусов, о котором шла речь в главе 9. Ориентируйтесь на свой набор примеров
+          из главы 15.
+        </p>
+        <p>
+          Статьи вида «10 промптов, которые изменят вашу работу»: приёмы из них не
+          воспроизводятся между версиями моделей. Проверяемая часть промптинга разобрана
+          в главе 11.
+        </p>
+        <p>
+          Курсы, обещающие профессию за месяц. Порог входа действительно закрывается
+          примерно за месяц, но рабочий уровень занимает три или четыре месяца практики,
+          и это видно по требованиям в вакансиях.
+        </p>
+      </div>
+
+      <h2 id="rag">Спросить у первоисточников</h2>
+
+      <p>
+        Обе базовые книги загружены в поисковый корпус рядом с этим учебником:
+        516 фрагментов, около 540 тысяч слов. Скрипты лежат в папке <code>rag/</code>
+        репозитория. Можно задать вопрос и получить ответ со ссылками на разделы книг.
+      </p>
+
+      <div class="code-label">bash</div>
+      <pre><code># собрать корпус из PDF (один раз)
+python3 rag/build_corpus.py
+
+# залить в хранилище OpenAI и получить его идентификатор
+python3 rag/openai_store.py upload
+
+# спросить
+python3 rag/openai_store.py ask "что такое induction head и зачем он нужен"</code></pre>
+
+      <p>
+        Полезно, когда в учебнике тема упомянута кратко, а нужны подробности:
+        скрипт найдёт нужные страницы в оригинале и переведёт ответ на русский.
+      </p>
+
+      <nav class="chapter-nav" id="chapter-nav"></nav>
+
+    </article>
+  </main>
+
+  <aside class="on-page" id="on-page"></aside>
+</div>
+
+<div id="tooltip"></div>
+
+<script src="assets/toc.js"></script>
+<script src="assets/glossary.js"></script>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

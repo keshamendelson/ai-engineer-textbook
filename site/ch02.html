@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Глава 2. Что значит «модель учится» · AI-инженер с нуля</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <button class="icon-btn" id="menu-toggle" aria-label="Меню">☰</button>
+  <a class="brand" href="index.html">AI-инженер <span>с нуля</span></a>
+  <div class="spacer"></div>
+  <div class="search-wrap">
+    <input id="search-input" type="search" placeholder="Поиск   ⌘K" autocomplete="off">
+    <div id="search-results"></div>
+  </div>
+  <button class="icon-btn" id="theme-toggle">Тёмная</button>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar"></nav>
+
+  <main>
+    <article>
+
+      <header class="chapter-head">
+        <div class="kicker">Часть I. Фундамент · глава 2</div>
+        <h1>Что значит «модель учится»</h1>
+        <p class="standfirst">
+        Обучение это подгонка чисел под данные. Сложность в том, чтобы подогнать не слишком точно. Разберём, откуда берётся функция потерь, почему модель с идеальным результатом на обучающих данных обычно бесполезна и какие метрики врут.
+      </p>
+        <div class="chapter-meta">
+          <span>19 минут чтения</span>
+          <span>1,5 ч с практикой</span>
+          <span>Нужна глава 1</span>
+          <span>Код: NumPy, scikit-learn</span>
+        </div>
+      </header>
+
+      <h2 id="setup">Из чего состоит задача</h2>
+
+      <p>
+        Возьмём конкретную задачу: предсказать цену квартиры. У нас есть таблица из 5000 строк. В каждой строке площадь, этаж, год постройки, расстояние до метро и фактическая цена сделки. Первые четыре колонки называются признаками, последняя целевой переменной или меткой.
+      </p>
+
+      <p>
+        Модель это функция с настраиваемыми числами внутри. Самая простая выглядит так:
+        <code>цена = w₁·площадь + w₂·этаж + w₃·год + w₄·метро + b</code>. Числа
+        <code>w</code> и <code>b</code> и есть параметры. Пока они случайны, модель выдаёт
+        чушь. Обучение это подбор таких параметров, при которых предсказания ближе всего
+        к настоящим ценам.
+      </p>
+
+      <figure>
+        <svg viewBox="0 0 700 250" role="img" aria-label="Схема обучения с учителем: данные, модель, потери, обновление параметров">
+          <defs>
+            <marker id="l-ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+              <path d="M0,0 L9,4.5 L0,9 z" class="s-fill-a"/>
+            </marker>
+          </defs>
+
+          <rect x="20" y="70" width="118" height="76" rx="8" class="s-box"/>
+          <text x="79" y="98" class="s-t-b" text-anchor="middle">Признаки</text>
+          <text x="79" y="116" class="s-t-xs" text-anchor="middle">площадь, этаж,</text>
+          <text x="79" y="130" class="s-t-xs" text-anchor="middle">год, метро</text>
+
+          <rect x="182" y="70" width="118" height="76" rx="8" class="s-box-a"/>
+          <text x="241" y="98" class="s-t-b" text-anchor="middle">Модель</text>
+          <text x="241" y="116" class="s-t-xs" text-anchor="middle">параметры w, b</text>
+          <text x="241" y="130" class="s-t-xs" text-anchor="middle">пока случайные</text>
+
+          <rect x="344" y="70" width="118" height="76" rx="8" class="s-box"/>
+          <text x="403" y="98" class="s-t-b" text-anchor="middle">Предсказание</text>
+          <text x="403" y="118" class="s-t-xs" text-anchor="middle">8 400 000 ₽</text>
+
+          <rect x="506" y="70" width="118" height="76" rx="8" class="s-box-w"/>
+          <text x="565" y="92" class="s-t-b" text-anchor="middle">Потери</text>
+          <text x="565" y="110" class="s-t-xs" text-anchor="middle">насколько мимо</text>
+          <text x="565" y="128" class="s-t-xs" text-anchor="middle">одно число</text>
+
+          <rect x="344" y="182" width="118" height="46" rx="8" class="s-box-g"/>
+          <text x="403" y="202" class="s-t-b" text-anchor="middle">Правильный</text>
+          <text x="403" y="219" class="s-t-b" text-anchor="middle">ответ</text>
+
+          <path d="M138,108 L174,108" class="s-line-a" marker-end="url(#l-ar)"/>
+          <path d="M300,108 L336,108" class="s-line-a" marker-end="url(#l-ar)"/>
+          <path d="M462,108 L498,108" class="s-line-a" marker-end="url(#l-ar)"/>
+          <path d="M420,182 L440,150" class="s-line-a" marker-end="url(#l-ar)"/>
+
+          <path d="M565,146 L565,205 Q565,220 550,220 L256,220 Q241,220 241,205 L241,152" class="s-line-a" stroke-dasharray="6 4" marker-end="url(#l-ar)"/>
+          <text x="400" y="245" class="s-t-a" text-anchor="middle">обновить параметры против градиента потерь и повторить</text>
+
+          <text x="20" y="40" class="s-t-b">Один шаг обучения</text>
+          <text x="20" y="58" class="s-t-s">повторяется миллионы раз</text>
+        </svg>
+        <figcaption>
+          <b>Этот цикл одинаков для линейной регрессии и для GPT.</b> Отличается только сложность
+          модели и объём данных. У языковой модели «правильный ответ» это просто следующее
+          слово в тексте, поэтому размечать данные вручную не нужно.
+        </figcaption>
+      </figure>
+
+      <h2 id="loss">Функция потерь</h2>
+
+      <p>
+        Нужно одно число, показывающее, насколько плохи предсказания. Для чисел естественная мера это разница между предсказанным и настоящим. Разницу возводят в квадрат, чтобы промахи в обе стороны считались одинаково плохими, а затем усредняют по всем примерам. Получается среднеквадратичная ошибка.
+      </p>
+
+      <div class="callout math">
+        <span class="ct">Две функции потерь, которых хватает на 90% задач</span>
+        <div class="formula">
+          <span class="fx">MSE = (1/n) · Σ (yᵢ − ŷᵢ)²</span>
+          <span class="fnote">
+            Для предсказания чисел. Квадрат сильно наказывает большие промахи: ошибка в 10
+            весит в 100 раз больше ошибки в 1. Это удобно, когда крупные промахи действительно
+            дороже, и вредно, когда в данных есть выбросы. Тогда берут абсолютную ошибку MAE
+            или ошибку Хьюбера.
+          </span>
+        </div>
+        <div class="formula">
+          <span class="fx">CE = − Σ yᵢ · log(p̂ᵢ)</span>
+          <span class="fnote">
+            <a class="term" href="app-a.html#t-perekrestnaya-entropiya" data-term="перекрёстная энтропия">Перекрёстная энтропия</a>, для классификации. Если правильный класс получил вероятность
+            0.9, потеря равна −log(0.9) ≈ 0.105. Если 0.01, то −log(0.01) ≈ 4.6. Уверенная
+            ошибка наказывается в сорок раз сильнее неуверенной, и это ровно то поведение,
+            которое нужно. Языковые модели обучаются именно этой функцией потерь.
+          </span>
+        </div>
+      </div>
+
+      <p>
+        Выбирая функцию потерь, вы формулируете, что считаете хорошим результатом. Если в задаче пропустить мошенническую транзакцию хуже, чем лишний раз побеспокоить клиента, это надо записать в потери весами, иначе модель будет оптимизировать не то, что вам нужно.
+      </p>
+
+      <div class="callout analogy">
+        <span class="ct">Аналогия</span>
+        <p>
+        <a class="term" href="app-a.html#t-funkciya-poter" data-term="функция потерь">Функция потерь</a> это то, за что ученику снижают оценку. Если снижать только за орфографию, ученик научится писать безошибочные тексты ни о чём. Модель ведёт себя так же, но без чувства меры: она найдёт любую лазейку, которая уменьшает потери, включая ту, о которой вы не подумали.
+      </p>
+      </div>
+
+      <details class="deeper">
+        <summary>Вывод: перекрёстная энтропия из максимального правдоподобия</summary>
+        <div class="deeper-body">
+<p>Рассмотрим типичную задачу классификации. Модель с параметрами <code>θ</code> принимает на вход вектор признаков <code>x</code> и выдаёт распределение вероятностей по возможным классам. Обозначим это распределение как <code>p_θ(y|x)</code>. Например, если задача бинарной классификации, модель может возвращать два числа, которые после применения функции <code>softmax</code> превращаются в вероятности класса 0 и класса 1, суммирующиеся в единицу.</p>
+
+<p>Предположим, что обучающая выборка состоит из <code>N</code> независимых примеров. Тогда вероятность увидеть именно этот набор данных это произведение вероятностей каждого отдельного примера. Запишем это как <code>L(θ) = Π p_θ(y_i | x_i)</code>, где индекс <code>i</code> пробегает все примеры от 1 до <code>N</code>. Естественное требование к процессу обучения, подобрать параметры <code>θ</code>, при которых эта вероятность окажется максимальной. Такой подход называется методом максимального правдоподобия.</p>
+
+<p>С произведением работать неудобно. Если у вас тысяча множителей, каждый из которых меньше единицы, их произведение быстро становится числом, которое не помещается в стандартные числовые типы данных. Логарифм, монотонно возрастающая функция, поэтому точка максимума для <code>L(θ)</code> и для <code>log L(θ)</code> совпадают. Преобразуем произведение в сумму: <code>log L(θ) = Σ log p_θ(y_i | x_i)</code>.</p>
+
+<p>Большинство оптимизационных алгоритмов, таких как градиентный спуск, рассчитаны на минимизацию функции потерь, а не на максимизацию. Поэтому меняем знак и вводим нормировку на число примеров, чтобы итоговая величина не зависела от размера обучающей выборки. Получаем функцию потерь: <code>J(θ) = -(1/N)·Σ log p_θ(y_i | x_i)</code>.</p>
+
+<p>Теперь уточним запись правильного ответа. В задачах классификации истинный ответ часто представляют в виде one-hot вектора, то есть вектора из нулей, в котором на месте верного класса стоит единица. Обозначим этот вектор как <code>y_i</code>, а предсказанное моделью распределение, через <code>p̂_i</code>. Тогда логарифм вероятности можно разложить по слагаемым, соответствующим каждому классу <code>c</code>: <code>log p_θ(y_i|x_i) = Σ_c y_i[c]·log p̂_i[c]</code>.</p>
+
+<p>Подставляя это выражение в функцию потерь, получаем <code>J(θ) = -(1/N)·Σ_i Σ_c y_i[c]·log p̂_i[c]</code>. Это и есть перекрёстная энтропия, мера различия между истинным распределением ответа и тем, что предсказала модель. Для бинарной классификации сумма по классам сворачивается в более компактную форму: <code>J = -(1/N)·Σ [ y·log p̂ + (1-y)·log(1-p̂) ]</code>.</p>
+
+<p>На практике из этой формулы видно, какую цену платит модель за ошибки. Вклад одного примера в общую величину потерь равен <code>-log p̂</code> для верного класса. Если модель предсказывает верный класс с высокой уверенностью, <code>p̂</code> близко к единице, и вклад мал. Но если <code>p̂</code> стремится к нулю, логарифм уходит в минус бесконечность, а с минусом знака, в плюс бесконечность. Уверенная ошибка стоит несравнимо дороже неуверенной. Именно по этой причине в реальных реализациях под логарифм подставляют значение софтмакса, сглаженное малым числом, или используют одну из численно устойчивых формул вычисления перекрёстной энтропии.</p>
+        </div>
+      </details>
+
+      <h2 id="generalization">Обобщение</h2>
+
+      <p>
+        Модель, которая идеально предсказывает цены на тех же 5000 квартирах, на которых училась, не стоит ничего. Ценность в предсказании цены квартиры, которую модель не видела. Это свойство называется обобщением, и ради него придуманы приёмы из главы 5.
+      </p>
+
+      <p>
+        Чтобы измерить обобщение, данные делят до начала обучения. Обычная схема: 70% на обучение, 15% на валидацию, 15% на финальный тест. Модель учится только на первой части. Вторая нужна для выбора настроек: сколько слоёв, какая регуляризация, когда остановиться. Третья не трогается вообще ни разу до самого конца и служит честной оценкой.
+      </p>
+
+      <figure>
+        <svg viewBox="0 0 700 260" role="img" aria-label="Три модели на одних данных: недообучение, хорошая подгонка, переобучение">
+          <g>
+            <rect x="18" y="34" width="206" height="170" rx="8" class="s-box"/>
+            <text x="121" y="24" class="s-t-b" text-anchor="middle">Недообучение</text>
+            <circle cx="52" cy="164" r="3.5" class="s-fill-2"/><circle cx="76" cy="146" r="3.5" class="s-fill-2"/>
+            <circle cx="94" cy="158" r="3.5" class="s-fill-2"/><circle cx="112" cy="118" r="3.5" class="s-fill-2"/>
+            <circle cx="132" cy="128" r="3.5" class="s-fill-2"/><circle cx="150" cy="88" r="3.5" class="s-fill-2"/>
+            <circle cx="172" cy="100" r="3.5" class="s-fill-2"/><circle cx="196" cy="66" r="3.5" class="s-fill-2"/>
+            <line x1="40" y1="150" x2="206" y2="126" class="s-line-a" stroke-width="2.5"/>
+            <text x="121" y="226" class="s-t-s" text-anchor="middle">модель слишком простая</text>
+            <text x="121" y="242" class="s-t-xs" text-anchor="middle">плохо и на обучении, и на тесте</text>
+          </g>
+
+          <g>
+            <rect x="247" y="34" width="206" height="170" rx="8" class="s-box-g"/>
+            <text x="350" y="24" class="s-t-b" text-anchor="middle">Хорошо</text>
+            <circle cx="281" cy="164" r="3.5" class="s-fill-2"/><circle cx="305" cy="146" r="3.5" class="s-fill-2"/>
+            <circle cx="323" cy="158" r="3.5" class="s-fill-2"/><circle cx="341" cy="118" r="3.5" class="s-fill-2"/>
+            <circle cx="361" cy="128" r="3.5" class="s-fill-2"/><circle cx="379" cy="88" r="3.5" class="s-fill-2"/>
+            <circle cx="401" cy="100" r="3.5" class="s-fill-2"/><circle cx="425" cy="66" r="3.5" class="s-fill-2"/>
+            <path d="M269,168 C310,150 340,128 360,116 C390,98 410,82 435,66" class="s-line-a" stroke-width="2.5" fill="none"/>
+            <text x="350" y="226" class="s-t-s" text-anchor="middle">поймана закономерность</text>
+            <text x="350" y="242" class="s-t-xs" text-anchor="middle">шум проигнорирован</text>
+          </g>
+
+          <g>
+            <rect x="476" y="34" width="206" height="170" rx="8" class="s-box-w"/>
+            <text x="579" y="24" class="s-t-b" text-anchor="middle">Переобучение</text>
+            <circle cx="510" cy="164" r="3.5" class="s-fill-2"/><circle cx="534" cy="146" r="3.5" class="s-fill-2"/>
+            <circle cx="552" cy="158" r="3.5" class="s-fill-2"/><circle cx="570" cy="118" r="3.5" class="s-fill-2"/>
+            <circle cx="590" cy="128" r="3.5" class="s-fill-2"/><circle cx="608" cy="88" r="3.5" class="s-fill-2"/>
+            <circle cx="630" cy="100" r="3.5" class="s-fill-2"/><circle cx="654" cy="66" r="3.5" class="s-fill-2"/>
+            <path d="M500,175 L510,164 L534,146 L552,158 L570,118 L590,128 L608,88 L630,100 L654,66 L668,60" class="s-line-a" stroke-width="2.5" fill="none"/>
+            <text x="579" y="226" class="s-t-s" text-anchor="middle">запомнены все точки</text>
+            <text x="579" y="242" class="s-t-xs" text-anchor="middle">на новых данных развалится</text>
+          </g>
+        </svg>
+        <figcaption>
+        <b>Средняя картинка ошибается на обучающих данных сильнее правой, и это правильно.</b> В точках есть случайный шум: конкретная квартира продалась дешевле из-за срочности продавца. Правая модель выучила и этот шум тоже, приняв его за закономерность.
+      </figcaption>
+      </figure>
+
+      <div class="callout warn">
+        <span class="ct">Грабли · утечка данных</span>
+        <p>
+        Самая дорогая ошибка в машинном обучении выглядит как успех. Утечка это ситуация, когда в обучающие признаки просочилась информация, которой в момент предсказания не будет.
+      </p>
+        <p>
+        Живые примеры. Нормировали все данные сразу, а потом разделили: среднее и разброс посчитались с участием тестовой части. Предсказываете отток клиентов, а среди признаков есть «дата закрытия счёта». Разделили данные случайно, хотя в них есть время, и модель предсказывает прошлое по будущему.
+      </p>
+        <p>
+        <a class="term" href="app-a.html#t-priznak" data-term="признак">Признак</a> утечки простой: качество подозрительно высокое. Если на первой же попытке вы получили 0.98 там, где коллеги годами держат 0.80, ищите утечку, а не радуйтесь.
+      </p>
+      </div>
+
+      <h2 id="metrics">Почему доля правильных ответов обманывает</h2>
+
+      <p>
+        Простейшая метрика классификации, доля правильных ответов. Она бесполезна,
+        когда классы не сбалансированы. Если мошеннических транзакций 0.1%, модель,
+        всегда отвечающая «не мошенничество», покажет 99.9% и не поймает ни одного мошенника.
+      </p>
+
+      <p>
+        Поэтому смотрят на таблицу из четырёх чисел, а не на одно.
+      </p>
+
+      <figure>
+        <svg viewBox="-14 0 714 300" role="img" aria-label="Матрица ошибок и формулы точности и полноты">
+          <text x="20" y="22" class="s-t-b">Матрица ошибок</text>
+
+          <text x="196" y="52" class="s-t-s" text-anchor="middle">Модель сказала «да»</text>
+          <text x="356" y="52" class="s-t-s" text-anchor="middle">Модель сказала «нет»</text>
+
+          <text x="96" y="106" class="s-t-s" text-anchor="end">На самом деле да</text>
+          <text x="96" y="186" class="s-t-s" text-anchor="end">На самом деле нет</text>
+
+          <rect x="116" y="66" width="160" height="66" rx="6" class="s-box-g"/>
+          <text x="196" y="94" class="s-t-b" text-anchor="middle">TP</text>
+          <text x="196" y="114" class="s-t-xs" text-anchor="middle">верно пойман</text>
+
+          <rect x="286" y="66" width="160" height="66" rx="6" class="s-box-w"/>
+          <text x="366" y="94" class="s-t-b" text-anchor="middle">FN</text>
+          <text x="366" y="114" class="s-t-xs" text-anchor="middle">пропустили</text>
+
+          <rect x="116" y="146" width="160" height="66" rx="6" class="s-box-w"/>
+          <text x="196" y="174" class="s-t-b" text-anchor="middle">FP</text>
+          <text x="196" y="194" class="s-t-xs" text-anchor="middle">ложная тревога</text>
+
+          <rect x="286" y="146" width="160" height="66" rx="6" class="s-box"/>
+          <text x="366" y="174" class="s-t-b" text-anchor="middle">TN</text>
+          <text x="366" y="194" class="s-t-xs" text-anchor="middle">верно пропущен</text>
+
+          <line x1="480" y1="60" x2="480" y2="230" class="s-line-d"/>
+
+          <text x="500" y="78" class="s-t-b">Точность (precision)</text>
+          <text x="500" y="96" class="s-t-s">TP / (TP + FP)</text>
+          <text x="500" y="114" class="s-t-xs">из тех, кого поймали,</text>
+          <text x="500" y="128" class="s-t-xs">сколько пойманы верно</text>
+
+          <text x="500" y="158" class="s-t-b">Полнота (recall)</text>
+          <text x="500" y="176" class="s-t-s">TP / (TP + FN)</text>
+          <text x="500" y="194" class="s-t-xs">из тех, кого надо было</text>
+          <text x="500" y="208" class="s-t-xs">поймать, сколько поймали</text>
+
+          <text x="500" y="238" class="s-t-b">F1</text>
+          <text x="500" y="256" class="s-t-xs">гармоническое среднее,</text>
+          <text x="500" y="270" class="s-t-xs">падает, если одна из двух плоха</text>
+
+          <text x="20" y="262" class="s-t-s">Доля правильных ответов = (TP + TN) / всего.</text>
+          <text x="20" y="280" class="s-t-s">При редком классе TN огромен и заглушает всё остальное.</text>
+        </svg>
+        <figcaption>
+          <b>Точность и полнота тянут в разные стороны.</b> Хотите ловить больше мошенников,
+          снижайте порог: полнота растёт, точность падает, служба поддержки тонет в жалобах
+          заблокированных клиентов. Какой компромисс правильный, решает бизнес, а не модель.
+        </figcaption>
+      </figure>
+
+      <div class="demo">
+        <span class="dt">Попробуйте · порог решения</span>
+        <p style="font-family:var(--font-ui);font-size:.85rem;color:var(--ink-2);margin-bottom:.8rem">
+          Модель выдаёт вероятность мошенничества. Порог решает, с какого значения бить тревогу.
+          На тысяче транзакций, из которых 30 мошеннические. Подвигайте порог и посмотрите,
+          как расходятся точность и полнота.
+        </p>
+        <label>Порог: <span class="val" id="thr-v">0.50</span>
+          <input type="range" id="thr" min="5" max="95" value="50">
+        </label>
+        <div class="out" id="thr-out"></div>
+      </div>
+
+      <div class="callout info">
+        <span class="ct">Как выбирают порог на практике</span>
+        <p>
+          Считают деньги. Пропущенный мошенник стоит компании 40 000 рублей, ложная блокировка
+          стоит 300 рублей на обработку обращения плюс риск ухода клиента, оцените его хоть
+          в 2000. Тогда ищете порог, минимизирующий <code>40000 · FN + 2300 · FP</code>.
+          Это скучнее, чем максимизировать F1, зато отвечает на вопрос, который вам зададут
+          на защите проекта.
+        </p>
+      </div>
+
+      <h2 id="kinds">Три вида обучения</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Вид</th><th>Что даётся</th><th>Что ищет</th><th>Пример</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>С учителем</td>
+              <td>Пары «вход, правильный ответ»</td>
+              <td>Функцию, переводящую вход в ответ</td>
+              <td>Классификация писем, предсказание цены</td>
+            </tr>
+            <tr>
+              <td>Без учителя</td>
+              <td>Только входы, без ответов</td>
+              <td>Структуру в данных</td>
+              <td>Кластеризация клиентов, эмбеддинги, генеративные модели</td>
+            </tr>
+            <tr>
+              <td>С подкреплением</td>
+              <td>Среду и сигнал награды</td>
+              <td>Стратегию действий, максимизирующую награду</td>
+              <td>Игры, робототехника, обучение LLM на предпочтениях</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>
+        <a class="term" href="app-a.html#t-predobuchenie" data-term="предобучение">Предобучение</a> языковой модели формально относится ко второму типу: размеченных
+        данных нет, есть только тексты. Но внутри это обучение с учителем, где меткой служит
+        следующее слово самого текста. Такой приём называют самообучением с учителем,
+        и он снял главное ограничение отрасли: разметка перестала быть узким местом.
+        Про обучение с подкреплением подробно в главе 10, там оно понадобится для <a class="term" href="app-a.html#t-rlhf" data-term="rlhf">RLHF</a>.
+      </p>
+
+      <div class="callout practice">
+        <span class="ct">Сделайте руками · 60 минут · нужен Python</span>
+        <p>
+          Соберите классификатор на несбалансированных данных и убедитесь своими глазами,
+          что доля правильных ответов врёт.
+        </p>
+        <div class="code-label">python</div>
+        <pre><code>import numpy as np
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, confusion_matrix
+
+X, y = make_classification(
+    n_samples=5000, n_features=20, weights=[0.97, 0.03], random_state=0
+)
+X_tr, X_te, y_tr, y_te = train_test_split(
+    X, y, test_size=0.3, stratify=y, random_state=0   # stratify обязателен
+)
+
+model = LogisticRegression(max_iter=1000).fit(X_tr, y_tr)
+probs = model.predict_proba(X_te)[:, 1]
+
+for thr in (0.5, 0.3, 0.15, 0.05):
+    pred = (probs >= thr).astype(int)
+    tn, fp, fn, tp = confusion_matrix(y_te, pred).ravel()
+    prec = tp / (tp + fp) if tp + fp else 0
+    rec = tp / (tp + fn) if tp + fn else 0
+    acc = (tp + tn) / len(y_te)
+    print(f"порог {thr:.2f}  доля верных {acc:.3f}  точность {prec:.3f}  полнота {rec:.3f}")</code></pre>
+        <p>
+          Три вопроса к результату. Почему доля правильных ответов почти не меняется,
+          пока точность и полнота гуляют вдвое? Какой порог вы бы выбрали, если пропуск
+          стоит в 20 раз дороже ложной тревоги? Что произойдёт, если убрать
+          <code>stratify=y</code> и почему это опасно при 3% положительного класса?
+        </p>
+      </div>
+
+      <div class="sources">
+        <span class="ct">Где про это написано подробнее</span>
+        <ul>
+          <li><a href="https://hastie.su.domains/ElemStatLearn/" target="_blank" rel="noopener">Hastie, Tibshirani, Friedman. The Elements of Statistical Learning</a>. классика про обучение, обобщение и оценку качества</li>
+          <li><a href="https://probml.github.io/pml-book/" target="_blank" rel="noopener">Kevin Murphy. Probabilistic Machine Learning</a>. вероятностный взгляд на те же понятия, с выкладками</li>
+          <li><a href="https://udlbook.github.io/udlbook/" target="_blank" rel="noopener">Understanding Deep Learning, главы 1 и 2</a>. постановка задачи обучения с учителем</li>
+        </ul>
+      </div>
+
+      <div class="recap">
+        <h3>Коротко</h3>
+        <ol>
+          <li>Обучение это подбор параметров модели так, чтобы уменьшить функцию потерь на обучающих данных.</li>
+          <li>Функция потерь это формальная запись того, что вы считаете хорошим результатом. Модель оптимизирует именно её, а не ваши намерения.</li>
+          <li>Ценность модели в предсказании на данных, которых она не видела. Поэтому данные делят до обучения, а тестовую часть не трогают до самого конца.</li>
+          <li><a class="term" href="app-a.html#t-utechka-dannyh" data-term="утечка данных">Утечка данных</a> маскируется под успех. Подозрительно высокое качество это повод искать ошибку, а не радоваться.</li>
+          <li>Доля правильных ответов бесполезна при редком классе. Смотрите на матрицу ошибок и выбирайте порог по стоимости ошибок обоих типов.</li>
+        </ol>
+      </div>
+
+      <div class="quiz">
+        <h3>Проверьте себя</h3>
+        <p class="quiz-sub">Пять вопросов.</p>
+
+        <div class="q">
+          <p class="qt">
+        Модель показывает 99.2% правильных ответов на задаче поиска брака, где брака 0.9%. Это означает, что модель почти не находит брак.
+      </p>
+          <label class="opt"><input type="radio" name="q1">Модель отличная, можно внедрять</label>
+          <label class="opt" data-correct="1"><input type="radio" name="q1">Пока ничего: такой результат даёт даже модель, всегда отвечающая «брака нет»</label>
+          <label class="opt"><input type="radio" name="q1">Модель переобучена</label>
+          <label class="opt"><input type="radio" name="q1">Нужно увеличить обучающую выборку</label>
+          <div class="why">
+            Постоянный ответ «нет» даст 99.1%. Прирост в 0.1 процентного пункта не говорит
+            ни о чём. Нужно смотреть на полноту: сколько бракованных деталей модель реально
+            поймала, и на точность: сколько ложных тревог она при этом создала.
+          </div>
+        </div>
+
+        <div class="q">
+          <p class="qt">2. Зачем нужна валидационная часть данных, если уже есть тестовая?</p>
+          <label class="opt"><input type="radio" name="q2">Чтобы обучение шло быстрее</label>
+          <label class="opt" data-correct="1"><input type="radio" name="q2">Чтобы подбирать настройки, не подглядывая в тест, иначе оценка на тесте перестанет быть честной</label>
+          <label class="opt"><input type="radio" name="q2">Чтобы было больше данных для обучения</label>
+          <label class="opt"><input type="radio" name="q2">Валидация нужна только в глубоком обучении</label>
+          <div class="why">
+            Каждый раз, когда вы выбираете настройку по результату на каких-то данных,
+            вы немного подгоняете модель под эти данные. Если делать так на тесте,
+            финальное число окажется завышенным, и в проде вас ждёт сюрприз.
+          </div>
+        </div>
+
+        <div class="q">
+          <p class="qt">3. Вы предсказываете отток клиентов и разделили данные случайно. В чём риск?</p>
+          <label class="opt"><input type="radio" name="q3">Риска нет, случайное деление это стандарт</label>
+          <label class="opt" data-correct="1"><input type="radio" name="q3">В данных есть время: модель будет обучаться на будущем и предсказывать прошлое, а в проде так не будет</label>
+          <label class="opt"><input type="radio" name="q3">Случайное деление всегда даёт заниженное качество</label>
+          <label class="opt"><input type="radio" name="q3">Нужно просто увеличить долю теста</label>
+          <div class="why">
+            Для данных с временной структурой делят по времени: обучение на январе-сентябре,
+            тест на октябре-декабре. Иначе получается утечка из будущего, и оценка качества
+            завышена. Это одна из самых частых ошибок в продуктовых задачах.
+          </div>
+        </div>
+
+        <div class="q">
+          <p class="qt">4. Почему перекрёстная энтропия наказывает уверенную ошибку сильнее неуверенной?</p>
+          <label class="opt"><input type="radio" name="q4">Так решили авторы формулы для удобства</label>
+          <label class="opt" data-correct="1"><input type="radio" name="q4">Из-за логарифма: при вероятности правильного класса, стремящейся к нулю, −log растёт неограниченно</label>
+          <label class="opt"><input type="radio" name="q4">Потому что вероятности нормированы на единицу</label>
+          <label class="opt"><input type="radio" name="q4">Она не наказывает сильнее, это миф</label>
+          <div class="why">
+            −log(0.5) ≈ 0.69, а −log(0.001) ≈ 6.9. Уверенная ошибка обходится в десять раз
+            дороже. Это заставляет модель быть осторожной там, где она не уверена,
+            и именно поэтому такая функция потерь используется для языковых моделей.
+          </div>
+        </div>
+
+        <div class="q">
+          <p class="qt">5. Средняя картинка из иллюстрации про переобучение ошибается на обучающих данных сильнее правой. Почему она лучше?</p>
+          <label class="opt"><input type="radio" name="q5">Она не лучше, просто проще считается</label>
+          <label class="opt" data-correct="1"><input type="radio" name="q5">Правая выучила случайный шум как закономерность и потому провалится на новых данных</label>
+          <label class="opt"><input type="radio" name="q5">Средняя использует меньше данных</label>
+          <label class="opt"><input type="radio" name="q5">Правая обучалась слишком мало эпох</label>
+          <div class="why">
+            Часть разброса в данных это шум, который не повторится на новых примерах.
+            Модель, прошедшая ровно через каждую точку, описала и закономерность, и шум,
+            а на новых данных шум будет другим. Способы это ограничить разбираются в главе 5.
+          </div>
+        </div>
+
+        <div class="quiz-actions">
+          <button class="btn ghost quiz-reset">Пройти заново</button>
+          <span class="quiz-score"></span>
+        </div>
+      </div>
+
+      <button class="mark-read" id="mark-read">Отметить главу как пройденную</button>
+      <nav class="chapter-nav" id="chapter-nav"></nav>
+
+    </article>
+  </main>
+
+  <aside class="on-page" id="on-page"></aside>
+</div>
+
+<div id="tooltip"></div>
+
+<script src="assets/toc.js"></script>
+<script src="assets/glossary.js"></script>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+<script>
+/* демо: порог решения на синтетических данных */
+(function () {
+  var thr = document.getElementById("thr");
+  var out = document.getElementById("thr-out");
+  if (!thr) return;
+
+  // фиксированные "вероятности" модели: 30 мошенников и 970 честных
+  var frauds = [], legit = [];
+  var seed = 42;
+  function rnd() { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }
+  for (var i = 0; i < 30; i++) frauds.push(Math.min(0.99, 0.35 + rnd() * 0.62));
+  for (var j = 0; j < 970; j++) legit.push(Math.min(0.97, Math.pow(rnd(), 2.6) * 0.9));
+
+  function draw() {
+    var t = +thr.value / 100;
+    document.getElementById("thr-v").textContent = t.toFixed(2);
+    var tp = frauds.filter(function (p) { return p >= t; }).length;
+    var fn = 30 - tp;
+    var fp = legit.filter(function (p) { return p >= t; }).length;
+    var tn = 970 - fp;
+    var prec = tp + fp ? tp / (tp + fp) : 0;
+    var rec = tp / 30;
+    var f1 = prec + rec ? (2 * prec * rec) / (prec + rec) : 0;
+    var acc = (tp + tn) / 1000;
+    var cost = 40000 * fn + 2300 * fp;
+    out.innerHTML =
+      "поймано мошенников TP = <b>" + tp + "</b> из 30 &nbsp; пропущено FN = <b>" + fn + "</b><br>" +
+      "ложных тревог FP = <b>" + fp + "</b> &nbsp; верно пропущено TN = " + tn + "<br><br>" +
+      '<div class="bar-row"><span class="bl">точность</span><span class="bb"><i style="width:' + (prec * 100).toFixed(0) + '%"></i></span><span class="bv">' + prec.toFixed(2) + "</span></div>" +
+      '<div class="bar-row"><span class="bl">полнота</span><span class="bb"><i style="width:' + (rec * 100).toFixed(0) + '%"></i></span><span class="bv">' + rec.toFixed(2) + "</span></div>" +
+      '<div class="bar-row"><span class="bl">F1</span><span class="bb"><i style="width:' + (f1 * 100).toFixed(0) + '%"></i></span><span class="bv">' + f1.toFixed(2) + "</span></div>" +
+      '<div class="bar-row"><span class="bl">доля верных</span><span class="bb"><i style="width:' + (acc * 100).toFixed(0) + '%"></i></span><span class="bv">' + acc.toFixed(3) + "</span></div>" +
+      "<div style='margin-top:.6rem;color:var(--ink-3)'>стоимость ошибок: <b style='color:var(--warn)'>" +
+      cost.toLocaleString("ru-RU") + " ₽</b> (пропуск 40 000, ложная тревога 2 300)</div>";
+  }
+  thr.addEventListener("input", draw);
+  draw();
+})();
+</script>
+</body>
+</html>

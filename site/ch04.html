@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Глава 4. Как сеть находит свои веса · AI-инженер с нуля</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <button class="icon-btn" id="menu-toggle" aria-label="Меню">☰</button>
+  <a class="brand" href="index.html">AI-инженер <span>с нуля</span></a>
+  <div class="spacer"></div>
+  <div class="search-wrap">
+    <input id="search-input" type="search" placeholder="Поиск   ⌘K" autocomplete="off">
+    <div id="search-results"></div>
+  </div>
+  <button class="icon-btn" id="theme-toggle">Тёмная</button>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar"></nav>
+
+  <main>
+    <article>
+
+      <header class="chapter-head">
+        <div class="kicker">Часть I. Фундамент · глава 4</div>
+        <h1>Как сеть находит свои веса</h1>
+        <p class="standfirst">
+        <a class="term" href="app-a.html#t-gradientnyy-spusk" data-term="градиентный спуск">Градиентный спуск</a>, обратное распространение ошибки, импульс и <a class="term" href="app-a.html#t-adam" data-term="adam">Adam</a>. Здесь собирается механика обучения целиком. После этой главы вы сможете читать графики потерь и понимать по ним, что именно сломалось.
+      </p>
+        <div class="chapter-meta">
+          <span>22 минуты чтения</span>
+          <span>1,5 ч с практикой</span>
+          <span>Нужны главы 1 и 3</span>
+          <span>Код: NumPy</span>
+        </div>
+      </header>
+
+      <h2 id="gd">Градиентный спуск</h2>
+
+      <p>
+        Есть функция потерь <code>L(w)</code>, зависящая от всех весов сети. Нужен её минимум.
+        Всё обучение сводится к одной строке, которая повторяется миллионы раз.
+      </p>
+
+      <div class="formula">
+        <span class="fx">w ← w − η · ∂L/∂w</span>
+        <span class="fnote">
+          Новый вес равен старому минус градиент, умноженный на скорость обучения η
+          (читается «эта», по-английски learning rate). Знак минус потому, что градиент
+          указывает вверх, а нам надо вниз.
+        </span>
+      </div>
+
+      <p>
+        Единственный настраиваемый параметр здесь это η, и он же самый капризный. Слишком маленький, и обучение будет ползти неделю. Слишком большой, и вместо спуска получится прыжок через долину с последующим разлётом в бесконечность.
+      </p>
+
+      <figure>
+        <svg viewBox="0 0 700 250" role="img" aria-label="Три режима скорости обучения: слишком мало, нормально, слишком много">
+          <g>
+            <text x="115" y="20" class="s-t-b" text-anchor="middle">η слишком мал</text>
+            <path d="M35,50 Q115,235 195,50" class="s-line" fill="none"/>
+            <circle cx="52" cy="105" r="4" class="s-fill-a"/>
+            <circle cx="60" cy="127" r="4" class="s-fill-a"/>
+            <circle cx="68" cy="146" r="4" class="s-fill-a"/>
+            <circle cx="75" cy="161" r="4" class="s-fill-a"/>
+            <circle cx="81" cy="173" r="4" class="s-fill-a"/>
+            <text x="115" y="222" class="s-t-s" text-anchor="middle">движется, но очень медленно</text>
+            <text x="115" y="240" class="s-t-xs" text-anchor="middle">потери падают почти по прямой</text>
+          </g>
+
+          <g>
+            <text x="350" y="20" class="s-t-b" text-anchor="middle">η подобран</text>
+            <path d="M270,50 Q350,235 430,50" class="s-line" fill="none"/>
+            <circle cx="288" cy="112" r="4" class="s-fill-a"/>
+            <circle cx="322" cy="185" r="4" class="s-fill-a"/>
+            <circle cx="364" cy="204" r="4" class="s-fill-a"/>
+            <circle cx="347" cy="207" r="4" class="s-fill-a"/>
+            <circle cx="351" cy="208" r="4" class="s-fill-a"/>
+            <text x="350" y="222" class="s-t-s" text-anchor="middle">быстро вниз, потом мелкие шаги</text>
+            <text x="350" y="240" class="s-t-xs" text-anchor="middle">потери падают и выходят на полку</text>
+          </g>
+
+          <g>
+            <text x="585" y="20" class="s-t-b" text-anchor="middle">η слишком велик</text>
+            <path d="M505,50 Q585,235 665,50" class="s-line" fill="none"/>
+            <circle cx="522" cy="108" r="4" class="s-fill-a"/>
+            <circle cx="648" cy="80" r="4" class="s-fill-a"/>
+            <circle cx="512" cy="80" r="4" class="s-fill-a"/>
+            <circle cx="660" cy="60" r="4" class="s-fill-a"/>
+            <path d="M522,108 L648,80 L512,80 L660,60" class="s-line-a" stroke-dasharray="4 3" fill="none"/>
+            <text x="585" y="222" class="s-t-s" text-anchor="middle">перелетает и расходится</text>
+            <text x="585" y="240" class="s-t-xs" text-anchor="middle">потери скачут вверх или дают NaN</text>
+          </g>
+        </svg>
+        <figcaption>
+        <b>По графику потерь видно, что не так.</b> Плоская убывающая линия соответствует маленькому шагу. Пила с растущей амплитудой соответствует большому. Скачок в NaN на пятидесятом шаге почти всегда означает, что шаг велик или в данных есть выброс.
+      </figcaption>
+      </figure>
+
+      <div class="demo">
+        <span class="dt">Попробуйте · градиентный спуск вживую</span>
+        <p style="font-family:var(--font-ui);font-size:.85rem;color:var(--ink-2);margin-bottom:.8rem">
+        <a class="term" href="app-a.html#t-funkciya-poter" data-term="функция потерь">Функция потерь</a> с двумя впадинами. Меняйте скорость обучения и стартовую точку, жмите «шагнуть». При большом шаге спуск может перепрыгнуть в другую впадину, а при маленьком застрянет в первой попавшейся.
+      </p>
+        <div class="row">
+          <label>скорость обучения η: <span class="val" id="lr-v">0.10</span>
+            <input type="range" id="lr" min="1" max="120" value="10"></label>
+          <label>стартовая точка: <span class="val" id="start-v">-2.6</span>
+            <input type="range" id="start" min="-40" max="40" value="-26"></label>
+        </div>
+        <svg id="gd-svg" viewBox="0 0 620 230" style="max-width:620px;margin:.5rem auto 0;display:block">
+          <path id="gd-curve" class="s-line" fill="none" stroke-width="2"/>
+          <g id="gd-dots"></g>
+          <circle id="gd-ball" r="6" class="s-fill-a"/>
+          <line x1="20" y1="205" x2="600" y2="205" class="s-line-d"/>
+        </svg>
+        <div style="display:flex;gap:.6rem;justify-content:center;margin-top:.6rem">
+          <button class="btn" id="gd-step">Шагнуть</button>
+          <button class="btn" id="gd-run">10 шагов</button>
+          <button class="btn ghost" id="gd-reset">Сброс</button>
+        </div>
+        <div class="out" id="gd-out" style="text-align:center"></div>
+      </div>
+
+      <h2 id="batches">Пакеты</h2>
+
+      <p>
+        Честный градиент считается по всей обучающей выборке. Если в ней миллион примеров, один шаг обучения потребует миллиона прямых и обратных проходов. За то же время можно сделать тысячу шагов по тысяче примеров каждый, и это окажется гораздо продуктивнее.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Режим</th><th>Размер пакета</th><th>Плюсы</th><th>Минусы</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Полный</td><td>вся выборка</td>
+              <td>точное направление, гладкая кривая потерь</td>
+              <td>очень медленно, застревает в первом попавшемся минимуме</td>
+            </tr>
+            <tr>
+              <td>Стохастический</td><td>1 пример</td>
+              <td>очень частые обновления, шум помогает выбраться из плохих мест</td>
+              <td>дёрганый, плохо использует видеокарту</td>
+            </tr>
+            <tr>
+              <td>Мини-пакетный</td><td>32 … 1024</td>
+              <td>компромисс, векторизуется на GPU, немного шума полезно</td>
+              <td>ещё один гиперпараметр</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>
+        На практике почти всегда используют третий вариант. Размер пакета подбирают под память видеокарты. Есть эмпирическое правило: если вы увеличиваете размер пакета в k раз, увеличивайте и скорость обучения примерно в k раз, иначе обучение замедлится.
+      </p>
+
+      <div class="callout info">
+        <span class="ct">Шум как помощник</span>
+        <p>
+        <a class="term" href="app-a.html#t-gradient" data-term="градиент">Градиент</a> по маленькому пакету это шумная оценка настоящего градиента. Казалось бы, недостаток. На деле шум помогает: он выталкивает процесс из узких плохих минимумов и оставляет в широких, а широкие минимумы лучше обобщаются. Это одна из причин, по которым стохастический спуск обходит точные методы оптимизации на задачах глубокого обучения.
+      </p>
+      </div>
+
+      <h2 id="backprop">Обратное распространение</h2>
+
+      <p>
+        Осталось понять, откуда берутся частные производные по каждому из миллиардов весов. Наивно можно было бы для каждого веса чуть сдвинуть его и посмотреть, как изменились потери. Для миллиарда весов это миллиард прямых проходов на один шаг обучения, что невозможно.
+      </p>
+
+      <p>
+        <a class="term" href="app-a.html#t-obratnoe-rasprostranenie" data-term="обратное распространение">Обратное распространение</a> считает все производные разом за один проход назад, и стоит это примерно столько же, сколько один прямой проход. Идея в том, чтобы применять цепное правило из главы 1 от конца к началу, переиспользуя уже посчитанные значения.
+      </p>
+
+      <figure>
+        <svg viewBox="0 0 700 300" role="img" aria-label="Вычислительный граф с прямым и обратным проходом">
+          <defs>
+            <marker id="f-ar" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+              <path d="M0,0 L8,4 L0,8 z" class="s-fill-a"/>
+            </marker>
+            <marker id="b-ar" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto">
+              <path d="M0,0 L8,4 L0,8 z" fill="#b45309"/>
+            </marker>
+          </defs>
+
+          <text x="20" y="22" class="s-t-b">Прямой проход: считаем и запоминаем</text>
+
+          <rect x="24" y="46" width="86" height="48" rx="8" class="s-box"/>
+          <text x="67" y="68" class="s-t" text-anchor="middle">x = 2.0</text>
+          <text x="67" y="85" class="s-t-xs" text-anchor="middle">вход</text>
+
+          <rect x="160" y="46" width="86" height="48" rx="8" class="s-box-a"/>
+          <text x="203" y="68" class="s-t" text-anchor="middle">u = w·x</text>
+          <text x="203" y="85" class="s-t-xs" text-anchor="middle">w = 3 → u = 6</text>
+
+          <rect x="296" y="46" width="86" height="48" rx="8" class="s-box-a"/>
+          <text x="339" y="68" class="s-t" text-anchor="middle">v = u + b</text>
+          <text x="339" y="85" class="s-t-xs" text-anchor="middle">b = 1 → v = 7</text>
+
+          <rect x="432" y="46" width="86" height="48" rx="8" class="s-box-v"/>
+          <text x="475" y="68" class="s-t" text-anchor="middle">a = relu(v)</text>
+          <text x="475" y="85" class="s-t-xs" text-anchor="middle">a = 7</text>
+
+          <rect x="568" y="46" width="106" height="48" rx="8" class="s-box-w"/>
+          <text x="621" y="66" class="s-t" text-anchor="middle">L = (a − y)²</text>
+          <text x="621" y="85" class="s-t-xs" text-anchor="middle">y = 4 → L = 9</text>
+
+          <path d="M110,70 L154,70" class="s-line-a" marker-end="url(#f-ar)"/>
+          <path d="M246,70 L290,70" class="s-line-a" marker-end="url(#f-ar)"/>
+          <path d="M382,70 L426,70" class="s-line-a" marker-end="url(#f-ar)"/>
+          <path d="M518,70 L562,70" class="s-line-a" marker-end="url(#f-ar)"/>
+
+          <line x1="20" y1="120" x2="680" y2="120" class="s-line-d"/>
+          <text x="20" y="150" class="s-t-b" style="fill:#b45309">Обратный проход: производные умножаются справа налево</text>
+
+          <rect x="568" y="170" width="106" height="52" rx="8" class="s-box-w"/>
+          <text x="621" y="192" class="s-t-s" text-anchor="middle">∂L/∂a = 2(a−y)</text>
+          <text x="621" y="210" class="s-t-b" text-anchor="middle">= 6</text>
+
+          <rect x="432" y="170" width="86" height="52" rx="8" class="s-box"/>
+          <text x="475" y="192" class="s-t-s" text-anchor="middle">×1 (relu, v&gt;0)</text>
+          <text x="475" y="210" class="s-t-b" text-anchor="middle">∂L/∂v = 6</text>
+
+          <rect x="296" y="170" width="86" height="52" rx="8" class="s-box"/>
+          <text x="339" y="192" class="s-t-s" text-anchor="middle">сумма: ×1</text>
+          <text x="339" y="210" class="s-t-b" text-anchor="middle">∂L/∂b = 6</text>
+
+          <rect x="160" y="170" width="86" height="52" rx="8" class="s-box-g"/>
+          <text x="203" y="192" class="s-t-s" text-anchor="middle">×x = ×2</text>
+          <text x="203" y="210" class="s-t-b" text-anchor="middle">∂L/∂w = 12</text>
+
+          <path d="M562,196 L524,196" class="s-line" stroke="#b45309" stroke-width="2" marker-end="url(#b-ar)"/>
+          <path d="M426,196 L388,196" class="s-line" stroke="#b45309" stroke-width="2" marker-end="url(#b-ar)"/>
+          <path d="M290,196 L252,196" class="s-line" stroke="#b45309" stroke-width="2" marker-end="url(#b-ar)"/>
+
+          <text x="20" y="256" class="s-t-s">Шаг обучения при η = 0.01: w ← 3 − 0.01·12 = 2.88, b ← 1 − 0.01·6 = 0.94</text>
+          <text x="20" y="278" class="s-t-xs">Значения x, u, v, a с прямого прохода нужны при обратном. Поэтому обучение</text>
+          <text x="20" y="292" class="s-t-xs">требует в разы больше памяти, чем инференс: активации всех слоёв надо хранить.</text>
+        </svg>
+        <figcaption>
+          <b>Всё обратное распространение целиком.</b> Каждый узел знает, как превратить
+          пришедшую сверху производную в производную по своим входам: умножить на локальную
+          производную. Умножение на <code>w</code> отдаёт назад множитель <code>x</code>,
+          сложение пропускает без изменений, ReLU пропускает при положительном входе
+          и обнуляет при отрицательном.
+        </figcaption>
+      </figure>
+
+      <div class="callout info">
+        <span class="ct">Почему обучение требует столько видеопамяти</span>
+        <p>
+        При инференсе достаточно держать активации одного слоя: посчитал, отдал дальше, забыл. При обучении активации всех слоёв нужны на обратном проходе, поэтому память растёт пропорционально глубине и размеру пакета. Отсюда приём под названием gradient checkpointing: часть активаций не хранят, а пересчитывают заново на обратном проходе, покупая память ценой примерно 30% лишних вычислений.
+      </p>
+      </div>
+
+      <details class="deeper">
+        <summary>Вывод: обратное распространение для одного слоя, покомпонентно</summary>
+        <div class="deeper-body">
+<p>Рассмотрим полносвязный слой нейронной сети, чтобы получить формулы градиентов для его параметров и входа. Входной вектор x имеет длину n, матрица весов W размером m на n, вектор смещения b длины m. На прямом проходе слой сначала вычисляет линейную комбинацию <code>z_j = Σ_k W_jk·x_k + b_j</code> для каждого выхода j, затем применяет поэлементно функцию активации σ: <code>a_j = σ(z_j)</code>. Функция потерь L зависит от полученных значений a.</p>
+<p>Обратный проход в нейронной сети идёт от последнего слоя к первому, поэтому к моменту разбора нашего слоя производная функции потерь по его выходу уже посчитана. Обозначим этот вектор <code>δa_j = ∂L/∂a_j</code>. Он содержит сигнал ошибки, который пришёл от всех последующих слоёв сети.</p>
+<p>Сначала перейдём от производной по выходу активации к производной по линейной комбинации z по правилу производной сложной функции. Для каждой координаты j получаем <code>∂L/∂z_j = (∂L/∂a_j)·(∂a_j/∂z_j) = δa_j·σ'(z_j)</code>. Весь вектор этих значений обозначим <code>δz</code>. На этом шаге мы умножаем пришедший сигнал ошибки на производную функции активации в точке соответствующего значения z_j.</p>
+<p>Теперь получим градиент по матрице весов W. В сумме для <code>z_j</code> вес <code>W_jk</code> входит только один раз, умноженный на соответствующую координату входа <code>x_k</code>. Поэтому производная линейной комбинации по весу равна <code>∂z_j/∂W_jk = x_k</code>, а градиент функции потерь по этому весу <code>∂L/∂W_jk = δz_j·x_k</code>. В матричной записи это выражение принимает вид внешнего произведения векторов: <code>∂L/∂W = δz·xᵀ</code>. Полученная матрица имеет тот же размер, что и исходная матрица весов W.</p>
+<p>Градиент по вектору смещения b получается проще. Так как <code>∂z_j/∂b_j = 1</code>, то <code>∂L/∂b_j = δz_j</code>. В векторной форме это записывается как <code>∂L/∂b = δz</code>. Смещение добавляется к каждому выходу слоя, поэтому его градиент полностью совпадает с вектором δz, без дополнительных множителей.</p>
+<p>Для градиента по входу x нужно учесть, что каждая его координата <code>x_k</code> влияет на все выходы <code>z_j</code> слоя. Поэтому вклады от каждого выхода суммируются: <code>∂L/∂x_k = Σ_j δz_j·W_jk</code>. В матричной форме это выражение записывается как <code>∂L/∂x = Wᵀ·δz</code>. Этот вектор передаётся предыдущему слою сети как его сигнал ошибки <code>δa</code>.</p>
+<p>Проверка размерностей это самая полезная привычка при ручной реализации обратного прохода. Вектор δz имеет длину m, вектор x имеет длину n, поэтому внешнее произведение <code>δz·xᵀ</code> даёт матрицу размером m на n, что совпадает с размером матрицы весов W. Произведение <code>Wᵀ·δz</code> возвращает вектор длины n, как и исходный вход x. Если при вычислениях размерности не совпадают, ошибка находится в формуле, а не в входных данных.</p>
+<p>Рассмотрим частный случай для функции активации ReLU. Для неё производная равна 1 при положительном значении аргумента и 0 иначе, то есть <code>σ'(z) = 1</code> если z > 0, и <code>σ'(z) = 0</code> в противном случае. Тогда обратный проход через ReLU реализуется как простая маска: градиент проходит только к тем нейронам, на которых прямой проход дал положительное значение. Если на прямом проходе ReLU вернула 0, градиент для этого нейрона обнуляется. Такие нейроны называются мёртвыми: через них градиент не проходит никогда, поэтому их веса не обновляются во время обучения.</p>
+        </div>
+      </details>
+
+      <h2 id="optimizers">Импульс и Adam</h2>
+
+      <p>
+        Реальный ландшафт потерь неровный. Часто встречается овраг: по одной оси склон крутой, по другой почти плоский. Обычный градиентный спуск в таком месте зигзагами бьётся о стенки оврага и очень медленно ползёт вдоль него.
+      </p>
+
+      <figure>
+        <svg viewBox="0 0 700 260" role="img" aria-label="Траектория в овраге: обычный спуск зигзагом, с импульсом прямо">
+          <g>
+            <text x="175" y="22" class="s-t-b" text-anchor="middle">Обычный спуск</text>
+            <ellipse cx="230" cy="130" rx="180" ry="42" class="s-line" fill="none"/>
+            <ellipse cx="230" cy="130" rx="128" ry="29" class="s-line" fill="none"/>
+            <ellipse cx="230" cy="130" rx="74" ry="17" class="s-line" fill="none"/>
+            <ellipse cx="230" cy="130" rx="22" ry="7" class="s-box-g"/>
+            <path d="M62,130 L78,102 L94,155 L110,105 L128,153 L146,108 L166,150 L186,113 L206,144 L226,124"
+                  class="s-line-a" stroke-width="2" fill="none"/>
+            <circle cx="62" cy="130" r="4.5" class="s-fill-a"/>
+            <text x="175" y="212" class="s-t-s" text-anchor="middle">10 шагов, до дна не дошли</text>
+            <text x="175" y="230" class="s-t-xs" text-anchor="middle">энергия уходит на колебания поперёк оврага</text>
+          </g>
+
+          <g>
+            <text x="520" y="22" class="s-t-b" text-anchor="middle">С импульсом</text>
+            <ellipse cx="560" cy="130" rx="150" ry="42" class="s-line" fill="none"/>
+            <ellipse cx="560" cy="130" rx="106" ry="29" class="s-line" fill="none"/>
+            <ellipse cx="560" cy="130" rx="62" ry="17" class="s-line" fill="none"/>
+            <ellipse cx="560" cy="130" rx="18" ry="7" class="s-box-g"/>
+            <path d="M420,130 L436,114 L456,140 L482,120 L512,134 L540,128 L556,130"
+                  class="s-line-a" stroke-width="2" fill="none"/>
+            <circle cx="420" cy="130" r="4.5" class="s-fill-a"/>
+            <text x="520" y="212" class="s-t-s" text-anchor="middle">7 шагов, дошли</text>
+            <text x="520" y="230" class="s-t-xs" text-anchor="middle">колебания гасятся, движение вдоль оврага усиливается</text>
+          </g>
+        </svg>
+        <figcaption>
+        <b>Импульс это память о предыдущих шагах.</b> Шаг делается не по текущему градиенту, а по его скользящему среднему. Направления, которые повторяются от шага к шагу, накапливаются. Направления, которые меняют знак, гасят друг друга. Физическая аналогия работает точно: это шар, катящийся по склону. Обычный спуск ведёт себя как точка, которая телепортируется против уклона и забывает, откуда пришла.
+      </figcaption>
+      </figure>
+
+      <h3 id="adam">Adam</h3>
+
+      <p>
+        В Adam к импульсу добавляется отдельная идея: у каждого веса свой размер шага. Оптимизатор хранит скользящее среднее квадратов градиента для каждого параметра и делит текущий шаг на корень из этого значения. У параметров с стабильно большим градиентом шаг получается маленький, а у параметров с редким слабым градиентом большой.
+      </p>
+
+      <div class="callout math">
+        <span class="ct">Adam в четырёх строках</span>
+        <div class="formula">
+          <span class="fx">m ← β₁·m + (1−β₁)·g &nbsp;&nbsp;&nbsp; (импульс)</span>
+          <span class="fx">v ← β₂·v + (1−β₂)·g² &nbsp;&nbsp;(масштаб)</span>
+          <span class="fx">m̂ = m/(1−β₁ᵗ), &nbsp; v̂ = v/(1−β₂ᵗ)</span>
+          <span class="fx">w ← w − η · m̂ / (√v̂ + ε)</span>
+          <span class="fnote">
+            Значения по умолчанию β₁ = 0.9, β₂ = 0.999, ε = 1e−8 работают почти всегда,
+            их меняют редко. Третья строка это поправка на холодный старт: в самом начале
+            m и v равны нулю и занижают оценку. Обратите внимание, что Adam хранит два
+            дополнительных числа на каждый параметр, то есть память под оптимизатор втрое
+            больше памяти под саму модель. Это главная причина, по которой дообучение
+            семимиллиардной модели целиком не влезает в одну видеокарту.
+          </span>
+        </div>
+      </div>
+
+      <p>
+        На практике чаще используют <a class="term" href="app-a.html#t-adamw" data-term="adamw">AdamW</a>, это вариант оптимизатора с корректно реализованным затуханием весов. Техническая разница между ними невелика, но качество работы заметно выше, поэтому в 2020-е годы AdamW стал оптимизатором по умолчанию для задач, связанных с трансформерами.
+      </p>
+
+      <h3 id="schedule">Расписание скорости обучения</h3>
+
+      <p>
+        Постоянный размер шага используется редко. Стандартная схема изменения скорости обучения состоит из двух этапов: разогрев и затухание. На первых нескольких сотнях шагов скорость линейно растёт от нуля до заданного целевого значения, после чего плавно снижается по косинусу до почти нуля к концу обучения.
+      </p>
+
+      <figure>
+        <svg viewBox="0 0 700 190" role="img" aria-label="График расписания скорости обучения: разогрев и косинусное затухание">
+          <line x1="60" y1="150" x2="660" y2="150" class="s-line"/>
+          <line x1="60" y1="20" x2="60" y2="150" class="s-line"/>
+          <text x="30" y="34" class="s-t-xs">η</text>
+          <text x="646" y="168" class="s-t-xs">шаг</text>
+
+          <path d="M60,150 L150,42" class="s-line-a" stroke-width="2.5" fill="none"/>
+          <path d="M150,42 C280,44 420,96 660,146" class="s-line-a" stroke-width="2.5" fill="none"/>
+
+          <line x1="150" y1="42" x2="150" y2="150" class="s-line-d"/>
+          <text x="104" y="168" class="s-t-xs" text-anchor="middle">разогрев</text>
+          <text x="400" y="168" class="s-t-xs" text-anchor="middle">косинусное затухание</text>
+          <text x="160" y="36" class="s-t-a">максимум</text>
+
+          <text x="400" y="106" class="s-t-s" text-anchor="middle">зачем разогрев: на первых шагах оценки Adam ещё</text>
+          <text x="400" y="122" class="s-t-s" text-anchor="middle">не устоялись, большой шаг разносит модель</text>
+        </svg>
+        <figcaption>
+        <b>Разогрев предотвращает расхождения на первых шагах обучения.</b> Затухание на поздних этапах позволяет точнее сойтись к минимуму функции потерь: крупные шаги в конце просто заставляют модель перескакивать минимум туда-сюда. При дообучении обычно выделяют 3, 10% всех шагов на разогрев.
+      </figcaption>
+      </figure>
+
+      <h2 id="init">Инициализация</h2>
+
+      <p>
+        Если инициализировать все веса нулями, все нейроны слоя будут вычислять одно и то же значение, получат одинаковый градиент и так и останутся идентичными на всех этапах обучения. Слой из тысячи нейронов будет работать как единый нейрон. Эту ситуацию называют проблемой симметрии, и её решают добавлением случайности в инициализацию.
+      </p>
+
+      <p>
+        Но случайность должна иметь правильный масштаб. Слишком большие начальные веса раздувают активации при переходе от слоя к слою, слишком маленькие гасят их до нуля. Правило простое: разброс начальных весов должен зависеть от количества входов нейрона. Для функций активации <a class="term" href="app-a.html#t-relu" data-term="relu">ReLU</a> используют инициализацию Хе с дисперсией 2/n, для сигмоиды и tanh, инициализацию Ксавье с дисперсией 1/n, где n, количество входов.
+      </p>
+
+      <div class="callout warn">
+        <span class="ct">Грабли · когда потери превращаются в NaN</span>
+        <p>
+        NaN появляется, если где-то в вычислениях получилась бесконечность или произошло деление нуля на ноль. Проверять возможные причины в таком порядке:
+      </p>
+        <ol>
+          <li>
+        <a class="term" href="app-a.html#t-skorost-obucheniya" data-term="скорость обучения">Скорость обучения</a>. Уменьшите её в десять раз и проверьте, повторится ли ошибка.
+      </li>
+          <li>Логарифм от нуля. Если считаете <code>log(p)</code> руками, добавьте маленькое
+              число: <code>log(p + 1e-9)</code>. Готовые функции потерь это делают сами.</li>
+          <li>Деление на норму, которая может обнулиться.</li>
+          <li>
+        Выброс в данных: например, строка с ценой 10¹² вместо ожидаемых 10⁶ ломает всё обучение.
+      </li>
+          <li>Отсутствие обрезки градиента. Добавьте <code>clip_grad_norm_(params, 1.0)</code>,
+              это стандарт для трансформеров.</li>
+        </ol>
+      </div>
+
+      <div class="callout practice">
+        <span class="ct">Сделайте руками · 70 минут · нужен Python</span>
+        <p>
+        Напишите код обучения двухслойной сети полностью на NumPy, без использования фреймворков. Это упражнение даст больше, чем десять прочитанных статей: когда вы сами реализуете обратный проход, механика работы нейросетей перестанет казаться магией.
+      </p>
+        <div class="code-label">python</div>
+        <pre><code>import numpy as np
+rng = np.random.default_rng(0)
+
+# данные: две спирали, линейно неразделимые
+n = 300
+t = np.linspace(0, 3.5, n)
+X = np.vstack([
+    np.c_[t * np.cos(t), t * np.sin(t)],
+    np.c_[-t * np.cos(t), -t * np.sin(t)],
+]) + rng.normal(0, 0.08, (2 * n, 2))
+y = np.r_[np.zeros(n), np.ones(n)]
+
+# инициализация Хе: дисперсия 2/входов
+H = 32
+W1 = rng.normal(0, np.sqrt(2 / 2), (2, H)); b1 = np.zeros(H)
+W2 = rng.normal(0, np.sqrt(2 / H), (H, 1)); b2 = np.zeros(1)
+
+lr, epochs = 0.05, 3000
+for ep in range(epochs):
+    # прямой проход
+    z1 = X @ W1 + b1
+    a1 = np.maximum(0, z1)
+    z2 = (a1 @ W2 + b2).ravel()
+    p = 1 / (1 + np.exp(-z2))                      # сигмоида
+    loss = -np.mean(y * np.log(p + 1e-9) + (1 - y) * np.log(1 - p + 1e-9))
+
+    # обратный проход
+    dz2 = ((p - y) / len(y))[:, None]              # производная CE + сигмоиды разом
+    dW2 = a1.T @ dz2;  db2 = dz2.sum(0)
+    da1 = dz2 @ W2.T
+    dz1 = da1 * (z1 > 0)                           # производная ReLU
+    dW1 = X.T @ dz1;   db1 = dz1.sum(0)
+
+    # шаг
+    for param, grad in ((W1, dW1), (b1, db1), (W2, dW2), (b2, db2)):
+        param -= lr * grad
+
+    if ep % 500 == 0:
+        acc = ((p > 0.5) == y).mean()
+        print(f"эпоха {ep:5d}  потери {loss:.4f}  точность {acc:.3f}")</code></pre>
+        <p>
+          Три эксперимента после запуска. Поставьте <code>lr = 5.0</code> и найдите шаг,
+          на котором поэто NaN. Замените инициализацию Хе на <code>np.zeros</code>
+          и объясните, почему точность встала на 0.5. Добавьте импульс
+          (<code>v = 0.9*v + grad; param -= lr*v</code>) и сравните, за сколько эпох
+          достигается та же точность.
+        </p>
+      </div>
+
+      <div class="sources">
+        <span class="ct">Где про это написано подробнее</span>
+        <ul>
+          <li><a href="https://udlbook.github.io/udlbook/" target="_blank" rel="noopener">Understanding Deep Learning, главы 6 и 7</a>. обучение сетей и обратное распространение с выкладками</li>
+          <li><a href="https://ruder.io/optimizing-gradient-descent/" target="_blank" rel="noopener">Sebastian Ruder. An overview of gradient descent optimization algorithms</a>. разбор всех оптимизаторов в одном месте</li>
+          <li><a href="https://d2l.ai/" target="_blank" rel="noopener">Dive into Deep Learning, глава про оптимизацию</a>. то же с рабочим кодом</li>
+        </ul>
+      </div>
+
+      <div class="recap">
+        <h3>Коротко</h3>
+        <ol>
+          <li>
+        По сути, обучение сводится к одной строке кода: из текущего значения веса вычитаем градиент, умноженный на скорость обучения. Всё остальное это способы сделать этот процесс устойчивее.
+      </li>
+          <li>Мини-пакеты быстрее полного градиента и точнее одиночных примеров. Их шум помогает выбираться из узких минимумов.</li>
+          <li>
+        Обратное распространение это цепное правило, которое применяется справа налево и переиспользует уже посчитанные значения. Для его работы нужно хранить активации всех слоёв, поэтому на обучение уходит значительно больше памяти, чем на инференс.
+      </li>
+          <li>
+        <a class="term" href="app-a.html#t-impuls" data-term="импульс">Импульс</a> гасит колебания поперёк оврага. Adam добавляет индивидуальный размер шага каждому параметру и хранит для этого два числа на каждый параметр.
+      </li>
+          <li>Инициализация не может быть нулевой из-за симметрии, а её масштаб должен зависеть от числа входов: 2/n для ReLU.</li>
+        </ol>
+      </div>
+
+      <div class="quiz">
+        <h3>Проверьте себя</h3>
+        <p class="quiz-sub">Пять вопросов.</p>
+
+        <div class="q">
+          <p class="qt">
+        1. Потери падали, а на 300-м шаге скакнули вверх и превратились в NaN. Что нужно проверять в первую очередь?
+      </p>
+          <label class="opt"><input type="radio" name="q1">Размер сети, она слишком мала</label>
+          <label class="opt" data-correct="1"><input type="radio" name="q1">Скорость обучения и наличие обрезки градиента</label>
+          <label class="opt"><input type="radio" name="q1">Функцию активации</label>
+          <label class="opt"><input type="radio" name="q1">Разделение на обучение и тест</label>
+          <div class="why">
+            Внезапный взрыв почти всегда это слишком большой шаг или выброс в пакете данных.
+            Первое действие: уменьшить η в десять раз. Второе: добавить обрезку нормы
+            градиента. Третье: найти, какой именно пакет вызвал взрыв, и посмотреть на него.
+          </div>
+        </div>
+
+        <div class="q">
+          <p class="qt">
+        2. Почему на обучение уходит значительно больше видеопамяти, чем на инференс той же модели?
+      </p>
+          <label class="opt"><input type="radio" name="q2">Потому что при обучении используется больший размер пакета</label>
+          <label class="opt" data-correct="1"><input type="radio" name="q2">Нужно хранить активации всех слоёв для обратного прохода плюс состояние оптимизатора</label>
+          <label class="opt"><input type="radio" name="q2">Потому что градиенты занимают больше места, чем веса</label>
+          <label class="opt"><input type="radio" name="q2">Из-за случайной инициализации</label>
+          <div class="why">
+            Складываются три вещи: сами веса, активации всех слоёв (нужны в обратном проходе)
+            и состояние Adam, то есть ещё два числа на каждый параметр. Отсюда правило
+            большого пальца: обучение в смешанной точности требует примерно 16 байт
+            на параметр против 2 при инференсе.
+          </div>
+        </div>
+
+        <div class="q">
+          <p class="qt">
+        3. Зачем нужен разогрев скорости обучения на первых сотнях шагов?
+      </p>
+          <label class="opt"><input type="radio" name="q3">Чтобы прогреть видеокарту</label>
+          <label class="opt" data-correct="1"><input type="radio" name="q3">На старте оценки моментов в Adam ещё не устоялись, и большой шаг может разнести модель</label>
+          <label class="opt"><input type="radio" name="q3">Чтобы уменьшить переобучение</label>
+          <label class="opt"><input type="radio" name="q3">Это нужно только для очень маленьких моделей</label>
+          <div class="why">
+            В первые шаги знаменатель Adam оценён по одному-двум градиентам и может оказаться
+            крошечным, что даёт огромный эффективный шаг. Линейный разогрев от нуля решает
+            проблему и стал стандартом для обучения трансформеров.
+          </div>
+        </div>
+
+        <div class="q">
+          <p class="qt">
+        4. Что произойдет, если инициализировать все веса слоя одинаковым ненулевым числом?
+      </p>
+          <label class="opt"><input type="radio" name="q4">Ничего, обучение пойдёт нормально</label>
+          <label class="opt" data-correct="1"><input type="radio" name="q4">Все нейроны слоя будут получать одинаковый градиент и останутся идентичными, слой выродится в один нейрон</label>
+          <label class="opt"><input type="radio" name="q4">Появится NaN на первом же шаге</label>
+          <label class="opt"><input type="radio" name="q4">Модель переобучится</label>
+          <div class="why">
+            Проблема симметрии. Одинаковые веса означают одинаковый выход, одинаковую
+            производную и одинаковое обновление. Разорвать симметрию может только случайная
+            инициализация; величина случайности при этом должна зависеть от числа входов.
+          </div>
+        </div>
+
+        <div class="q">
+          <p class="qt">
+        5. Вы увеличили размер пакета с 32 до 256. Что разумно сделать со скоростью обучения в этом случае?
+      </p>
+          <label class="opt"><input type="radio" name="q5">Уменьшить примерно в 8 раз</label>
+          <label class="opt" data-correct="1"><input type="radio" name="q5">Увеличить, ориентировочно в 8 раз или в корень из 8, и проверить экспериментом</label>
+          <label class="opt"><input type="radio" name="q5">Оставить как есть, связи нет</label>
+          <label class="opt"><input type="radio" name="q5">Отключить разогрев</label>
+          <div class="why">
+            Больший пакет даёт менее шумную оценку градиента, значит можно шагать смелее.
+            Линейное правило работает до определённого предела, дальше помогает корневое.
+            Точное значение всё равно подбирается экспериментом на нескольких сотнях шагов.
+          </div>
+        </div>
+
+        <div class="quiz-actions">
+          <button class="btn ghost quiz-reset">Пройти заново</button>
+          <span class="quiz-score"></span>
+        </div>
+      </div>
+
+      <button class="mark-read" id="mark-read">Отметить главу как пройденную</button>
+      <nav class="chapter-nav" id="chapter-nav"></nav>
+
+    </article>
+  </main>
+
+  <aside class="on-page" id="on-page"></aside>
+</div>
+
+<div id="tooltip"></div>
+
+<script src="assets/toc.js"></script>
+<script src="assets/glossary.js"></script>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+<script>
+/* демо: градиентный спуск на функции с двумя минимумами */
+(function () {
+  var lrEl = document.getElementById("lr");
+  var stEl = document.getElementById("start");
+  if (!lrEl) return;
+
+  // f(x) = 0.12x^4 - 0.9x^2 + 0.4x + 3   (две впадины разной глубины)
+  function f(x) { return 0.12 * Math.pow(x, 4) - 0.9 * x * x + 0.4 * x + 3; }
+  function df(x) { return 0.48 * Math.pow(x, 3) - 1.8 * x + 0.4; }
+
+  var X0 = 20, X1 = 600, XL = -4, XR = 4, YB = 205, SY = 22;
+  function px(x) { return X0 + ((x - XL) / (XR - XL)) * (X1 - X0); }
+  function py(y) { return Math.max(10, Math.min(214, YB - (y - 0.5) * SY)); }
+
+  var pos = -2.6, history = [];
+
+  function curve() {
+    var d = "";
+    for (var i = 0; i <= 200; i++) {
+      var x = XL + (i / 200) * (XR - XL);
+      d += (i ? "L" : "M") + px(x).toFixed(1) + "," + py(f(x)).toFixed(1) + " ";
+    }
+    document.getElementById("gd-curve").setAttribute("d", d);
+  }
+
+  function render() {
+    var ball = document.getElementById("gd-ball");
+    ball.setAttribute("cx", px(pos));
+    ball.setAttribute("cy", py(f(pos)));
+    var dots = history.slice(-14).map(function (h, i) {
+      return '<circle cx="' + px(h).toFixed(1) + '" cy="' + py(f(h)).toFixed(1) +
+        '" r="3" class="s-fill-3" opacity="' + (0.2 + i * 0.05).toFixed(2) + '"/>';
+    }).join("");
+    document.getElementById("gd-dots").innerHTML = dots;
+    var g = df(pos);
+    document.getElementById("gd-out").innerHTML =
+      "x = <b>" + pos.toFixed(3) + "</b> &nbsp; потери f(x) = <b>" + f(pos).toFixed(3) +
+      "</b> &nbsp; градиент = <b>" + g.toFixed(3) + "</b><br>" +
+      "<span style='color:var(--ink-3)'>шагов сделано: " + history.length +
+      (Math.abs(g) < 0.02 ? " · градиент почти нулевой, пришли в минимум" :
+       Math.abs(pos) > 6 ? " · процесс расходится, шаг слишком велик" : "") + "</span>";
+  }
+
+  function step() {
+    var lr = +lrEl.value / 100;
+    history.push(pos);
+    pos = pos - lr * df(pos);
+    if (!isFinite(pos) || Math.abs(pos) > 50) pos = Math.sign(pos) * 8;
+    render();
+  }
+
+  function reset() {
+    pos = +stEl.value / 10;
+    history = [];
+    document.getElementById("start-v").textContent = pos.toFixed(1);
+    render();
+  }
+
+  lrEl.addEventListener("input", function () {
+    document.getElementById("lr-v").textContent = (+lrEl.value / 100).toFixed(2);
+  });
+  stEl.addEventListener("input", reset);
+  document.getElementById("gd-step").addEventListener("click", step);
+  document.getElementById("gd-run").addEventListener("click", function () {
+    for (var i = 0; i < 10; i++) step();
+  });
+  document.getElementById("gd-reset").addEventListener("click", reset);
+
+  curve();
+  reset();
+})();
+</script>
+</body>
+</html>

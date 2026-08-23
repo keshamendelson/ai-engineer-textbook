@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>проба демо диффузии</title>
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<main style="padding:2rem;max-width:44rem;margin:0 auto">
+
+<div class="demo">
+  <span class="dt">Попробуйте · прямой процесс и восстановление по предсказанному шуму</span>
+  <p style="font-family:var(--font-ui);font-size:.85rem;color:var(--ink-2);margin-bottom:.8rem">
+    Слева картинка на шаге t прямого процесса, в середине шум, который к ней подмешан, справа попытка восстановить исходную картинку по формуле обратного шага. Ползунок ошибки показывает, что происходит, когда сеть предсказывает шум неточно.
+  </p>
+  <div class="row">
+    <label>Шаг t из 1000 <span class="val" id="df-t-v">200</span>
+      <input type="range" id="df-t" min="0" max="1000" step="10" value="200">
+    </label>
+    <label>Ошибка предсказания шума <span class="val" id="df-e-v">0 процентов</span>
+      <input type="range" id="df-e" min="0" max="60" step="5" value="0">
+    </label>
+  </div>
+  <label style="margin-top:.4rem">Расписание шума
+    <select id="df-sched">
+      <option value="cos">косинусное</option>
+      <option value="lin">линейное</option>
+    </select>
+  </label>
+  <div style="display:flex;gap:.6rem;margin:.8rem 0;flex-wrap:wrap">
+    <div style="flex:1 1 8rem;text-align:center">
+      <canvas id="df-c1" width="96" height="96" style="width:100%;image-rendering:pixelated;border-radius:6px"></canvas>
+      <div style="font-family:var(--font-ui);font-size:.72rem;color:var(--ink-3)">x_t, что видит сеть</div>
+    </div>
+    <div style="flex:1 1 8rem;text-align:center">
+      <canvas id="df-c2" width="96" height="96" style="width:100%;image-rendering:pixelated;border-radius:6px"></canvas>
+      <div style="font-family:var(--font-ui);font-size:.72rem;color:var(--ink-3)">шум, который надо угадать</div>
+    </div>
+    <div style="flex:1 1 8rem;text-align:center">
+      <canvas id="df-c3" width="96" height="96" style="width:100%;image-rendering:pixelated;border-radius:6px"></canvas>
+      <div style="font-family:var(--font-ui);font-size:.72rem;color:var(--ink-3)">восстановленная x_0</div>
+    </div>
+  </div>
+  <div class="out" id="df-out"></div>
+</div>
+
+</main>
+<script>
+/* демо: прямой процесс диффузии и цена ошибки в предсказании шума */
+(function () {
+  var c1 = document.getElementById("df-c1");
+  if (!c1) return;
+  var c2 = document.getElementById("df-c2"), c3 = document.getElementById("df-c3");
+  var out = document.getElementById("df-out");
+  var elT = document.getElementById("df-t"), elE = document.getElementById("df-e");
+  var elS = document.getElementById("df-sched");
+  var N = 96, T = 1000;
+
+  function rand(seed) {
+    return function () {
+      seed = (seed * 1103515245 + 12345) % 2147483648;
+      return seed / 2147483648;
+    };
+  }
+  function gauss(r) {
+    var u = Math.max(1e-9, r()), v = r();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  }
+
+  // исходная картинка: домик на фоне неба, значения от 0 до 1
+  var x0 = new Float32Array(N * N);
+  (function () {
+    for (var y = 0; y < N; y++) {
+      for (var x = 0; x < N; x++) {
+        var v = 0.82 - 0.3 * (y / N);
+        var inWall = x > 26 && x < 70 && y > 46 && y < 84;
+        var inRoof = y > 26 && y <= 46 && Math.abs(x - 48) < (y - 26) * 1.15;
+        var inDoor = x > 42 && x < 55 && y > 62 && y < 84;
+        var inSun = Math.hypot(x - 76, y - 18) < 9;
+        if (inRoof) v = 0.28;
+        if (inWall) v = 0.55;
+        if (inDoor) v = 0.12;
+        if (inSun) v = 1.0;
+        x0[y * N + x] = v;
+      }
+    }
+  })();
+
+  var r = rand(42);
+  var eps = new Float32Array(N * N);
+  for (var i = 0; i < eps.length; i++) eps[i] = gauss(r);
+  var r2 = rand(1337);
+  var errNoise = new Float32Array(N * N);
+  for (var j = 0; j < errNoise.length; j++) errNoise[j] = gauss(r2);
+
+  function alphaBar(t) {
+    var s = t / T;
+    if (elS.value === "cos") {
+      var f = Math.cos((s + 0.008) / 1.008 * Math.PI / 2);
+      return Math.max(1e-5, f * f);
+    }
+    // линейное расписание бет от 1e-4 до 0.02, накопленное произведение приближаем
+    var b0 = 1e-4, b1 = 0.02;
+    var sum = t * (b0 + (b0 + (b1 - b0) * s)) / 2;
+    return Math.max(1e-5, Math.exp(-sum));
+  }
+
+  function paint(cv, data, lo, hi) {
+    var ctx = cv.getContext("2d"), img = ctx.createImageData(N, N);
+    for (var k = 0; k < N * N; k++) {
+      var v = (data[k] - lo) / (hi - lo);
+      v = Math.max(0, Math.min(1, v));
+      var g = Math.round(v * 255);
+      img.data[k * 4] = g; img.data[k * 4 + 1] = g; img.data[k * 4 + 2] = g; img.data[k * 4 + 3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+
+  function draw() {
+    var t = +elT.value, err = +elE.value / 100;
+    var ab = alphaBar(t), sa = Math.sqrt(ab), sb = Math.sqrt(1 - ab);
+
+    var xt = new Float32Array(N * N), rec = new Float32Array(N * N);
+    for (var k = 0; k < N * N; k++) {
+      xt[k] = sa * (x0[k] * 2 - 1) + sb * eps[k];
+      var epsHat = (1 - err) * eps[k] + err * errNoise[k];
+      rec[k] = ((xt[k] - sb * epsHat) / Math.max(sa, 1e-3) + 1) / 2;
+    }
+    paint(c1, xt, -2.2, 2.2);
+    paint(c2, eps, -2.6, 2.6);
+    paint(c3, rec, 0, 1);
+
+    document.getElementById("df-t-v").textContent = t;
+    document.getElementById("df-e-v").textContent = elE.value + " процентов";
+
+    var signal = (sa * 100).toFixed(0);
+    out.innerHTML =
+      "На шаге " + t + " доля исходной картинки в сигнале равна <code>√ᾱ = " + sa.toFixed(3) +
+      "</code>, доля шума <code>√(1-ᾱ) = " + sb.toFixed(3) + "</code>. " +
+      "Иначе говоря, от картинки осталось около " + signal + " процентов амплитуды.<br>" +
+      '<div style="margin-top:.5rem;color:var(--ink-3)">' +
+      (err === 0
+        ? "Пока сеть угадывает шум точно, восстановление идеально при любом t: формула обратного шага просто вычитает известный шум и делит на √ᾱ."
+        : "Ошибка в предсказании шума делится на √ᾱ = " + sa.toFixed(3) + ", то есть умножается примерно на " +
+          (1 / sa).toFixed(1) + ". Чем больше t, тем сильнее вылезает эта ошибка, поэтому из шума идут маленькими шагами, за один шаг картинку не достать.") +
+      (t > 850 ? " На больших t от исходной картинки почти ничего не остаётся, и восстановление держится только на предсказании." : "") +
+      "</div>";
+  }
+
+  [elT, elE].forEach(function (e) { e.addEventListener("input", draw); });
+  elS.addEventListener("change", draw);
+  draw();
+})();
+</script>
+</body>
+</html>

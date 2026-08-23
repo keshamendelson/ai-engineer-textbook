@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>проба демо BIO</title>
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<main style="padding:2rem;max-width:44rem;margin:0 auto">
+
+<div class="demo">
+  <span class="dt">Попробуйте · разметьте предложение по схеме BIO</span>
+  <p style="font-family:var(--font-ui);font-size:.85rem;color:var(--ink-2);margin-bottom:.8rem">
+    Кликайте по словам, метка меняется по кругу: O, затем начало и продолжение для человека, организации и места. Внизу считаются обе метрики сразу, доля верных меток по токенам и span-F1 по сущностям целиком.
+  </p>
+  <div id="bio-sent" style="display:flex;flex-wrap:wrap;gap:.45rem;margin:.7rem 0"></div>
+  <div class="row" style="gap:.5rem;margin-bottom:.6rem">
+    <button class="btn ghost" id="bio-gold">Показать эталон</button>
+    <button class="btn ghost" id="bio-near">Ошибиться в одной границе</button>
+    <button class="btn ghost" id="bio-reset">Сбросить</button>
+  </div>
+  <div class="out" id="bio-out"></div>
+</div>
+
+</main>
+<script>
+/* демо: разметка BIO и разница между точностью по токенам и span-F1 */
+(function () {
+  var host = document.getElementById("bio-sent");
+  if (!host) return;
+  var out = document.getElementById("bio-out");
+
+  var toks = ["Иван", "Петров", "работает", "в", "Сбербанк", "Технологии",
+              "в", "Нижнем", "Новгороде"];
+  var gold = ["B-PER", "I-PER", "O", "O", "B-ORG", "I-ORG",
+              "O", "B-LOC", "I-LOC"];
+  var cycle = ["O", "B-PER", "I-PER", "B-ORG", "I-ORG", "B-LOC", "I-LOC"];
+  var tint = { PER: "--accent", ORG: "--analogy", LOC: "--practice" };
+  var cur = toks.map(function () { return "O"; });
+
+  function spans(labels) {
+    var res = [], i = 0;
+    while (i < labels.length) {
+      var l = labels[i];
+      if (l === "O") { i++; continue; }
+      var type = l.slice(2), start = i;
+      i++;
+      while (i < labels.length && labels[i] === "I-" + type) i++;
+      res.push(type + ":" + start + "-" + (i - 1));
+    }
+    return res;
+  }
+
+  function draw() {
+    host.innerHTML = toks.map(function (t, i) {
+      var l = cur[i], type = l === "O" ? null : l.slice(2);
+      var col = type ? "var(" + tint[type] + ")" : "var(--ink-3)";
+      var style = "cursor:pointer;text-align:center;padding:.3rem .5rem;border-radius:6px;" +
+        "font-family:var(--font-ui);font-size:.85rem;border:1.5px " +
+        (l.charAt(0) === "I" ? "dashed" : "solid") + " " + col +
+        ";color:var(--ink);background:" + (type ? "color-mix(in srgb," + col + " 12%, transparent)" : "transparent");
+      return '<span data-i="' + i + '" style="' + style + '">' + t +
+        '<br><b style="font-size:.7rem;color:' + col + '">' + l + "</b></span>";
+    }).join("");
+    score();
+  }
+
+  function score() {
+    var hit = 0;
+    for (var i = 0; i < gold.length; i++) if (cur[i] === gold[i]) hit++;
+    var acc = hit / gold.length;
+
+    var g = spans(gold), p = spans(cur);
+    var tp = p.filter(function (s) { return g.indexOf(s) >= 0; }).length;
+    var prec = p.length ? tp / p.length : 0;
+    var rec = g.length ? tp / g.length : 0;
+    var f1 = prec + rec ? 2 * prec * rec / (prec + rec) : 0;
+
+    var note = "";
+    if (acc > 0.9 && f1 < 0.8) {
+      note = "Вот и разница. По токенам почти всё верно, а сущность, у которой сдвинута граница, " +
+             "в span-F1 не засчитывается совсем: она считается и пропуском, и ложным срабатыванием.";
+    } else if (f1 === 1) {
+      note = "Совпало полностью. Обе метрики равны единице только тогда, когда сходятся все границы.";
+    } else {
+      note = "Размечайте дальше. Сущность засчитывается, только если совпали и тип, и обе границы.";
+    }
+
+    out.innerHTML =
+      '<div class="bar-row"><span class="bl" style="flex:0 0 15rem;text-align:left">Верных меток по токенам</span>' +
+      '<span class="bb"><i style="width:' + (acc * 100).toFixed(0) + '%"></i></span>' +
+      '<span class="bv">' + (acc * 100).toFixed(0) + "%</span></div>" +
+      '<div class="bar-row"><span class="bl" style="flex:0 0 15rem;text-align:left">span-F1 по сущностям</span>' +
+      '<span class="bb"><i style="width:' + (f1 * 100).toFixed(0) + '%"></i></span>' +
+      '<span class="bv">' + f1.toFixed(2) + "</span></div>" +
+      '<div style="margin-top:.5rem;font-size:.82rem">Ваши сущности: <code>' +
+      (p.join(", ") || "нет") + "</code><br>Эталон: <code>" + g.join(", ") + "</code></div>" +
+      '<div style="margin-top:.5rem;color:var(--ink-3)">' + note + "</div>";
+  }
+
+  host.addEventListener("click", function (e) {
+    var el = e.target.closest("[data-i]");
+    if (!el) return;
+    var i = +el.getAttribute("data-i");
+    cur[i] = cycle[(cycle.indexOf(cur[i]) + 1) % cycle.length];
+    draw();
+  });
+  document.getElementById("bio-gold").addEventListener("click", function () {
+    cur = gold.slice();
+    draw();
+  });
+  document.getElementById("bio-near").addEventListener("click", function () {
+    cur = gold.slice();
+    cur[5] = "O";
+    draw();
+  });
+  document.getElementById("bio-reset").addEventListener("click", function () {
+    cur = toks.map(function () { return "O"; });
+    draw();
+  });
+  draw();
+})();
+</script>
+</body>
+</html>
