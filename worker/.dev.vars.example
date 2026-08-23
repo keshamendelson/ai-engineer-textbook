@@ -1,0 +1,6 @@
+# Скопировать в .dev.vars и вписать свои ключи. .dev.vars в .gitignore.
+GONKA_API_KEY=jg-...
+# Необязательно: список шлюзов в JSON, пробуется по порядку.
+# GONKA_GATEWAYS=[{"label":"joingonka","baseUrl":"https://gate.joingonka.ai/v1","model":"deepseek-ai/DeepSeek-V4-Flash-0731","key":"jg-..."},{"label":"gonkagate","baseUrl":"https://api.gonkagate.com/v1","model":"deepseek-ai/deepseek-v4-flash-0731","key":"gp-..."}]
+# Необязательно: страховка на случай, если Gonka молчит.
+# GEMINI_API_KEY=...

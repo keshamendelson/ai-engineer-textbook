@@ -1,0 +1,20 @@
+name = "aieng-ask"
+main = "src/worker.js"
+compatibility_date = "2026-08-01"
+
+# Ключи здесь не пишутся. Они кладутся секретами:
+#   wrangler secret put GONKA_API_KEY
+#   wrangler secret put GONKA_GATEWAYS   (необязательно, JSON со списком шлюзов)
+#   wrangler secret put GEMINI_API_KEY   (страховка, бесплатный тариф Google AI Studio)
+
+[vars]
+ALLOWED_ORIGINS = "https://operhueper.github.io,http://localhost:8899,http://127.0.0.1:8899"
+GEMINI_MODEL = "gemini-2.5-flash"
+
+# Лимит запросов по адресу. Считает сам Cloudflare, хранилище не нужно и в
+# бесплатный тариф укладывается. Убрать привязку — лимит просто исчезнет.
+[[unsafe.bindings]]
+name = "RATE_LIMITER"
+type = "ratelimit"
+namespace_id = "1"
+simple = { limit = 40, period = 60 }
