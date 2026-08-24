@@ -8,7 +8,7 @@ compatibility_date = "2026-08-01"
 #   wrangler secret put GEMINI_API_KEY   (страховка, бесплатный тариф Google AI Studio)
 
 [vars]
-ALLOWED_ORIGINS = "https://operhueper.github.io,http://localhost:8899,http://127.0.0.1:8899"
+ALLOWED_ORIGINS = "https://ev-mironov.github.io,https://operhueper.github.io,http://localhost:8899,http://127.0.0.1:8899"
 GEMINI_MODEL = "gemini-2.5-flash"
 
 # Лимит запросов по адресу. Считает сам Cloudflare, хранилище не нужно и в
