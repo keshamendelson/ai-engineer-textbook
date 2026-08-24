@@ -16,3 +16,13 @@ tools/
 specs/
 rag/
 WORK_STATE.md
+
+# --- лаборатории: код и данные в репозитории, окружение и артефакты нет ---
+labs/.venv/
+labs/**/chunks.json
+labs/**/vectors.npy
+
+# журналы работы цеха и скачанные статьи
+logs/
+sources/extra/
+unexplained-terms.md
