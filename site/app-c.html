@@ -87,19 +87,19 @@
           </thead>
           <tbody>
             <tr>
-              <td><a href="https://github.com/rasbt/LLMs-from-scratch">LLMs from scratch</a><br><span style="color:var(--ink-3)">Sebastian Raschka</span></td>
+              <td><a href="https://github.com/rasbt/LLMs-from-scratch">LLMs from scratch</a> · <a href="https://www.manning.com/books/build-a-large-language-model-from-scratch">книга у издателя</a><br><span style="color:var(--ink-3)">Sebastian Raschka</span></td>
               <td>Сборка GPT-подобной модели с нуля построчно: токенизатор, внимание, обучение, дообучение</td>
               <td>После главы 8, если хочется собрать всё руками</td>
               <td>код бесплатно, книга платная</td>
             </tr>
             <tr>
-              <td><a href="https://github.com/HandsOnLLM/Hands-On-Large-Language-Models">Hands-On LLM</a><br><span style="color:var(--ink-3)">Alammar &amp; Grootendorst</span></td>
+              <td><a href="https://github.com/HandsOnLLM/Hands-On-Large-Language-Models">Hands-On LLM</a> · <a href="https://www.llm-book.com/">сайт книги</a><br><span style="color:var(--ink-3)">Alammar &amp; Grootendorst</span></td>
               <td>Почти 300 авторских иллюстраций, прикладной уклон: эмбеддинги, поиск, кластеризация, дообучение</td>
               <td>Визуалам и тем, кому главы 7-8 дались тяжело</td>
               <td>код бесплатно, книга платная</td>
             </tr>
             <tr>
-              <td><a href="https://github.com/chiphuyen/dmls-book">Designing ML Systems</a><br><span style="color:var(--ink-3)">Chip Huyen</span></td>
+              <td><a href="https://github.com/chiphuyen/dmls-book">Designing ML Systems</a> · <a href="https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/">книга у издателя</a><br><span style="color:var(--ink-3)">Chip Huyen</span></td>
               <td>Проектирование систем машинного обучения: данные, дрейф, деплой, мониторинг</td>
               <td>Прямое продолжение главы 18. Есть русский перевод</td>
               <td>книга платная</td>
@@ -282,6 +282,562 @@ python3 rag/openai_store.py ask "что такое induction head и зачем 
         Полезно, когда в учебнике тема упомянута кратко, а нужны подробности:
         скрипт найдёт нужные страницы в оригинале и переведёт ответ на русский.
       </p>
+
+      <h2 id="more-books">Ещё книги</h2>
+
+      <p>
+        Две книги выше несут основную нагрузку. Здесь то, что расширяет картину
+        в отдельных направлениях: классический ИИ до нейросетей, обучение с
+        подкреплением, продакшн вокруг больших моделей.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Ресурс</th><th>О чём</th><th>Кому</th><th>Цена</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://aima.cs.berkeley.edu/"><span class="en">Artificial Intelligence: A Modern Approach</span></a><br><span style="color:var(--ink-3)">Стюарт Рассел, Питер Норвиг</span></td>
+              <td>Классический учебник по ИИ до эпохи глубокого обучения: поиск, логический вывод, планирование, обучение, робототехника</td>
+              <td>Для контекста перед главой 55 про классический ИИ, когда хочется увидеть область целиком</td>
+              <td>книга платная</td>
+            </tr>
+            <tr>
+              <td><a href="https://web.stanford.edu/class/psych209/Readings/SuttonBartoIPRLBook2ndEd.pdf"><span class="en">Reinforcement Learning: An Introduction</span></a><br><span style="color:var(--ink-3)"><span class="en">Sutton, Barto</span></span></td>
+              <td>Полное и медленное изложение теории обучения с подкреплением: марковский процесс принятия решений, Q-обучение, градиент по стратегии</td>
+              <td>Материал уже разобран в главах 36 и 37, книга подходит, если после них хочется более подробного текста с доказательствами</td>
+              <td>бесплатно, PDF</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.manning.com/books/machine-learning-bookcamp"><span class="en">Machine Learning Bookcamp</span></a><br><span style="color:var(--ink-3)"><span class="en">Alexey Grigorev</span></span></td>
+              <td>Проектное введение в построение и деплой ML-систем на примерах, без тяжёлого математического аппарата</td>
+              <td>Хорошо заходит после части IV, когда теория уже понятна и хочется собрать пару учебных проектов целиком</td>
+              <td>книга платная</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.oreilly.com/library/view/ai-engineering/9781098166298/"><span class="en">AI Engineering</span></a><br><span style="color:var(--ink-3)"><span class="en">Chip Huyen</span></span></td>
+              <td>Построение приложений на основе больших моделей: выбор модели, промптинг, оценка, RAG, агенты, деплой</td>
+              <td>Продолжение книги Designing ML Systems той же Chip Huyen из раздела Практика, для тех, кто прошёл часть IV</td>
+              <td>книга платная</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.packtpub.com/en-us/product/llm-engineers-handbook-9781836200079"><span class="en">LLM Engineer's Handbook</span></a></td>
+              <td>Дообучение, развёртывание и сопровождение больших языковых моделей в проде</td>
+              <td>Когда нужно понять, как поддерживать LLM после дообучения: разворачивать, мониторить и обновлять модель в проде</td>
+              <td>книга платная</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.thelmbook.com/"><span class="en">The 100-Page Language Models Book</span></a><br><span style="color:var(--ink-3)"><span class="en">Andriy Burkov</span></span></td>
+              <td>Короткое техническое введение в языковые модели, автор держит все главы в открытом доступе на сайте книги</td>
+              <td>Для быстрого обзора темы перед более длинными книгами вроде Understanding Deep Learning</td>
+              <td>бесплатно онлайн, печать платная</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.deeplearningbook.org/"><span class="en">Deep Learning</span></a><br><span style="color:var(--ink-3)"><span class="en">Ian Goodfellow, Yoshua Bengio, Aaron Courville</span></span></td>
+              <td>Математические основы глубокого обучения, полный текст открыт на сайте книги в формате HTML</td>
+              <td>Для тех, кто хочет вывод формул с нуля. Нужна уверенная линейная алгебра и теория вероятностей</td>
+              <td>бесплатно онлайн</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.bishopbook.com/"><span class="en">Deep Learning: Foundations and Concepts</span></a><br><span style="color:var(--ink-3)"><span class="en">Christopher Bishop, Hugh Bishop</span></span></td>
+              <td>Глубокое обучение, изложенное через теорию вероятностей, на сайте книги есть бесплатная онлайн-версия</td>
+              <td>Альтернатива Гудфеллоу для тех, кому ближе вероятностный взгляд на модели</td>
+              <td>бесплатно онлайн, печать платная</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="courses-more">Курсы</h2>
+
+      <p>
+        Курсы для тех, кому нужен разбор с преподавателем и практическими
+        заданиями: агентная разработка, глубокое обучение с нуля, языковые
+        модели.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Ресурс</th><th>О чём</th><th>Кому</th><th>Цена</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://aiengineer.co/"><span class="en">AI Engineer</span></a><br><span style="color:var(--ink-3)"><span class="en">aiengineer.co</span></span></td>
+              <td>Платная программа по агентному кодингу и сборке продакшн AI-систем</td>
+              <td>Для тех, кто хочет курс со структурой и живым наставником вместо самостоятельного разбора открытых материалов</td>
+              <td>платно</td>
+            </tr>
+            <tr>
+              <td><a href="https://aiengineer.co/start"><span class="en">Free AI Engineer starter pack</span></a><br><span style="color:var(--ink-3)"><span class="en">aiengineer.co</span></span></td>
+              <td>Бесплатный стартовый набор: готовые навыки для агента, скидки на инструменты, код с разбором</td>
+              <td>Прежде чем платить за курс выше, можно попробовать бесплатный набор и понять, подходит ли формат</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://fullstackdeeplearning.com/"><span class="en">Full Stack Deep Learning</span></a></td>
+              <td>Весь путь ML-продукта от идеи до деплоя и сопровождения в проде</td>
+              <td>Для тех, кто уже обучает модели и хочет разобраться в инженерной части вокруг обучения</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://course.fast.ai/"><span class="en">Fast.ai Practical Deep Learning</span></a><br><span style="color:var(--ink-3)"><span class="en">fast.ai</span></span></td>
+              <td>Введение в глубокое обучение через код: сначала запускаете модель, потом разбираетесь в устройстве</td>
+              <td>Хорошая точка входа для тех, кому легче учиться на примерах, чем на выводе формул с нуля</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ"><span class="en">Neural Networks: Zero to Hero</span></a><br><span style="color:var(--ink-3)"><span class="en">Andrej Karpathy</span></span></td>
+              <td>Плейлист на <span class="en">YouTube</span> про построение нейросетей и языковых моделей с первых принципов, с кодом на экране</td>
+              <td>После части I, если хочется увидеть, как обратное распространение и трансформер собираются руками, строка за строкой</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://cs336.stanford.edu/"><span class="en">Stanford CS336: Language Modeling from Scratch</span></a><br><span style="color:var(--ink-3)"><span class="en">Stanford</span></span></td>
+              <td>Университетский курс про построение языковой модели целиком: от подготовки данных до деплоя</td>
+              <td>Для тех, кто прошёл часть II учебника и хочет собрать свою модель целиком</td>
+              <td>бесплатно, материалы открыты</td>
+            </tr>
+            <tr>
+              <td><a href="https://introtodeeplearning.com/"><span class="en">MIT 6.S191: Introduction to Deep Learning</span></a><br><span style="color:var(--ink-3)"><span class="en">MIT</span></span></td>
+              <td>Вводный курс основ и приложений глубокого обучения одной интенсивной программой</td>
+              <td>Альтернатива части I этого учебника в формате университетских лекций, если одного источника мало</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.cloudskillsboost.google/paths/118"><span class="en">Google Generative AI Learning Path</span></a><br><span style="color:var(--ink-3)"><span class="en">Google Cloud</span></span></td>
+              <td>Обучающий путь по генеративному ИИ и инструментам <span class="en">Google Cloud</span></td>
+              <td>Когда нужно быстро освоить облачные инструменты Google на практике. Лабораторные работы идут на платных кредитах</td>
+              <td>часть бесплатно, лабы платные</td>
+            </tr>
+            <tr>
+              <td><a href="https://madewithml.com/"><span class="en">Made With ML</span></a></td>
+              <td>Открытый курс про проектирование, разработку, деплой и итерации продакшн ML-систем</td>
+              <td>Дополнение к главе 18 про проектирование ML-систем, если нужен пошаговый практический пример</td>
+              <td>бесплатно</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="tools">Инструменты AI-инженера</h2>
+
+      <p>
+        Софт, из которого сегодня собирают агентные системы: фреймворки для
+        самого агента, протоколы связи с внешним миром, инструменты для поиска
+        по данным, для проверки качества и для наблюдения за тем, что
+        происходит с запросами в проде.
+      </p>
+
+      <p><b>Агентные фреймворки.</b> Берут на себя цикл вызова инструментов,
+      память и передачу шагов друг другу, чтобы не писать это заново под
+      каждый проект.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Ресурс</th><th>О чём</th><th>Кому</th><th>Цена</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://ai.pydantic.dev/"><span class="en">Pydantic AI</span></a></td>
+              <td>Типизированная разработка агентов вокруг библиотеки Pydantic, открытый код</td>
+              <td>Если уже пишете на Pydantic и хотите, чтобы вход и выход агента проверялись по схеме</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+            <tr>
+              <td><a href="https://docs.langchain.com/oss/python/langgraph/overview"><span class="en">LangGraph</span></a><br><span style="color:var(--ink-3)"><span class="en">LangChain</span></span></td>
+              <td>Низкоуровневая оркестрация долгоживущих агентов с явным состоянием, открытый код</td>
+              <td>Когда нужен полный контроль над графом шагов агента вместо готового цикла из коробки</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+            <tr>
+              <td><a href="https://openai.github.io/openai-agents-python/"><span class="en">OpenAI Agents SDK</span></a><br><span style="color:var(--ink-3)"><span class="en">OpenAI</span></span></td>
+              <td>Небольшой SDK для инструментов, передачи задачи между агентами, защитных проверок и трассировки выполнения</td>
+              <td>Если стек уже завязан на OpenAI и не хочется тянуть более тяжёлый фреймворк ради несложного агента</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+            <tr>
+              <td><a href="https://google.github.io/adk-docs/"><span class="en">Google Agent Development Kit</span></a><br><span style="color:var(--ink-3)"><span class="en">Google</span></span></td>
+              <td>Фреймворк Google для разработки и оценки агентов, открытый код</td>
+              <td>Если стек уже завязан на модели и облако Google и нужны встроенные средства оценки агента</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+            <tr>
+              <td><a href="https://learn.microsoft.com/en-us/agent-framework/overview/"><span class="en">Microsoft Agent Framework</span></a><br><span style="color:var(--ink-3)"><span class="en">Microsoft</span></span></td>
+              <td>Преемник фреймворков AutoGen и Semantic Kernel: агенты и графовые сценарии, открытый код</td>
+              <td>Если уже пользовались AutoGen и хотите перейти на обновлённую архитектуру</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><b>Протоколы.</b> Стандарты, не привязанные к конкретной библиотеке:
+      описывают, как агент обменивается данными с инструментами и с другими
+      агентами, независимо от того, на чём он написан.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Ресурс</th><th>О чём</th><th>Кому</th><th>Цена</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://modelcontextprotocol.io/specification/2026-07-28"><span class="en">Model Context Protocol</span></a></td>
+              <td>Открытая спецификация подключения AI-приложений к внешним инструментам, данным и промптам</td>
+              <td>Сама концепция протокола уже разобрана в главе 14, здесь актуальная версия спецификации</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://a2a-protocol.org/latest/specification/"><span class="en">Agent2Agent Protocol</span></a></td>
+              <td>Вендор-нейтральная спецификация обнаружения агентов, передачи им задач и потоковых обновлений о ходе работы</td>
+              <td>Когда система собрана из агентов разных производителей и им нужно понимать друг друга без общего фреймворка</td>
+              <td>бесплатно</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><b>Поиск и данные.</b> Библиотеки для того, что в главе 13 разобрано
+      как RAG: загрузка документов, индексация, поиск релевантных фрагментов.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Ресурс</th><th>О чём</th><th>Кому</th><th>Цена</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://docs.llamaindex.ai/"><span class="en">LlamaIndex</span></a></td>
+              <td>Загрузка, индексация и поиск по данным, а также агентные сценарии поверх них, открытый код</td>
+              <td>Когда нужно быстро собрать RAG поверх своих документов, не реализуя индекс и поиск с нуля</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+            <tr>
+              <td><a href="https://docs.haystack.deepset.ai/"><span class="en">Haystack</span></a><br><span style="color:var(--ink-3)"><span class="en">deepset</span></span></td>
+              <td>Модульные конвейеры для поиска и генеративных AI-приложений, открытый код</td>
+              <td>Если важно собрать конвейер из явно видимых шагов и потом менять их по отдельности</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+            <tr>
+              <td><a href="https://github.com/docling-project/docling"><span class="en">Docling</span></a></td>
+              <td>Разбирает PDF, DOCX и другие форматы документов в текст перед индексацией</td>
+              <td>Когда документы приходят сканами и офисными файлами со сложной вёрсткой вместо чистого текста</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><b>Оценка.</b> Инструменты для того, что глава 15 называет
+      eval-наборами: систематическая проверка ответов модели и агента
+      на наборе примеров.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Ресурс</th><th>О чём</th><th>Кому</th><th>Цена</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://github.com/openai/evals"><span class="en">OpenAI Evals</span></a><br><span style="color:var(--ink-3)"><span class="en">OpenAI</span></span></td>
+              <td>Открытый фреймворк и реестр готовых наборов для оценки языковых моделей и систем</td>
+              <td>Когда не хочется собирать eval-набор с нуля и можно взять готовый под похожую задачу</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.promptfoo.dev/docs/"><span class="en">Promptfoo</span></a></td>
+              <td>Тестовые сценарии, сравнение моделей и проверки на устойчивость к вредным запросам для LLM-приложений</td>
+              <td>Когда нужно гонять регрессионные тесты промпта в CI вместо ручной проверки перед каждым релизом</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+            <tr>
+              <td><a href="https://docs.ragas.io/"><span class="en">Ragas</span></a></td>
+              <td>Метрики и эксперименты для оценки поиска и генеративных AI-приложений</td>
+              <td>Когда нужно измерить качество конкретно RAG-системы: точность поиска и точность ответа по найденному</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><b>Раздача моделей и наблюдаемость.</b> Движок инференса vLLM из
+      раздела «Сжатие моделей и локальный запуск» уже закрывает раздачу одной
+      модели. Здесь то, что нужно поверх: переключение между провайдерами и
+      взгляд на то, что происходит с запросами в проде.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Ресурс</th><th>О чём</th><th>Кому</th><th>Цена</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://docs.litellm.ai/"><span class="en">LiteLLM</span></a></td>
+              <td>Единый интерфейс поверх разных провайдеров моделей, один формат запроса вместо десятка</td>
+              <td>Когда код должен уметь переключаться между провайдерами моделей без переписывания под каждого</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+            <tr>
+              <td><a href="https://langfuse.com/docs"><span class="en">Langfuse</span></a></td>
+              <td>Трассировка запросов, оценка ответов, управление промптами и метрики для LLM-приложений</td>
+              <td>Продолжение главы 49 про наблюдаемость агентов: конкретный инструмент для того же самого на практике</td>
+              <td>открытый код, есть платный тариф</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="playbooks">Практические разборы от команд, которые это строят</h2>
+
+      <p>
+        Тексты от инженерных команд, которые строят такие системы на практике
+        и описывают собственный опыт. Каждый разбирает одну конкретную
+        проблему.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Ресурс</th><th>О чём</th><th>Кому</th><th>Цена</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://www.anthropic.com/engineering/building-effective-agents"><span class="en">Building Effective Agents</span></a><br><span style="color:var(--ink-3)"><span class="en">Anthropic</span></span></td>
+              <td>Практические паттерны и компромиссы для агентных систем: когда хватит воркфлоу, а когда нужен цикл агента</td>
+              <td>Пять паттернов сборки уже разобраны в главе 46, здесь оригинальный текст Anthropic, откуда они взяты</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf"><span class="en">A Practical Guide to Building Agents</span></a><br><span style="color:var(--ink-3)"><span class="en">OpenAI</span></span></td>
+              <td>PDF-гид по моделям, инструментам, инструкциям агента, оркестрации и защитным ограничениям</td>
+              <td>Более развёрнутая версия того, что в главе 14 дано как разбор цикла инструмент-действие</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview"><span class="en">Anthropic Prompt Engineering</span></a><br><span style="color:var(--ink-3)"><span class="en">Anthropic</span></span></td>
+              <td>Техники определения критериев успеха промпта, его тестирования и постепенного улучшения поведения модели</td>
+              <td>Дополняет главу 11 про сборку промпта методикой проверки, что улучшение действительно улучшение</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"><span class="en">Effective Context Engineering for AI Agents</span></a><br><span style="color:var(--ink-3)"><span class="en">Anthropic</span></span></td>
+              <td>Как выбирать, структурировать и урезать контекст для агентов, которые работают дольше одного окна модели</td>
+              <td>Раздел про инженерию контекста уже есть в главе 11, здесь оригинальный текст с примерами Anthropic</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://github.com/humanlayer/12-factor-agents"><span class="en">12-Factor Agents</span></a><br><span style="color:var(--ink-3)"><span class="en">humanlayer</span></span></td>
+              <td>Принципы построения управляемого LLM-приложения вокруг обычного детерминированного кода</td>
+              <td>Полезно перед главой 14 как список того, что стоит проверить в собственном агенте</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+            <tr>
+              <td><a href="https://genai.owasp.org/llm-top-10/"><span class="en">OWASP Top 10 for LLM Applications</span></a><br><span style="color:var(--ink-3)"><span class="en">OWASP</span></span></td>
+              <td>Отраслевой перечень рисков генеративных AI-приложений и мер по их снижению</td>
+              <td>Практическое дополнение к главе 17 про безопасность: список рисков перед деплоем</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://cookbook.openai.com/"><span class="en">OpenAI Cookbook</span></a><br><span style="color:var(--ink-3)"><span class="en">OpenAI</span></span></td>
+              <td>Примеры кода: структурированные ответы, вызов инструментов, поиск по данным, оценка модели</td>
+              <td>Когда нужен рабочий код-заготовка, который можно сразу вставить в проект и подстроить под задачу</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+            <tr>
+              <td><a href="https://github.com/deepseek-ai/awesome-deepseek-agent"><span class="en">Awesome DeepSeek Agent</span></a><br><span style="color:var(--ink-3)"><span class="en">DeepSeek</span></span></td>
+              <td>Официальные гайды по подключению моделей <span class="en">DeepSeek</span> к кодинг-агентам: Claude Code, Codex, <span class="en">Cline</span>, <span class="en">OpenCode</span>, Pi</td>
+              <td>Если выбрали модель <span class="en">DeepSeek</span> и не понятно, как именно подключить её к конкретному агенту</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="coding-agents">Кодинг-агенты и агентная разработка</h2>
+
+      <p>
+        Отдельный вид агента: тот, что пишет и правит код сам. Разные форматы
+        одной идеи: агент в терминале, агент внутри редактора, агент, который
+        берёт задачу из очереди и работает без вас.
+      </p>
+
+      <p><b>Инструменты.</b></p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Ресурс</th><th>О чём</th><th>Кому</th><th>Цена</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://github.com/owainlewis/neo"><span class="en">Neo</span></a><br><span style="color:var(--ink-3)"><span class="en">owainlewis</span></span></td>
+              <td>Открытый терминальный кодинг-агент с поддержкой нескольких провайдеров моделей и своих навыков агента</td>
+              <td>Когда не хочется быть привязанным к одному провайдеру модели и нужна гибкая настройка под свой процесс</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+            <tr>
+              <td><a href="https://code.claude.com/"><span class="en">Claude Code</span></a><br><span style="color:var(--ink-3)"><span class="en">Anthropic</span></span></td>
+              <td>Терминальный агент с хуками на события, вложенными агентами и навыками, которые читаются из репозитория</td>
+              <td>Инструмент бесплатный сам по себе, платите только за фактическое использование модели через API</td>
+              <td>бесплатно, платите за API</td>
+            </tr>
+            <tr>
+              <td><a href="https://github.com/openai/codex"><span class="en">Codex CLI</span></a><br><span style="color:var(--ink-3)"><span class="en">OpenAI</span></span></td>
+              <td>Открытый терминальный агент с песочницей выполнения и явным подтверждением действий</td>
+              <td>Когда важно, чтобы агент не выполнял команды без вашего явного одобрения, особенно на боевой машине</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+            <tr>
+              <td><a href="https://github.com/google-gemini/gemini-cli"><span class="en">Gemini CLI</span></a><br><span style="color:var(--ink-3)"><span class="en">Google</span></span></td>
+              <td>Открытый терминальный агент вокруг моделей <span class="en">Gemini</span>, с расширяемым набором инструментов</td>
+              <td>Если стек уже завязан на модели Google и хочется работать с ними прямо из терминала</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+            <tr>
+              <td><a href="https://cursor.com/cli"><span class="en">Cursor CLI</span></a><br><span style="color:var(--ink-3)"><span class="en">Cursor</span></span></td>
+              <td>Терминальный агент, связанный с редактором <span class="en">Cursor</span> и его облачными задачами</td>
+              <td>Если уже пользуетесь редактором <span class="en">Cursor</span> и хочется того же агента, но в терминале</td>
+              <td>нужна платная подписка</td>
+            </tr>
+            <tr>
+              <td><a href="https://docs.github.com/en/copilot/concepts/agents/coding-agent/about-coding-agent"><span class="en">GitHub Copilot coding agent</span></a><br><span style="color:var(--ink-3)"><span class="en">GitHub</span></span></td>
+              <td>Агент, который берёт задачу прямо из issue на GitHub и сам открывает <span class="en">pull request</span> с решением</td>
+              <td>Для команд, у которых процесс уже построен вокруг issue и <span class="en">pull request</span> на GitHub</td>
+              <td>нужна платная подписка</td>
+            </tr>
+            <tr>
+              <td><a href="https://aider.chat/"><span class="en">Aider</span></a></td>
+              <td>Открытый парный агент-программист с git-интеграцией и поддержкой моделей разных производителей</td>
+              <td>Когда хочется лёгкий инструмент под пару команд в терминале, без плагинов и настройки редактора</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+            <tr>
+              <td><a href="https://opencode.ai/"><span class="en">OpenCode</span></a></td>
+              <td>Открытый терминальный агент, не привязанный к одному провайдеру модели, с архитектурой клиент-сервер</td>
+              <td>Похож на Claude Code по формату, но собран так, чтобы модель можно было заменить в любой момент</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+            <tr>
+              <td><a href="https://docs.all-hands.dev/"><span class="en">OpenHands</span></a><br><span style="color:var(--ink-3)"><span class="en">All Hands AI</span></span></td>
+              <td>Открытая платформа для запуска агентов разработки: локально на своей машине или в облаке</td>
+              <td>Когда нужно развернуть кодинг-агента как отдельный сервис вместо разовой команды вручную</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+            <tr>
+              <td><a href="https://github.com/cline/cline"><span class="en">Cline</span></a></td>
+              <td>Открытый кодинг-агент в трёх формах: расширение редактора, отдельная команда, библиотека для своего кода</td>
+              <td>Если нужен агент прямо в привычном редакторе, но с возможностью встроить его логику в свой инструмент</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.continue.dev/"><span class="en">Continue</span></a></td>
+              <td>Открытые кодинг-агенты для редактора и CI, настройки хранятся прямо в репозитории проекта</td>
+              <td>Когда важно, чтобы у всей команды был один одинаково настроенный агент</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.youtube.com/watch?v=QER-0DaC-Gk"><span class="en">Build Your Own Coding Agent Like Pi</span></a></td>
+              <td>Видео про сборку минимального кодинг-агента на Go: цикл агента, вызов инструментов, файлы, терминал</td>
+              <td>Если хочется понять устройство агента, собрав игрушечную версию своими руками</td>
+              <td>бесплатно</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><b>Бенчмарки.</b></p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Ресурс</th><th>О чём</th><th>Кому</th><th>Цена</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://www.swebench.com/"><span class="en">SWE-bench</span></a></td>
+              <td>Независимый бенчмарк возможностей кодинг-агентов на реальных задачах из открытых репозиториев на GitHub</td>
+              <td>Когда нужно сравнить агентов по проценту решённых задач одного стандартного набора</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tbench.ai/leaderboard/terminal-bench/2.1"><span class="en">Terminal-Bench</span></a></td>
+              <td>Независимый рейтинг агентов, которые работают именно в командной строке терминала</td>
+              <td>Дополняет SWE-bench, если конкретно ваш агент работает через командную строку</td>
+              <td>бесплатно</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><b>Софтверная фабрика.</b> Оркестрация целого парка агентов: несколько
+      агентов работают параллельно над разными кусками одной задачи.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Ресурс</th><th>О чём</th><th>Кому</th><th>Цена</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://github.com/owainlewis/blueprint/tree/main/skills"><span class="en">Blueprint</span></a><br><span style="color:var(--ink-3)"><span class="en">owainlewis</span></span></td>
+              <td>Открытый набор готовых навыков агента для дизайна, реализации, тестирования, ревью и поставки изменений в коде</td>
+              <td>Когда не хочется писать навыки агента с нуля под каждый этап разработки</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+            <tr>
+              <td><a href="https://github.com/owainlewis/factory"><span class="en">Factory</span></a><br><span style="color:var(--ink-3)"><span class="en">owainlewis</span></span></td>
+              <td>Ранняя версия инструмента, который распределяет задачи между несколькими кодинг-агентами по репозиториям</td>
+              <td>Для тех, кто уже пробует запускать нескольких агентов на одном проекте одновременно</td>
+              <td>бесплатно, открытый код</td>
+            </tr>
+            <tr>
+              <td><a href="https://openai.com/index/harness-engineering/"><span class="en">Harness Engineering</span></a><br><span style="color:var(--ink-3)"><span class="en">OpenAI</span></span></td>
+              <td>Отчёт о том, как в реальности строят софт кодинг-агентами: ограничения репозитория, автоматические проверки, участие человека</td>
+              <td>Конкретные практики от команды, которая распределяет работу между агентами каждый день</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://openai.com/index/open-source-codex-orchestration-symphony/"><span class="en">Codex Orchestration with Symphony</span></a><br><span style="color:var(--ink-3)"><span class="en">OpenAI</span></span></td>
+              <td>Архитектура, которая превращает работу над проектом в отдельные наблюдаемые запуски кодинг-агентов</td>
+              <td>Когда нужен пример того, как изолировать и потом сравнивать разные запуски одного агента</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.anthropic.com/engineering/multi-agent-research-system"><span class="en">How We Built Our Multi-Agent Research System</span></a><br><span style="color:var(--ink-3)"><span class="en">Anthropic</span></span></td>
+              <td>Продакшн-уроки о связке оркестратор и агенты-исполнители: параллельный поиск, оценка результата, надёжность в проде</td>
+              <td>Мультиагентные системы разобраны в главе 47, здесь исходный разбор одной настоящей системы</td>
+              <td>бесплатно</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.youtube.com/@owainlewis/videos"><span class="en">AI Engineer YouTube channel</span></a><br><span style="color:var(--ink-3)"><span class="en">owainlewis</span></span></td>
+              <td>Практические туториалы по кодинг-агентам и AI-инженерии на <span class="en">YouTube</span> от автора списка, из которого выросло это приложение</td>
+              <td>Когда после текста хочется увидеть тот же материал в виде разбора с экраном перед глазами</td>
+              <td>бесплатно</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="curation-source">Источник этого приложения</h2>
+
+      <p>
+        Книги, курсы, инструменты и гайды в этих разделах, а также главы
+        50-56 учебника про агентов, выросли из одного внешнего списка:
+        <a href="https://github.com/owainlewis/awesome-artificial-intelligence"><span class="en">awesome-artificial-intelligence</span></a>.
+        Список курирует Оуэйн Льюис (Owain Lewis), репозиторий распространяется
+        по лицензии MIT.
+      </p>
+
+      <h2 id="in-chapters">Что разобрано в главах, а не здесь</h2>
+
+      <ul>
+        <li>Десять статей, на которых стоит современный ИИ (<span class="en">Attention Is All You Need, Scaling Laws, Chinchilla, GPT-3, RAG, LoRA, InstructGPT, ReAct, Constitutional AI, DPO</span>): разобраны по одной со ссылками на <span class="en">arXiv</span> в <a href="ch56.html">главе 56</a>, там же сказано, в каком порядке их читать и что можно пропустить.</li>
+        <li>Инженерные разборы про долгоживущих агентов от Anthropic, OpenAI и Google: стоят со ссылками в <a href="ch51.html">главе 51</a>.</li>
+        <li>Разбор Anthropic про оценку агентов: стоит со ссылкой в <a href="ch15.html">главе 15</a>.</li>
+      </ul>
 
       <nav class="chapter-nav" id="chapter-nav"></nav>
 
