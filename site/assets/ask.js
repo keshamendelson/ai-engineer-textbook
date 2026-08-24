@@ -12,7 +12,7 @@
 
   /* Сюда вписать адрес развёрнутого Worker'а, например
      https://aieng-ask.ИМЯ.workers.dev/  — один раз после первого деплоя. */
-  var DEFAULT_ENDPOINT = "";
+  var DEFAULT_ENDPOINT = "https://aieng-ask.operhueper.workers.dev";
 
   var LS_ENDPOINT = "aieng.ask.endpoint";
   var LS_LOG = "aieng.ask.log.";
