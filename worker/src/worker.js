@@ -39,26 +39,56 @@ const DEFAULT_ORIGINS = [
 const MAX_QUESTION = 600;
 const MAX_QUOTE = 3000;
 const MAX_CONTEXT = 4000;
-const MAX_TOKENS = 700;
+const MAX_TOKENS = 1200;
 const GATEWAY_TIMEOUT_MS = 25000;
+
+/* Сколько прошлых кругов разговора тащим с собой. Без них «я не понял» и
+   «а если наоборот?» приходят к модели без всякого «чего именно не понял». */
+const MAX_HISTORY_TURNS = 3;
+const MAX_HISTORY_Q = 300;
+const MAX_HISTORY_A = 900;
 
 const SYSTEM = `Ты помощник-репетитор внутри учебника «AI-инженер с нуля» на русском языке.
 Читатель застрял на фрагменте главы и спрашивает по нему.
 
-Как отвечать:
-— Коротко: два-четыре абзаца. Это подсказка на полях, а не новая глава.
-— По-русски, простым языком, без канцелярита и без англицизмов там, где есть русское слово.
-— Опирайся на приведённый фрагмент главы: читатель спрашивает именно про него.
-— Если для ответа нужно то, чего в фрагменте нет, скажи это прямо и объясни сам.
-— Если вопрос вообще не про учебник, вежливо откажись одной строкой.
+Главное правило: отвечай ровно на то, что спросили.
+— Первой фразой давай прямой ответ. Не разгоняйся издалека и не пересказывай
+  фрагмент — читатель его только что прочитал.
+— Если в вопросе несколько частей («а если удалю? а если добавлю?»), ответь на
+  каждую отдельно, своим абзацем или пунктом. Ни одну не пропускай.
+— «Я не понял», «а если…», «почему тогда…» — это продолжение прошлого ответа.
+  Смотри, что уже было сказано выше, и объясняй именно непонятое место заново,
+  другими словами, а не повторяй прежний текст.
+— Спрашивают «что будет, если…» — разбери механику по шагам: что произойдёт
+  сразу, что придётся пересчитать, а что останется как было.
+
+Что можно и чего нельзя:
+— Фрагмент главы — отправная точка, а не потолок. Нет в нём ответа — объясняй
+  сам: своими знаниями, примером, разбором механики.
+— Спрашивают про конкретные продукты и подходы — OpenAI, Google, чужие
+  библиотеки, чем один вариант отличается от другого — отвечай по существу и
+  сравнивай честно. Одной фразой предупреди, что у поставщиков всё меняется и
+  точные детали стоит сверить с их документацией.
+— Отказывайся, только если вопрос вообще из другой области: не про модели,
+  данные, поиск, код и инженерию. Тогда — одна вежливая строка.
+— Не выдумывай числа, даты, ссылки и названия статей. Не помнишь точно — так и
+  скажи и объясни принцип.
+
+Как писать:
+— По-русски, простым языком, без канцелярита и без англицизмов там, где есть
+  русское слово.
+— Обычно три-пять абзацев. Механику и сравнения лучше списком. Не растекайся,
+  но и не обрывай на середине: недоговорённый ответ хуже длинного.
 — Формулы — словами или простым текстом. Разметку используй скупо: **жирный**,
-  \`код\`, списки. Заголовки не ставь.
-— Не выдумывай числа, ссылки и названия статей. Не знаешь — так и скажи.`;
+  \`код\`, списки. Заголовки не ставь.`;
 
 const MODES = {
   simpler: "Объясни это проще, на бытовом примере, как будто я слышу термин впервые.",
   example: "Приведи конкретный пример с числами или коротким кодом, чтобы стало понятно.",
   why: "Объясни, почему это устроено именно так и что было бы, если сделать иначе.",
+  wider:
+    "Расскажи, как эту задачу решают за пределами главы: какие есть подходы и " +
+    "готовые сервисы, чем они отличаются друг от друга и что из этого выбрать новичку.",
 };
 
 /* ---------- вспомогательное ---------- */
@@ -134,6 +164,19 @@ function buildUserMessage(body) {
   return parts.join("\n\n");
 }
 
+/* Прошлые круги разговора. Фрагмент главы в них не повторяем — он и так едет
+   в свежем сообщении, а лишние три тысячи знаков на круг съели бы всё окно. */
+function history(body) {
+  const raw = Array.isArray(body.history) ? body.history : [];
+  return raw
+    .slice(-MAX_HISTORY_TURNS)
+    .map((turn) => ({
+      q: clip(turn && turn.q, MAX_HISTORY_Q),
+      a: clip(turn && turn.a, MAX_HISTORY_A),
+    }))
+    .filter((turn) => turn.q && turn.a);
+}
+
 /* ---------- разбор потоков ---------- */
 
 /* И Gonka, и Gemini отдают SSE, но с разным содержимым внутри data:.
@@ -181,9 +224,15 @@ function makeThinkFilter() {
 
 /* ---------- попытки достучаться до моделей ---------- */
 
-async function openGonka(gw, userMessage) {
+async function openGonka(gw, ask) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), GATEWAY_TIMEOUT_MS);
+  const messages = [{ role: "system", content: SYSTEM }];
+  for (const turn of ask.past) {
+    messages.push({ role: "user", content: turn.q });
+    messages.push({ role: "assistant", content: turn.a });
+  }
+  messages.push({ role: "user", content: ask.message });
   try {
     const res = await fetch(`${gw.baseUrl}/chat/completions`, {
       method: "POST",
@@ -196,10 +245,7 @@ async function openGonka(gw, userMessage) {
         stream: true,
         temperature: 0.3,
         max_tokens: MAX_TOKENS,
-        messages: [
-          { role: "system", content: SYSTEM },
-          { role: "user", content: userMessage },
-        ],
+        messages,
       }),
       signal: controller.signal,
     });
@@ -215,7 +261,7 @@ async function openGonka(gw, userMessage) {
   }
 }
 
-async function openGemini(env, userMessage) {
+async function openGemini(env, ask) {
   if (!env.GEMINI_API_KEY) return { ok: false, reason: "ключ Gemini не задан" };
   const model = env.GEMINI_MODEL || "gemini-2.5-flash";
   const url =
@@ -223,13 +269,19 @@ async function openGemini(env, userMessage) {
     `?alt=sse&key=${encodeURIComponent(env.GEMINI_API_KEY)}`;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), GATEWAY_TIMEOUT_MS);
+  const contents = [];
+  for (const turn of ask.past) {
+    contents.push({ role: "user", parts: [{ text: turn.q }] });
+    contents.push({ role: "model", parts: [{ text: turn.a }] });
+  }
+  contents.push({ role: "user", parts: [{ text: ask.message }] });
   try {
     const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: SYSTEM }] },
-        contents: [{ role: "user", parts: [{ text: userMessage }] }],
+        contents,
         generationConfig: { temperature: 0.3, maxOutputTokens: MAX_TOKENS },
       }),
       signal: controller.signal,
@@ -249,14 +301,14 @@ async function openGemini(env, userMessage) {
 /* Три попытки, как договорились: шлюзы Gonka по очереди, потом Gemini.
    Переключаемся только пока не пошёл текст — если поток уже начался и
    оборвался, начинать заново нельзя, читатель увидит ответ дважды. */
-async function openStream(env, userMessage) {
+async function openStream(env, ask) {
   const failures = [];
   for (const gw of gateways(env)) {
-    const attempt = await openGonka(gw, userMessage);
+    const attempt = await openGonka(gw, ask);
     if (attempt.ok) return attempt;
     failures.push(`${gw.label}: ${attempt.reason}`);
   }
-  const fallback = await openGemini(env, userMessage);
+  const fallback = await openGemini(env, ask);
   if (fallback.ok) return fallback;
   failures.push(`gemini: ${fallback.reason}`);
   return { ok: false, failures };
@@ -373,7 +425,10 @@ export default {
       }
     }
 
-    const opened = await openStream(env, buildUserMessage(body));
+    const opened = await openStream(env, {
+      message: buildUserMessage(body),
+      past: history(body),
+    });
     if (!opened.ok) {
       console.log("все шлюзы отказали:", opened.failures.join(" | "));
       return jsonError(

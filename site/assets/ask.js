@@ -16,13 +16,30 @@
 
   var LS_ENDPOINT = "aieng.ask.endpoint";
   var LS_LOG = "aieng.ask.log.";
+  var LS_WIDTH = "aieng.ask.width";
+  var LS_HEIGHT = "aieng.ask.height";
+  var LS_DOCK = "aieng.ask.dock";
   var MAX_HISTORY = 20;
+
+  /* Размеры панели. Ширина в пикселях, чтобы её можно было тянуть мышью;
+     потолок тот же, что в стилях, иначе значение и картинка разойдутся. */
+  var MIN_W = 320;
+  var MAX_W = 768;
+  var MIN_H = 260;
+  var DEF_W = 432;
+  /* Уже этого окно делить на текст и панель бессмысленно: от главы останется
+     колонка в три слова. Тогда панель просто ложится поверх. */
+  var DOCK_MIN_VIEWPORT = 1000;
+  /* Сколько прошлых кругов уезжает вместе с вопросом. Без них «я не понял» и
+     «а если наоборот?» приходят к модели без всякого «чего именно не понял». */
+  var SEND_HISTORY = 3;
   var MAX_QUESTION = 600;
 
   var QUICK = [
     { mode: "simpler", label: "Объясни проще" },
     { mode: "example", label: "Дай пример" },
     { mode: "why", label: "Почему так?" },
+    { mode: "wider", label: "А как у других?" },
   ];
 
   var endpoint = "";
@@ -33,12 +50,16 @@
   var input = null;
   var thread = null;
   var sendBtn = null;
+  var fab = null;
+  var handle = null;
+  var dockBtn = null;
 
   var quote = ""; // что читатель выделил
   var context = ""; // абзацы вокруг выделения
   var section = ""; // ближайший подзаголовок
   var busy = false;
   var abort = null;
+  var docked = true; // панель стоит рядом с текстом, а не поверх него
 
   /* ---------- мелочи ---------- */
 
@@ -57,6 +78,110 @@
   function chapterTitle() {
     var h = document.querySelector("article h1");
     return h ? h.textContent.trim() : document.title;
+  }
+
+  function remember(key, value) {
+    try {
+      localStorage.setItem(key, String(value));
+    } catch (e) {
+      /* приватный режим или переполненное хранилище — размер просто не запомнится */
+    }
+  }
+
+  function recall(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /* ---------- размер панели ---------- */
+
+  /* На узком экране панель выезжает снизу во всю ширину, и тянут её за верхний
+     край: меняется высота, а не ширина. */
+  function isNarrow() {
+    return window.innerWidth <= 700;
+  }
+
+  function setWidth(px) {
+    var top = Math.min(MAX_W, Math.round(window.innerWidth * 0.92));
+    var w = Math.max(MIN_W, Math.min(top, Math.round(px)));
+    document.documentElement.style.setProperty("--ask-w", w + "px");
+    remember(LS_WIDTH, w);
+  }
+
+  function setHeight(px) {
+    var top = Math.round(window.innerHeight * 0.92);
+    var h = Math.max(MIN_H, Math.min(top, Math.round(px)));
+    document.documentElement.style.setProperty("--ask-h", h + "px");
+    remember(LS_HEIGHT, h);
+  }
+
+  function restoreSize() {
+    var w = parseInt(recall(LS_WIDTH) || "", 10);
+    setWidth(w > 0 ? w : DEF_W);
+    var h = parseInt(recall(LS_HEIGHT) || "", 10);
+    if (h > 0) setHeight(h);
+    docked = recall(LS_DOCK) !== "0";
+  }
+
+  /* Прижимать текст есть чем только на широком экране. Если места мало, выбор
+     читателя не теряется — просто не применяется, и кнопка прячется. */
+  function canDock() {
+    return !isNarrow() && window.innerWidth >= DOCK_MIN_VIEWPORT;
+  }
+
+  function applyDock() {
+    var on = panel.classList.contains("open") && docked && canDock();
+    document.body.classList.toggle("ask-docked", on);
+    if (!dockBtn) return;
+    dockBtn.hidden = !canDock();
+    dockBtn.setAttribute("aria-pressed", docked ? "true" : "false");
+    dockBtn.textContent = docked ? "рядом" : "поверх";
+    dockBtn.title = docked
+      ? "Панель стоит рядом с текстом и поджимает страницу. Нажмите, чтобы положить её поверх."
+      : "Панель лежит поверх текста. Нажмите, чтобы поставить её рядом.";
+  }
+
+  /* Тянем за край. Пока тянут, отключаем переход и выделение текста: иначе
+     панель едет за мышью с задержкой, а по дороге выделяется полглавы. */
+  function startResize(e) {
+    e.preventDefault();
+    var vertical = isNarrow();
+    handle.classList.add("dragging");
+    panel.classList.add("sizing");
+    document.body.classList.add("ask-resizing");
+
+    var move = function (ev) {
+      if (vertical) setHeight(window.innerHeight - ev.clientY);
+      else setWidth(window.innerWidth - ev.clientX);
+    };
+    var stop = function () {
+      handle.classList.remove("dragging");
+      panel.classList.remove("sizing");
+      document.body.classList.remove("ask-resizing");
+      document.removeEventListener("pointermove", move);
+      document.removeEventListener("pointerup", stop);
+      document.removeEventListener("pointercancel", stop);
+    };
+
+    document.addEventListener("pointermove", move);
+    document.addEventListener("pointerup", stop);
+    document.addEventListener("pointercancel", stop);
+  }
+
+  /* Клавиатурой — стрелками, с тем же шагом, что у мыши на глаз. */
+  function nudgeSize(e) {
+    var step = e.shiftKey ? 64 : 24;
+    var w = panel.getBoundingClientRect().width;
+    var h = panel.getBoundingClientRect().height;
+    if (e.key === "ArrowLeft") setWidth(w + step);
+    else if (e.key === "ArrowRight") setWidth(w - step);
+    else if (e.key === "ArrowUp") setHeight(h + step);
+    else if (e.key === "ArrowDown") setHeight(h - step);
+    else return;
+    e.preventDefault();
   }
 
   /* Разметки в ответе немного: жирный, код, списки, абзацы.
@@ -155,7 +280,7 @@
   }
 
   function onSelection() {
-    if (busy || (panel && panel.classList.contains("open"))) return;
+    if (busy) return;
     var sel = window.getSelection();
     if (!sel || sel.isCollapsed || !sel.rangeCount) return hidePill();
     var range = sel.getRangeAt(0);
@@ -167,6 +292,15 @@
     quote = text.slice(0, 3000);
     context = grabContext(range);
     section = findSection(range);
+
+    /* Панель уже открыта — пилюля поверх неё была бы лишней, но выделение
+       подхватываем: в режиме «рядом с текстом» читатель отмечает новое место,
+       не закрывая помощника, и просто спрашивает дальше. */
+    if (panel.classList.contains("open")) {
+      hidePill();
+      paintQuote();
+      return;
+    }
 
     var r = range.getBoundingClientRect();
     pill.classList.add("show");
@@ -187,6 +321,8 @@
   function openPanel(prefillMode) {
     panel.classList.add("open");
     hidePill();
+    if (fab) fab.classList.add("hidden");
+    applyDock();
     paintQuote();
     if (prefillMode) ask("", prefillMode);
     else setTimeout(function () {
@@ -196,6 +332,8 @@
 
   function closePanel() {
     panel.classList.remove("open");
+    if (fab) fab.classList.remove("hidden");
+    document.body.classList.remove("ask-docked");
     if (abort) abort.abort();
   }
 
@@ -245,7 +383,7 @@
     if (!items.length) {
       thread.innerHTML =
         '<div class="ask-hello">Выделите непонятное место в тексте и спросите. ' +
-        "Помощник отвечает по этой главе, а не вообще.</div>";
+        "Переспрашивать можно: помощник помнит предыдущие ответы в этой главе.</div>";
       return;
     }
     thread.innerHTML = items
@@ -278,6 +416,7 @@
     busy = true;
     sendBtn.disabled = true;
     input.value = "";
+    autogrow();
 
     var turn = document.createElement("div");
     turn.className = "ask-turn";
@@ -340,6 +479,11 @@
       context: context,
       question: extra.question,
       mode: extra.mode,
+      history: readLog()
+        .slice(-SEND_HISTORY)
+        .map(function (it) {
+          return { q: it.q, a: it.a };
+        }),
     };
 
     fetch(endpoint, {
@@ -396,6 +540,16 @@
 
   /* ---------- разметка ---------- */
 
+  /* Вопросительный знак линиями, а не картинкой: масштабируется без потерь и
+     красится текущим цветом кнопки. Книжку со знаком внутри пробовали — в
+     сорока пикселях страницы и знак слипаются в кляксу. */
+  var ASK_ICON =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' +
+    '<path d="M9 9a3 3 0 1 1 4.2 2.75c-.9.4-1.45 1.15-1.45 2.05v.7"/>' +
+    '<path d="M11.75 18h.01"/>' +
+    "</svg>";
+
   function build() {
     pill = document.createElement("button");
     pill.id = "ask-pill";
@@ -403,11 +557,22 @@
     pill.textContent = "Спросить";
     document.body.appendChild(pill);
 
+    fab = document.createElement("button");
+    fab.id = "ask-fab";
+    fab.type = "button";
+    fab.title = "Спросить по главе";
+    fab.setAttribute("aria-label", "Спросить по главе");
+    fab.innerHTML = ASK_ICON;
+    document.body.appendChild(fab);
+
     panel = document.createElement("aside");
     panel.id = "ask-panel";
     panel.innerHTML =
+      '<div class="ask-resize" id="ask-resize" role="separator" tabindex="0" ' +
+      'aria-label="Размер панели" title="Потяните, чтобы изменить размер"></div>' +
       '<div class="ask-head">' +
       "<b>Помощник по главе</b>" +
+      '<button class="ask-mode" id="ask-dock" type="button" aria-pressed="true">рядом</button>' +
       '<button class="ask-close" type="button" aria-label="Закрыть">×</button>' +
       "</div>" +
       '<div class="ask-thread" id="ask-thread"></div>' +
@@ -432,6 +597,15 @@
     quoteBox = panel.querySelector("#ask-quote");
     input = panel.querySelector("#ask-input");
     sendBtn = panel.querySelector("#ask-send");
+    handle = panel.querySelector("#ask-resize");
+    dockBtn = panel.querySelector("#ask-dock");
+  }
+
+  /* Поле растёт под длинный вопрос и сжимается обратно: две строки по
+     умолчанию мало для «а если я сделаю так, а потом вот так?». */
+  function autogrow() {
+    input.style.height = "auto";
+    input.style.height = Math.min(input.scrollHeight, 144) + "px";
   }
 
   function wire() {
@@ -454,11 +628,46 @@
       ask(input.value);
     });
 
+    input.addEventListener("input", autogrow);
     input.addEventListener("keydown", function (e) {
       if (e.key === "Enter" && (e.metaKey || e.ctrlKey || !e.shiftKey)) {
         e.preventDefault();
         ask(input.value);
       }
+    });
+
+    /* Кнопка в правом нижнем углу. Если в тексте что-то выделено прямо сейчас,
+       спрашиваем про выделенное; если нет — про главу целиком. */
+    fab.addEventListener("click", function () {
+      if (panel.classList.contains("open")) return closePanel();
+      var sel = window.getSelection();
+      var live = sel && !sel.isCollapsed && sel.toString().trim().length >= 3;
+      if (!live) {
+        quote = "";
+        context = "";
+        section = "";
+      }
+      openPanel();
+    });
+
+    handle.addEventListener("pointerdown", startResize);
+    handle.addEventListener("keydown", nudgeSize);
+    handle.addEventListener("dblclick", function () {
+      if (isNarrow()) setHeight(Math.round(window.innerHeight * 0.6));
+      else setWidth(DEF_W);
+    });
+
+    dockBtn.addEventListener("click", function () {
+      docked = !docked;
+      remember(LS_DOCK, docked ? "1" : "0");
+      applyDock();
+    });
+
+    /* Окно поменяли — ширина могла стать больше самого окна, а прижимать текст
+       могло стать негде. */
+    window.addEventListener("resize", function () {
+      setWidth(panel.getBoundingClientRect().width);
+      applyDock();
     });
 
     document.addEventListener("mouseup", function () {
@@ -475,22 +684,6 @@
       }
     });
 
-    /* Кнопка в шапке — спросить по главе, ничего не выделяя. */
-    var bar = document.querySelector(".topbar");
-    var theme = document.getElementById("theme-toggle");
-    if (bar && theme) {
-      var btn = document.createElement("button");
-      btn.className = "icon-btn";
-      btn.id = "ask-open";
-      btn.textContent = "Спросить";
-      btn.addEventListener("click", function () {
-        quote = "";
-        context = "";
-        section = "";
-        openPanel();
-      });
-      bar.insertBefore(btn, theme);
-    }
   }
 
   /* ---------- запуск ---------- */
@@ -500,8 +693,10 @@
     if (!endpoint) return; // прокси не настроен — помощника нет
     article = document.querySelector("article");
     if (!article) return;
+    restoreSize();
     build();
     wire();
+    applyDock();
     paintThread();
   }
 

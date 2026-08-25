@@ -40,6 +40,10 @@
 
   --w-sidebar: 300px;
   --w-prose: 44rem;
+  /* Ширину и высоту панели помощника тянет мышь за край, значение переписывает
+     скрипт. Здесь — то, с чего начинается первый визит. */
+  --ask-w: 27rem;
+  --ask-h: 60vh;
   --radius: 10px;
   --shadow: 0 1px 2px rgba(28, 25, 23, 0.05), 0 8px 24px rgba(28, 25, 23, 0.06);
 }
@@ -1030,12 +1034,61 @@ a.term:hover {
 #ask-pill.show { opacity: 1; transform: none; pointer-events: auto; }
 #ask-pill:hover { filter: brightness(1.08); }
 
+/* Плавающая кнопка справа внизу. Раньше «Спросить» пряталось в шапке среди
+   прочих кнопок, и его не замечали; у нижнего правого угла помощнику самое
+   место — рука с мышью и так там. */
+#ask-fab {
+  position: fixed;
+  z-index: 75;
+  right: 1.15rem;
+  bottom: 1.15rem;
+  width: 2.6rem;
+  height: 2.6rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--accent-line);
+  border-radius: 50%;
+  background:
+    radial-gradient(120% 120% at 30% 18%,
+      color-mix(in srgb, var(--accent) 55%, #fff) 0%,
+      var(--accent) 46%,
+      color-mix(in srgb, var(--accent) 72%, #000) 100%);
+  color: #fff;
+  cursor: pointer;
+  box-shadow:
+    0 6px 14px rgba(28, 25, 23, 0.2),
+    0 1px 3px rgba(28, 25, 23, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38),
+    inset 0 -1px 3px rgba(0, 0, 0, 0.16);
+  transition: transform 0.16s ease, box-shadow 0.16s ease, opacity 0.16s ease;
+}
+
+[data-theme="dark"] #ask-fab { color: var(--paper); }
+
+#ask-fab:hover {
+  transform: translateY(-2px) rotate(-4deg);
+  box-shadow:
+    0 9px 20px rgba(28, 25, 23, 0.26),
+    0 2px 4px rgba(28, 25, 23, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -1px 3px rgba(0, 0, 0, 0.16);
+}
+#ask-fab:active { transform: translateY(0) scale(0.96); }
+#ask-fab svg { width: 1.4rem; height: 1.4rem; display: block; }
+
+/* Пока панель открыта, кнопка не нужна: закрывают крестиком в шапке панели. */
+#ask-fab.hidden { opacity: 0; pointer-events: none; transform: scale(0.8); }
+
 #ask-panel {
   position: fixed;
   z-index: 80;
   top: 0;
   right: 0;
-  width: min(27rem, 100vw);
+  width: var(--ask-w);
+  min-width: 20rem;
+  max-width: min(48rem, 92vw);
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -1049,16 +1102,86 @@ a.term:hover {
 
 #ask-panel.open { transform: none; }
 
+/* Пока тянут за край, переход мешает: панель едет за мышью с задержкой. */
+#ask-panel.sizing { transition: none; }
+
+/* Режим «рядом с текстом»: страница поджимается на ширину панели, и читать
+   главу можно, не закрывая помощника. Тень тогда лишняя — панель не висит
+   поверх, а стоит встык. */
+body.ask-docked { padding-right: var(--ask-w); transition: padding-right 0.2s ease; }
+body.ask-docked #ask-panel { box-shadow: none; }
+
+/* Оглавление главы сбоку уступает место панели: две колонки справа зажали бы
+   саму главу до газетного столбца. Вернётся, как только помощника закроют. */
+body.ask-docked .on-page { display: none; }
+
+/* Полоска, за которую тянут ширину. */
+.ask-resize {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: -3px;
+  width: 9px;
+  height: 100%;
+  cursor: col-resize;
+  touch-action: none;
+}
+.ask-resize::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 50%;
+  width: 3px;
+  height: 2.4rem;
+  margin-top: -1.2rem;
+  border-radius: 3px;
+  background: var(--line);
+  transition: background 0.15s, height 0.15s;
+}
+.ask-resize:hover::after, .ask-resize.dragging::after {
+  background: var(--accent);
+  height: 4rem;
+  margin-top: -2rem;
+}
+.ask-resize:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+/* Пока тянут край, по дороге выделялось бы полглавы. */
+body.ask-resizing { user-select: none; -webkit-user-select: none; }
+
 .ask-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 0.5rem;
   padding: 0.85rem 1rem;
   border-bottom: 1px solid var(--line);
   font-size: 0.85rem;
 }
 
+.ask-head b { flex: 1 1 auto; min-width: 0; }
+
+/* Переключатель «рядом с текстом» / «поверх текста». Словами, а не значком:
+   значок здесь пришлось бы разгадывать. */
+.ask-mode {
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper-2);
+  color: var(--ink-3);
+  padding: 0.2rem 0.6rem;
+  font-family: inherit;
+  font-size: 0.7rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.ask-mode:hover { border-color: var(--accent-line); color: var(--accent); }
+.ask-mode[aria-pressed="true"] {
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+  color: var(--accent);
+}
+
 .ask-close {
+  flex: 0 0 auto;
   border: 0;
   background: none;
   color: var(--ink-3);
@@ -1185,6 +1308,8 @@ a.term:hover {
   font-family: var(--font-ui);
   font-size: 0.82rem;
   line-height: 1.45;
+  max-height: 9rem;
+  overflow-y: auto;
 }
 #ask-input:focus { outline: none; border-color: var(--accent-line); }
 
@@ -1209,21 +1334,58 @@ a.term:hover {
   line-height: 1.45;
 }
 
-/* на телефоне панель выезжает снизу: сбоку она съедала бы весь экран */
+/* на телефоне панель выезжает снизу: сбоку она съедала бы весь экран.
+   Тянут её тогда не за левый край, а за верхний — и меняется высота. */
 @media (max-width: 700px) {
   #ask-panel {
     top: auto;
     bottom: 0;
     width: 100%;
-    height: min(82vh, 40rem);
+    min-width: 0;
+    max-width: 100%;
+    height: var(--ask-h);
+    min-height: 16rem;
+    max-height: 92vh;
     border-left: 0;
     border-top: 1px solid var(--line);
     border-radius: 14px 14px 0 0;
     transform: translateY(100%);
   }
   #ask-panel.open { transform: none; }
+
+  /* поджимать текст на телефоне некуда — панель всегда поверх */
+  body.ask-docked { padding-right: 0; }
+
+  .ask-resize {
+    top: -4px;
+    left: 0;
+    width: 100%;
+    height: 14px;
+    cursor: row-resize;
+  }
+  .ask-resize::after {
+    left: 50%;
+    top: 6px;
+    width: 2.6rem;
+    height: 3px;
+    margin: 0 0 0 -1.3rem;
+  }
+  .ask-resize:hover::after, .ask-resize.dragging::after {
+    height: 3px;
+    width: 4rem;
+    margin-left: -2rem;
+  }
+
+  #ask-fab { right: 0.9rem; bottom: 0.9rem; width: 2.5rem; height: 2.5rem; }
+}
+
+/* Кому анимация мешает — тому её и не будет. */
+@media (prefers-reduced-motion: reduce) {
+  #ask-panel, #ask-fab, body.ask-docked { transition: none; }
+  #ask-fab:hover { transform: none; }
 }
 
 @media print {
-  #ask-pill, #ask-panel, #ask-open { display: none !important; }
+  #ask-pill, #ask-panel, #ask-fab { display: none !important; }
+  body.ask-docked { padding-right: 0 !important; }
 }
