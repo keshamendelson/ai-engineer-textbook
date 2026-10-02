@@ -36,21 +36,28 @@ python3 - "$url" "$root/site/assets/ask.js" <<'PY'
 import sys, re, pathlib
 url, path = sys.argv[1].rstrip('/'), pathlib.Path(sys.argv[2])
 s = path.read_text(encoding="utf-8")
-s2 = re.sub(r'var DEFAULT_ENDPOINT = "[^"]*";',
-            f'var DEFAULT_ENDPOINT = "{url}";', s, count=1)
+pat = r'var DEFAULT_ENDPOINT = "[^"]*";'
+if not re.search(pat, s):
+    sys.exit("!! в ask.js нет строки DEFAULT_ENDPOINT")
+s2 = re.sub(pat, f'var DEFAULT_ENDPOINT = "{url}";', s, count=1)
 if s2 == s:
-    sys.exit("!! не удалось подставить DEFAULT_ENDPOINT в ask.js")
-path.write_text(s2, encoding="utf-8")
-print("   ask.js -> " + url)
+    print("   ask.js уже указывает на " + url + " — менять нечего")
+else:
+    path.write_text(s2, encoding="utf-8")
+    print("   ask.js -> " + url)
 PY
 
 echo "== 4/4 коммит и пуш (main → GitHub Pages пересоберётся) =="
 cd "$root"
-git add site/assets/ask.js
-git commit -m "feat(помощник): включён — адрес развёрнутого Worker'а прописан в виджет
+if git diff --quiet -- site/assets/ask.js; then
+  echo "   ask.js не менялся — коммит и пуш не нужны"
+else
+  git add site/assets/ask.js
+  git commit -m "feat(помощник): включён — адрес развёрнутого Worker'а прописан в виджет
 
 Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>"
-git push origin main
+  git push origin main
+fi
 
 echo "== ГОТОВО. Помощник живой на сайте через 1-2 минуты (сборка Pages). =="
 echo "   Проверить сам Worker:"
